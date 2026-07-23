@@ -17,7 +17,7 @@ export default function AboutPage() {
           <h1 className="mx-auto mt-5 max-w-5xl font-serif text-6xl leading-[.95] md:text-8xl">Koku, hatıranın görünmez hâlidir.</h1>
           <p className="mx-auto mt-8 max-w-2xl text-sm leading-7 text-white/60">Bee, parfümü yalnızca bir aksesuar değil, kişiliğin en zarif ifadesi olarak gören bir anlayışla doğdu. Her seçimimizde özgünlük, güven ve kalıcı bir deneyim arıyoruz.</p>
           <div className="mx-auto mt-14 grid max-w-3xl grid-cols-3 border-y border-white/10 py-7">
-            <div><b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">11+</b><p className="mt-2 text-[9px] tracking-widest text-white/45">SEÇKİN MARKA</p></div>
+            <div><b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">19</b><p className="mt-2 text-[9px] tracking-widest text-white/45">SEÇKİN MARKA</p></div>
             <div className="border-x border-white/10"><b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">%100</b><p className="mt-2 text-[9px] tracking-widest text-white/45">ORİJİNAL ÜRÜN</p></div>
             <div><b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">7/6</b><p className="mt-2 text-[9px] tracking-widest text-white/45">UZMAN DESTEK</p></div>
           </div>
