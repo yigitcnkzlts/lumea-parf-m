@@ -18,10 +18,10 @@ export default function BrandsPage() {
   return (
     <main>
       <section className="relative min-h-[430px] overflow-hidden bg-[#171715] text-white">
-        <Image src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=2000&q=85" alt="" fill priority className="object-cover opacity-30" sizes="100vw" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
+        <Image src="/images/brands-hero.jpeg" alt="Clive Christian No 1" fill priority className="object-cover object-center opacity-45" sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/30" />
         <div className="relative mx-auto flex min-h-[430px] max-w-[1500px] items-center px-5 lg:px-8">
-          <div><p className="text-[10px] tracking-[.3em] text-[#d0ad7b]">PARFÜM EVLERİ</p><h1 className="mt-4 font-serif text-6xl md:text-8xl">Seçkin Markalar</h1><p className="mt-5 max-w-xl leading-7 text-white/65">Efsanevi moda evlerinden çağdaş koku ustalarına, dünyanın en özel parfüm markaları.</p></div>
+          <div><p className="text-[10px] tracking-[.3em] text-[#d0ad7b]">PARFÜM DÜNYASI</p><h1 className="mt-4 font-serif text-6xl md:text-8xl">Seçkin Markalar</h1><p className="mt-5 max-w-xl leading-7 text-white/65">Efsanevi moda evlerinden çağdaş koku ustalarına, dünyanın en özel parfüm markaları.</p></div>
         </div>
       </section>
       <section className="section-shell">
