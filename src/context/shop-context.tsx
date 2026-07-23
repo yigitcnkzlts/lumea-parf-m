@@ -32,11 +32,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     queueMicrotask(() => {
       try {
-        setCart(JSON.parse(localStorage.getItem("lumea-cart") ?? "[]") as CartItem[]);
-        setFavorites(JSON.parse(localStorage.getItem("lumea-favorites") ?? "[]") as number[]);
+        setCart(JSON.parse(localStorage.getItem("bee-cart") ?? "[]") as CartItem[]);
+        setFavorites(JSON.parse(localStorage.getItem("bee-favorites") ?? "[]") as number[]);
       } catch {
-        localStorage.removeItem("lumea-cart");
-        localStorage.removeItem("lumea-favorites");
+        localStorage.removeItem("bee-cart");
+        localStorage.removeItem("bee-favorites");
       }
       setHydrated(true);
     });
@@ -44,8 +44,8 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
-    localStorage.setItem("lumea-cart", JSON.stringify(cart));
-    localStorage.setItem("lumea-favorites", JSON.stringify(favorites));
+    localStorage.setItem("bee-cart", JSON.stringify(cart));
+    localStorage.setItem("bee-favorites", JSON.stringify(favorites));
   }, [cart, favorites, hydrated]);
 
   const addToCart = (product: Product, size = product.sizes[1], quantity = 1) => {

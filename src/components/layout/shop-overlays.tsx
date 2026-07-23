@@ -92,7 +92,7 @@ export function ShopOverlays() {
         <div className="fixed inset-0 z-[90] overflow-y-auto bg-[#f8f5ef]/98 px-5 py-8 backdrop-blur-xl">
           <div className="mx-auto max-w-5xl">
             <div className="flex justify-end"><button aria-label="Aramayı kapat" onClick={() => shop.setSearchOpen(false)}><X size={28} /></button></div>
-            <p className="mt-8 text-center text-xs tracking-[.3em] text-[#987448]">LUMÉA ARAMA</p>
+            <p className="mt-8 text-center text-xs tracking-[.3em] text-[#987448]">BEE ARAMA</p>
             <div className="relative mx-auto mt-5 max-w-3xl border-b border-black">
               <Search className="absolute left-0 top-4" strokeWidth={1.2} />
               <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Parfüm veya marka ara..." className="w-full bg-transparent py-4 pl-10 pr-3 font-serif text-2xl outline-none md:text-4xl" />

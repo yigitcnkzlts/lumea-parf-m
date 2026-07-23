@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/ui/contact-form";
 
 export const metadata: Metadata = {
   title: "İletişim",
-  description: "Luméa Parfüm müşteri hizmetleriyle iletişime geçin.",
+  description: "BEE Parfüm müşteri hizmetleriyle iletişime geçin.",
 };
 
 export default function ContactPage() {
@@ -17,12 +17,12 @@ export default function ContactPage() {
       </header>
       <div className="grid overflow-hidden border border-black/10 bg-white lg:grid-cols-[.8fr_1.2fr]">
         <aside className="bg-[#191918] p-8 text-white md:p-12">
-          <h2 className="font-serif text-4xl">Luméa’ya Ulaşın</h2>
+          <h2 className="font-serif text-4xl">Bee’ye Ulaşın</h2>
           <p className="mt-4 text-sm leading-7 text-white/55">Uzman ekibimiz hafta içi ve cumartesi günü tüm sorularınızı yanıtlamaktan memnuniyet duyar.</p>
           <div className="mt-10 space-y-7">
             <div className="flex gap-4"><MapPin className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">MAĞAZA</b><p className="mt-2 text-sm text-white/60">Teşvikiye Cd. No: 42<br />Nişantaşı, İstanbul</p></div></div>
             <div className="flex gap-4"><Phone className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">TELEFON</b><p className="mt-2 text-sm text-white/60">0850 450 58 63</p></div></div>
-            <div className="flex gap-4"><Mail className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">E-POSTA</b><p className="mt-2 text-sm text-white/60">merhaba@lumeaparfum.com</p></div></div>
+            <div className="flex gap-4"><Mail className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">E-POSTA</b><p className="mt-2 text-sm text-white/60">merhaba@beeparfum.com</p></div></div>
             <div className="flex gap-4"><Clock className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">ÇALIŞMA SAATLERİ</b><p className="mt-2 text-sm text-white/60">Pzt–Cmt · 09.00–19.00</p></div></div>
           </div>
         </aside>

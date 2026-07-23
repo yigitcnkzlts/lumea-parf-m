@@ -6,10 +6,10 @@ import { products } from "@/data/products";
 
 export const metadata: Metadata = {
   title: "Markalar",
-  description: "Luméa Parfüm'de dünyanın seçkin parfüm markalarını keşfedin.",
+  description: "Bee Parfüm'de dünyanın seçkin parfüm markalarını keşfedin.",
 };
 
-const brands = ["CHANEL", "DIOR", "YVES SAINT LAURENT", "GIORGIO ARMANI", "TOM FORD", "VERSACE", "GUCCI", "BURBERRY", "GIVENCHY", "LANCÔME", "PRADA", "CALVIN KLEIN"];
+const brands = ["CHANEL", "DIOR", "YVES SAINT LAURENT", "GIORGIO ARMANI", "TOM FORD", "GUCCI", "BURBERRY", "GIVENCHY", "LANCÔME", "PRADA", "CALVIN KLEIN"];
 
 export default function BrandsPage() {
   return (

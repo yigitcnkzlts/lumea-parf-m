@@ -54,7 +54,7 @@ export function Header() {
       <header className={`sticky top-0 z-50 border-b transition-all duration-300 ${scrolled ? "border-black/10 bg-[#faf8f3]/95 shadow-sm backdrop-blur-xl" : "border-transparent bg-[#faf8f3]/90"}`}>
         <div className="mx-auto flex h-[76px] max-w-[1500px] items-center justify-between px-5 lg:px-8">
           <button aria-label="Menüyü aç" className="lg:hidden" onClick={() => setMobileOpen(true)}><Menu /></button>
-          <Link href="/" className="font-serif text-2xl tracking-[.08em] md:text-3xl">LUMÉA<span className="ml-1 text-[9px] tracking-[.25em] text-[#9c7749]">PARFÜM</span></Link>
+          <Link href="/" className="font-serif text-2xl tracking-[.08em] md:text-3xl">BEE<span className="ml-1 text-[9px] tracking-[.25em] text-[#9c7749]">PARFÜM</span></Link>
           <nav aria-label="Ana menü" className="hidden items-center gap-5 xl:gap-7 lg:flex">
             {links.map(([label, href]) => <Link key={label} href={href} className="link-line whitespace-nowrap text-[11px] tracking-[.08em]">{label}</Link>)}
           </nav>
@@ -69,7 +69,7 @@ export function Header() {
       {mobileOpen && (
         <div className="fixed inset-0 z-[70] bg-black/40" onMouseDown={() => setMobileOpen(false)}>
           <nav className="h-full w-[88%] max-w-sm bg-[#f8f5ef] p-7" onMouseDown={(e) => e.stopPropagation()}>
-            <div className="mb-12 flex items-center justify-between"><span className="font-serif text-2xl">LUMÉA</span><button aria-label="Menüyü kapat" onClick={() => setMobileOpen(false)}><X /></button></div>
+            <div className="mb-12 flex items-center justify-between"><span className="font-serif text-2xl">BEE</span><button aria-label="Menüyü kapat" onClick={() => setMobileOpen(false)}><X /></button></div>
             <div className="flex flex-col">{links.map(([label, href]) => <Link key={label} href={href} onClick={() => setMobileOpen(false)} className="border-b border-black/10 py-4 font-serif text-xl">{label}</Link>)}</div>
           </nav>
         </div>

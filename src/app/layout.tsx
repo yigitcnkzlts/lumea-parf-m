@@ -21,10 +21,10 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: {
-    default: "Luméa Parfüm | Kokunuz, İmzanızdır",
-    template: "%s | Luméa Parfüm",
+    default: "Bee Parfüm | Kokunuz, İmzanızdır",
+    template: "%s | Bee Parfüm",
   },
-  description: "Dünyanın seçkin parfüm markalarını Luméa ayrıcalığıyla keşfedin.",
+  description: "Dünyanın seçkin parfüm markalarını Bee ayrıcalığıyla keşfedin.",
 };
 
 export default function RootLayout({

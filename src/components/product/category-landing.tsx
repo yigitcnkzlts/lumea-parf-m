@@ -93,7 +93,7 @@ export function CategoryLanding({ category }: { category: Category }) {
       <section className="section-shell">
         <div className="mb-8 flex flex-col justify-between gap-5 border-b border-black/10 pb-7 md:flex-row md:items-end">
           <div>
-            <p className="text-[10px] tracking-[.25em] text-[#956f42]">LUMÉA SEÇKİSİ</p>
+            <p className="text-[10px] tracking-[.25em] text-[#956f42]">BEE SEÇKİSİ</p>
             <h2 className="mt-2 font-serif text-4xl md:text-5xl">{category} Koleksiyonu</h2>
           </div>
           <p className="text-xs text-neutral-500">{filteredProducts.length} ürün gösteriliyor</p>

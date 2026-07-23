@@ -5,7 +5,7 @@ import { BadgePercent, CheckCircle2, PackageCheck, RotateCcw } from "lucide-reac
 
 export const metadata: Metadata = {
   title: "Kampanyalar",
-  description: "Luméa Parfüm kampanyalarını ve özel fırsatlarını keşfedin.",
+  description: "BEE Parfüm kampanyalarını ve özel fırsatlarını keşfedin.",
 };
 
 const campaigns = [
@@ -27,7 +27,7 @@ const campaigns = [
   },
   {
     title: "Niş Parfüm Günleri",
-    description: "Karakterli ve sıra dışı niş kokularda Luméa'ya özel avantajlar.",
+    description: "Karakterli ve sıra dışı niş kokularda Bee'ye özel avantajlar.",
     badge: "SINIRLI SÜRE",
     detail: "5.000 TL ve üzeri seçili niş parfüm alışverişinde geçerlidir.",
     code: "NICHE500",
@@ -39,9 +39,9 @@ export default function CampaignsPage() {
   return (
     <main className="section-shell">
       <header className="mb-14 max-w-3xl">
-        <p className="text-[10px] tracking-[.3em] text-[#956f42]">LUMÉA AYRICALIKLARI</p>
+        <p className="text-[10px] tracking-[.3em] text-[#956f42]">BEE AYRICALIKLARI</p>
         <h1 className="mt-4 font-serif text-6xl md:text-8xl">Kampanyalar</h1>
-        <p className="mt-5 leading-7 text-neutral-600">Seçkin kokulara özel fırsatları ve dönemsel Luméa ayrıcalıklarını keşfedin.</p>
+        <p className="mt-5 leading-7 text-neutral-600">Seçkin kokulara özel fırsatları ve dönemsel BEE ayrıcalıklarını keşfedin.</p>
       </header>
       <div className="mb-14 grid border border-black/10 bg-white sm:grid-cols-3">
         {[

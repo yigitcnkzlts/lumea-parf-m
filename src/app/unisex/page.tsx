@@ -3,7 +3,7 @@ import { CategoryLanding } from "@/components/product/category-landing";
 
 export const metadata: Metadata = {
   title: "Unisex Parfümler",
-  description: "Luméa seçkisi unisex parfümleri keşfedin.",
+  description: "BEE seçkisi unisex parfümleri keşfedin.",
 };
 
 export default function UnisexPerfumesPage() {

@@ -15,7 +15,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = products.find((item) => item.slug === slug);
   return {
-    title: product ? `${product.name} | Luméa Parfüm` : "Ürün Bulunamadı",
+    title: product ? `${product.name} | BEE Parfüm` : "Ürün Bulunamadı",
     description: product?.description,
   };
 }

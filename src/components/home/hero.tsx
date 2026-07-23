@@ -20,7 +20,7 @@ export function Hero() {
           <h1 className="max-w-2xl font-serif text-[clamp(3.6rem,7.8vw,8.2rem)] leading-[.87] tracking-[-.045em] text-[#1c1b18]">
             Kokunuz,<br /><em className="font-light">imzanızdır.</em>
           </h1>
-          <p className="mt-7 max-w-xl text-sm leading-7 text-neutral-700 md:text-base">Dünyanın seçkin parfüm markalarını keşfedin. Tarzınızı tamamlayan eşsiz kokuyu Luméa ile bulun.</p>
+          <p className="mt-7 max-w-xl text-sm leading-7 text-neutral-700 md:text-base">Dünyanın seçkin parfüm markalarını keşfedin. Tarzınızı tamamlayan eşsiz kokuyu Bee ile bulun.</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link href="/urunler" className="btn-dark">KOLEKSİYONU KEŞFET <ArrowDownRight size={16} /></Link>
             <Link href="#cok-satanlar" className="btn-light">EN ÇOK SATANLAR</Link>

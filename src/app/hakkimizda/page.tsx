@@ -3,7 +3,7 @@ import { Gem, HeartHandshake, Leaf, ShieldCheck, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Hakkımızda",
-  description: "Luméa Parfüm'ün hikâyesini ve kokuya bakışını keşfedin.",
+  description: "BEE Parfüm'ün hikâyesini ve kokuya bakışını keşfedin.",
 };
 
 export default function AboutPage() {
@@ -13,11 +13,11 @@ export default function AboutPage() {
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full border border-[#c4a16f]/20" />
         <div className="absolute -right-8 -top-8 h-48 w-48 rounded-full border border-[#c4a16f]/20" />
         <div className="relative mx-auto max-w-[1500px] text-center">
-          <p className="text-[10px] tracking-[.3em] text-[#c9a775]">LUMÉA’NIN HİKÂYESİ</p>
+          <p className="text-[10px] tracking-[.3em] text-[#c9a775]">BEE’NİN HİKÂYESİ</p>
           <h1 className="mx-auto mt-5 max-w-5xl font-serif text-6xl leading-[.95] md:text-8xl">Koku, hatıranın görünmez hâlidir.</h1>
-          <p className="mx-auto mt-8 max-w-2xl text-sm leading-7 text-white/60">Luméa, parfümü yalnızca bir aksesuar değil, kişiliğin en zarif ifadesi olarak gören bir anlayışla doğdu. Her seçimimizde özgünlük, güven ve kalıcı bir deneyim arıyoruz.</p>
+          <p className="mx-auto mt-8 max-w-2xl text-sm leading-7 text-white/60">Bee, parfümü yalnızca bir aksesuar değil, kişiliğin en zarif ifadesi olarak gören bir anlayışla doğdu. Her seçimimizde özgünlük, güven ve kalıcı bir deneyim arıyoruz.</p>
           <div className="mx-auto mt-14 grid max-w-3xl grid-cols-3 border-y border-white/10 py-7">
-            <div><b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">12+</b><p className="mt-2 text-[9px] tracking-widest text-white/45">SEÇKİN MARKA</p></div>
+            <div><b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">11+</b><p className="mt-2 text-[9px] tracking-widest text-white/45">SEÇKİN MARKA</p></div>
             <div className="border-x border-white/10"><b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">%100</b><p className="mt-2 text-[9px] tracking-widest text-white/45">ORİJİNAL ÜRÜN</p></div>
             <div><b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">7/6</b><p className="mt-2 text-[9px] tracking-widest text-white/45">UZMAN DESTEK</p></div>
           </div>
