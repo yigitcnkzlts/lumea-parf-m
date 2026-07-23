@@ -9,7 +9,10 @@ export const metadata: Metadata = {
   description: "Bee Parfüm'de dünyanın seçkin parfüm markalarını keşfedin.",
 };
 
-const brands = ["CHANEL", "DIOR", "YVES SAINT LAURENT", "GIORGIO ARMANI", "TOM FORD", "GUCCI", "BURBERRY", "GIVENCHY", "LANCÔME", "PRADA", "CALVIN KLEIN"];
+const brands = [
+  "CHANEL", "DIOR", "YVES SAINT LAURENT", "GIORGIO ARMANI", "TOM FORD", "GUCCI", "BURBERRY", "GIVENCHY", "LANCÔME", "PRADA", "CALVIN KLEIN",
+  "PHILIPP PLEIN", "CLIVE CHRISTIAN", "TRUSSARDI", "PACO RABANNE", "MAISON FRANCIS KURKDJIAN", "OPULENT SHAIK", "MARFA", "KILIAN", "VALENTINO",
+];
 
 export default function BrandsPage() {
   return (

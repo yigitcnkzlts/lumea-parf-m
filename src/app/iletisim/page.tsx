@@ -20,9 +20,9 @@ export default function ContactPage() {
           <h2 className="font-serif text-4xl">Bee’ye Ulaşın</h2>
           <p className="mt-4 text-sm leading-7 text-white/55">Uzman ekibimiz hafta içi ve cumartesi günü tüm sorularınızı yanıtlamaktan memnuniyet duyar.</p>
           <div className="mt-10 space-y-7">
-            <div className="flex gap-4"><MapPin className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">MAĞAZA</b><p className="mt-2 text-sm text-white/60">Teşvikiye Cd. No: 42<br />Nişantaşı, İstanbul</p></div></div>
-            <div className="flex gap-4"><Phone className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">TELEFON</b><p className="mt-2 text-sm text-white/60">0850 450 58 63</p></div></div>
-            <div className="flex gap-4"><Mail className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">E-POSTA</b><p className="mt-2 text-sm text-white/60">merhaba@beeparfum.com</p></div></div>
+            <div className="flex gap-4"><MapPin className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">MAĞAZA</b><p className="mt-2 text-sm text-white/60">Tekirdağ, Süleymanpaşa</p></div></div>
+            <div className="flex gap-4"><Phone className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">TELEFON</b><p className="mt-2 text-sm text-white/60">0545 226 75 31</p></div></div>
+            <div className="flex gap-4"><Mail className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">E-POSTA</b><p className="mt-2 text-sm text-white/60">beekozmatik59@outlook.com</p></div></div>
             <div className="flex gap-4"><Clock className="shrink-0 text-[#c7a675]" strokeWidth={1.3} /><div><b className="text-xs tracking-widest">ÇALIŞMA SAATLERİ</b><p className="mt-2 text-sm text-white/60">Pzt–Cmt · 09.00–19.00</p></div></div>
           </div>
         </aside>

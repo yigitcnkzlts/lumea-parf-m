@@ -16,7 +16,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="font-serif text-4xl tracking-[.1em]">BEE</Link>
             <p className="mt-5 max-w-sm text-sm leading-7 text-white/55">Kokunun kişisel bir imza olduğuna inanıyoruz. Dünyanın seçkin parfümlerini özenle seçerek sizinle buluşturuyoruz.</p>
-            <div className="mt-7 space-y-3 text-xs text-white/65"><p className="flex gap-3"><MapPin size={16} /> Nişantaşı, İstanbul</p><p className="flex gap-3"><Phone size={16} /> 0850 450 58 63</p><p className="flex gap-3"><Mail size={16} /> merhaba@beeparfum.com</p></div>
+            <div className="mt-7 space-y-3 text-xs text-white/65"><p className="flex gap-3"><MapPin size={16} /> Tekirdağ, Süleymanpaşa</p><p className="flex gap-3"><Phone size={16} /> 0545 226 75 31</p><p className="flex gap-3"><Mail size={16} /> beekozmatik59@outlook.com</p></div>
           </div>
           {groups.map(([title, items]) => (
             <div key={title}>
