@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { brands } from "@/data/brands";
@@ -13,17 +12,8 @@ export const metadata: Metadata = {
 export default function BrandsPage() {
   return (
     <main>
-      <section className="relative min-h-[430px] overflow-hidden bg-[#171715] text-white">
-        <Image
-          src="/images/brands-hero.jpeg"
-          alt="Clive Christian No 1"
-          fill
-          priority
-          className="object-cover object-center opacity-50"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/75 to-black/35" />
-        <div className="relative mx-auto flex min-h-[430px] max-w-[1500px] items-center px-5 lg:px-8">
+      <section className="bg-[#171715] text-white">
+        <div className="mx-auto flex min-h-[320px] max-w-[1500px] items-center px-5 py-20 lg:min-h-[380px] lg:px-8">
           <div>
             <p className="text-[10px] tracking-[.3em] text-[#d0ad7b]">PARFÜM DÜNYASI</p>
             <h1 className="mt-4 font-serif text-6xl md:text-8xl">Seçkin Markalar</h1>
