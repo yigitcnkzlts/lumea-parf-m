@@ -8,12 +8,9 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { ArrowLeft, ArrowRight, BadgeCheck, Camera, CreditCard, Headphones, PackageCheck, RotateCcw, ShieldCheck, Sparkles, Star, X } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
+import { brands } from "@/data/brands";
 import { products } from "@/data/products";
 
-const brands = [
-  "CHANEL", "DIOR", "YVES SAINT LAURENT", "GIORGIO ARMANI", "TOM FORD", "GUCCI", "BURBERRY", "GIVENCHY", "LANCÔME", "PRADA", "CALVIN KLEIN",
-  "PHILIPP PLEIN", "CLIVE CHRISTIAN", "TRUSSARDI", "PACO RABANNE", "MAISON FRANCIS KURKDJIAN", "OPULENT SHAIK", "MARFA", "KILIAN", "VALENTINO",
-];
 const categoryImages = [
   ["Kadın Parfümleri", "Zarafetin unutulmaz ifadesi", "/kadin-parfumleri", "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=85"],
   ["Erkek Parfümleri", "Güçlü ve karakterli seçimler", "/erkek-parfumleri", "https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=1200&q=85"],
