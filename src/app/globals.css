@@ -1,26 +1,195 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf8f3;
+  --foreground: #1c1b18;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope);
+  --font-serif: var(--font-cormorant);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-manrope), sans-serif;
+  overflow-x: hidden;
+}
+
+button,
+a,
+input,
+select {
+  transition-property: color, background-color, border-color, opacity, transform;
+  transition-duration: 200ms;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #9c7749;
+  outline-offset: 3px;
+}
+
+.section-shell {
+  margin-inline: auto;
+  max-width: 1500px;
+  padding: 6rem 1.25rem;
+}
+
+.btn-dark,
+.btn-light {
+  display: inline-flex;
+  min-height: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: .65rem;
+  padding-inline: 1.5rem;
+  font-size: .65rem;
+  letter-spacing: .14em;
+}
+
+.btn-dark {
+  background: #171715;
+  color: white;
+}
+
+.btn-dark:hover {
+  background: #9b784a;
+}
+
+.btn-light {
+  border: 1px solid rgb(0 0 0 / .55);
+  color: #171715;
+}
+
+.btn-light:hover {
+  background: white;
+}
+
+.arrow-button {
+  display: grid;
+  height: 2.8rem;
+  width: 2.8rem;
+  place-content: center;
+  border: 1px solid rgb(0 0 0 / .18);
+}
+
+.arrow-button:hover {
+  border-color: #111;
+  background: #111;
+  color: white;
+}
+
+.badge {
+  position: absolute;
+  right: -.55rem;
+  top: -.55rem;
+  display: grid;
+  height: 1rem;
+  min-width: 1rem;
+  place-content: center;
+  border-radius: 999px;
+  background: #a47b49;
+  padding-inline: .2rem;
+  color: white;
+  font-size: .55rem;
+}
+
+.payment {
+  border: 1px solid rgb(255 255 255 / .18);
+  padding: .35rem .55rem;
+  font-size: .55rem;
+  letter-spacing: .08em;
+}
+
+.link-line {
+  position: relative;
+}
+
+.link-line::after {
+  position: absolute;
+  bottom: -.45rem;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  transform: scaleX(0);
+  background: currentColor;
+  content: "";
+  transition: transform .25s ease;
+}
+
+.link-line:hover::after {
+  transform: scaleX(1);
+}
+
+.marquee-track {
+  animation: marquee 38s linear infinite;
+}
+
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in .5s ease both;
+}
+
+.animate-rise {
+  animation: rise 1s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@media (min-width: 1024px) {
+  .section-shell {
+    padding: 8rem 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
