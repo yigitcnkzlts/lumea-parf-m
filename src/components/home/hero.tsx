@@ -4,49 +4,30 @@ import { ArrowDownRight } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="hero-stage group relative min-h-[calc(100svh-108px)] overflow-hidden bg-[#05080f]">
-      <div className="absolute inset-0 scale-110">
+    <section className="hero-stage group relative overflow-hidden bg-[#05080f]">
+      <div className="absolute inset-0">
         <Image
           src="/images/hero-bg.jpeg"
           alt=""
           fill
           priority
           aria-hidden
-          className="hero-ambient object-cover object-center opacity-50 blur-2xl transition duration-[1200ms] ease-out group-hover:opacity-70 group-hover:blur-3xl"
+          className="hero-ambient scale-125 object-cover opacity-40 blur-3xl transition duration-1000 group-hover:opacity-55"
           sizes="100vw"
         />
+        <div className="absolute inset-0 bg-[#05080f]/55" />
       </div>
 
-      <div className="hero-frame absolute inset-y-0 right-0 w-full overflow-hidden md:w-[64%]">
-        <div className="absolute inset-0 transition duration-[1400ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.06]">
-          <Image
-            src="/images/hero-bg.jpeg"
-            alt="Seçkin parfüm koleksiyonu"
-            fill
-            priority
-            className="hero-visual object-cover object-[center_30%] brightness-[0.92] contrast-[1.05] transition duration-[1400ms] ease-out group-hover:brightness-110 group-hover:contrast-110 md:object-center"
-            sizes="(max-width: 768px) 100vw, 64vw"
-          />
-        </div>
-        <div className="hero-sheen pointer-events-none absolute inset-0" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#05080f] via-transparent to-[#05080f]/30 md:hidden" />
-        <div className="absolute inset-0 hidden bg-gradient-to-r from-[#05080f] via-[#05080f]/30 to-transparent md:block" />
-        <div className="pointer-events-none absolute inset-y-8 right-0 hidden w-px bg-gradient-to-b from-transparent via-[#c9a775]/50 to-transparent opacity-0 transition duration-700 group-hover:opacity-100 lg:block" />
-      </div>
-
-      <div className="absolute inset-0 bg-gradient-to-r from-[#05080f] via-[#05080f]/92 to-transparent transition duration-700 group-hover:via-[#05080f]/78 md:via-[#05080f]/70" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#05080f]/80 to-transparent" />
-
-      <div className="relative mx-auto flex min-h-[calc(100svh-108px)] max-w-[1500px] items-end px-5 pb-16 pt-32 md:items-center md:pb-24 lg:px-8">
-        <div className="max-w-xl animate-rise">
-          <p className="font-serif text-[clamp(3.8rem,9vw,8.5rem)] leading-none tracking-[.12em] text-white transition duration-700 group-hover:tracking-[.16em]">
+      <div className="relative mx-auto grid min-h-[calc(100svh-108px)] max-w-[1500px] items-center gap-10 px-5 py-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8 lg:px-8 lg:py-10">
+        <div className="relative z-10 max-w-xl animate-rise lg:pb-8">
+          <p className="font-serif text-[clamp(3.4rem,8vw,7.8rem)] leading-none tracking-[.12em] text-white transition duration-700 group-hover:tracking-[.16em]">
             BEE
           </p>
           <div className="mt-5 flex items-center gap-4">
             <span className="h-px w-10 bg-[#c9a775] transition-all duration-700 group-hover:w-16" />
             <p className="text-[10px] tracking-[.34em] text-[#d4b48a]">YENİ SEZON · 2026</p>
           </div>
-          <h1 className="mt-6 font-serif text-[clamp(2rem,4.2vw,3.6rem)] font-light leading-[1.05] tracking-[-.02em] text-white/95">
+          <h1 className="mt-6 font-serif text-[clamp(1.9rem,3.8vw,3.3rem)] font-light leading-[1.08] tracking-[-.02em] text-white/95">
             Kokunuz, <em>imzanızdır.</em>
           </h1>
           <p className="mt-5 max-w-md text-sm leading-7 text-white/65 md:text-[15px]">
@@ -62,6 +43,24 @@ export function Hero() {
             >
               EN ÇOK SATANLAR
             </Link>
+          </div>
+        </div>
+
+        <div className="hero-frame relative mx-auto w-full max-w-[680px] lg:max-w-none">
+          <div className="pointer-events-none absolute -inset-3 rounded-[2px] border border-[#c9a775]/20 transition duration-700 group-hover:border-[#c9a775]/55" />
+          <div className="relative aspect-square overflow-hidden bg-[#0a1018] shadow-[0_30px_80px_rgba(0,0,0,.55)]">
+            <div className="absolute inset-0 transition duration-[1400ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]">
+              <Image
+                src="/images/hero-bg.jpeg"
+                alt="Seçkin parfüm koleksiyonu"
+                fill
+                priority
+                className="hero-visual object-contain object-center"
+                sizes="(max-width: 1024px) 90vw, 48vw"
+              />
+            </div>
+            <div className="hero-sheen pointer-events-none absolute inset-0" />
+            <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
           </div>
         </div>
       </div>
