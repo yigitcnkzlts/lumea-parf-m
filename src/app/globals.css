@@ -178,6 +178,24 @@ select:focus-visible {
   animation: rise 1s cubic-bezier(.22, 1, .36, 1) both;
 }
 
+@keyframes hero-drift {
+  from { transform: scale(1.08); }
+  to { transform: scale(1.18); }
+}
+
+@keyframes hero-reveal {
+  from { opacity: 0; transform: scale(1.06); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.hero-ambient {
+  animation: hero-drift 18s ease-in-out alternate infinite;
+}
+
+.hero-visual {
+  animation: hero-reveal 1.4s cubic-bezier(.22, 1, .36, 1) both;
+}
+
 @media (min-width: 1024px) {
   .section-shell {
     padding: 8rem 2rem;
