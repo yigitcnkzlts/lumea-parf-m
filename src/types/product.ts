@@ -1,5 +1,5 @@
 export type Category = "Kadın" | "Erkek" | "Unisex";
-export type ScentFamily = "Çiçeksi" | "Odunsu" | "Oryantal" | "Ferah" | "Meyveli" | "Baharatlı" | "Narenciye";
+export type ScentFamily = "Odunsu" | "Çiçeksi" | "Oryantal" | "Meyveli";
 
 export interface Product {
   id: number;

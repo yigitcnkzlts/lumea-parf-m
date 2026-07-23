@@ -3,7 +3,12 @@ import { AtSign, Camera, Mail, MapPin, Phone } from "lucide-react";
 
 const groups: [string, [string, string][]][] = [
   ["Kurumsal", [["Hakkımızda", "/hakkimizda"], ["Mağazalarımız", "/iletisim"], ["Kariyer", "/iletisim"], ["İletişim", "/iletisim"]]],
-  ["Müşteri Hizmetleri", [["Sıkça Sorulan Sorular", "/iletisim"], ["Kargo ve Teslimat", "/iletisim"], ["İade ve Değişim", "/iletisim"], ["Sipariş Takibi", "/iletisim"]]],
+  ["Müşteri Hizmetleri", [
+    ["Sıkça Sorulan Sorular", "/musteri-hizmetleri#sss"],
+    ["Kargo ve Teslimat", "/musteri-hizmetleri#kargo"],
+    ["İade ve Değişim", "/musteri-hizmetleri#iade"],
+    ["Sipariş Takibi", "/musteri-hizmetleri#takip"],
+  ]],
   ["Kategoriler", [["Kadın", "/kadin-parfumleri"], ["Erkek", "/erkek-parfumleri"], ["Unisex", "/unisex"], ["Niş Parfümler", "/urunler"]]],
   ["Yasal", [["Gizlilik Politikası", "/iletisim"], ["Mesafeli Satış Sözleşmesi", "/iletisim"], ["Çerez Politikası", "/iletisim"], ["KVKK", "/iletisim"]]],
 ];

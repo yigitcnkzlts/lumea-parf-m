@@ -45,16 +45,16 @@ const make = (
 
 export const products: Product[] = [
   make(1, "chanel-coco-mademoiselle", "CHANEL", "Coco Mademoiselle", "Kadın", "Oryantal", 6850, 5790, 0),
-  make(2, "dior-sauvage-elixir", "DIOR", "Sauvage Elixir", "Erkek", "Baharatlı", 7290, 6490, 1),
+  make(2, "dior-sauvage-elixir", "DIOR", "Sauvage Elixir", "Erkek", "Oryantal", 7290, 6490, 1),
   make(3, "ysl-libre-intense", "YVES SAINT LAURENT", "Libre Intense", "Kadın", "Çiçeksi", 6490, 5490, 2),
   make(4, "tom-ford-ombre-leather", "TOM FORD", "Ombré Leather", "Unisex", "Odunsu", 8990, 7790, 3),
-  make(5, "armani-acqua-di-gio", "GIORGIO ARMANI", "Acqua di Giò", "Erkek", "Narenciye", 5990, 5190, 4),
+  make(5, "armani-acqua-di-gio", "GIORGIO ARMANI", "Acqua di Giò", "Erkek", "Meyveli", 5990, 5190, 4),
   make(6, "lancome-la-vie-est-belle", "LANCÔME", "La Vie Est Belle", "Kadın", "Meyveli", 6250, 5350, 5),
   make(7, "prada-paradoxe", "PRADA", "Paradoxe", "Kadın", "Çiçeksi", 6790, 5990, 2, { isBestSeller: false }),
   make(8, "gucci-guilty-elixir", "GUCCI", "Guilty Elixir", "Erkek", "Odunsu", 7590, 6890, 4),
   make(9, "burberry-goddess", "BURBERRY", "Goddess", "Kadın", "Oryantal", 6190, 5590, 0),
-  make(10, "givenchy-gentleman-reserve", "GIVENCHY", "Gentleman Réserve Privée", "Erkek", "Baharatlı", 6490, 5790, 3),
-  make(11, "calvin-klein-everyone", "CALVIN KLEIN", "CK Everyone", "Unisex", "Narenciye", 4290, 3690, 5, { stock: 0 }),
+  make(10, "givenchy-gentleman-reserve", "GIVENCHY", "Gentleman Réserve Privée", "Erkek", "Oryantal", 6490, 5790, 3),
+  make(11, "calvin-klein-everyone", "CALVIN KLEIN", "CK Everyone", "Unisex", "Meyveli", 4290, 3690, 5, { stock: 0 }),
 ];
 
 export const formatPrice = (value: number) =>

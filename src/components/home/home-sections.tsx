@@ -18,13 +18,10 @@ const categoryImages = [
   ["Niş Parfümler", "Nadir ve özgün kompozisyonlar", "/urunler", "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1200&q=85"],
 ];
 const families = [
-  ["Çiçeksi", "Gül ve yaseminin zarif uyumu", "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=600&q=80"],
   ["Odunsu", "Sıcak ve sofistike derinlik", "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=600&q=80"],
+  ["Çiçeksi", "Gül ve yaseminin zarif uyumu", "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=600&q=80"],
   ["Oryantal", "Gizemli ve duyusal dokunuş", "https://images.unsplash.com/photo-1518709594023-6eab9bab7b23?auto=format&fit=crop&w=600&q=80"],
-  ["Ferah", "Temiz ve enerjik bir esinti", "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=80"],
   ["Meyveli", "Canlı, neşeli ve parlak", "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80"],
-  ["Baharatlı", "Cesur ve sıcak karakter", "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80"],
-  ["Narenciye", "Taze bergamot ve limon ışıltısı", "https://images.unsplash.com/photo-1557800636-894a64c1696f?auto=format&fit=crop&w=600&q=80"],
 ];
 const instagram = [
   "photo-1547887538-e3a2f32cb1cc", "photo-1610461888750-10bfc601b874", "photo-1594035910387-fea47794261f",
@@ -52,7 +49,7 @@ export function CollectionBanner() {
 }
 
 export function ScentFamilies() {
-  return <section className="section-shell"><SectionTitle eyebrow="KOKUNUN DİLİ" title="Koku Aileleri" /><div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-7">{families.map(([title, text, image]) => <Link href={`/urunler?family=${title}`} key={title} className="group text-center"><div className="relative mx-auto aspect-square w-full overflow-hidden rounded-full"><Image src={image} alt="" fill className="object-cover transition duration-700 group-hover:scale-110" sizes="17vw" /></div><h3 className="mt-5 font-serif text-xl">{title}</h3><p className="mx-auto mt-1 max-w-40 text-xs leading-5 text-neutral-500">{text}</p></Link>)}</div></section>;
+  return <section className="section-shell"><SectionTitle eyebrow="KOKUNUN DİLİ" title="Koku Aileleri" /><div className="grid grid-cols-2 gap-3 md:grid-cols-4">{families.map(([title, text, image]) => <Link href={`/urunler?family=${title}`} key={title} className="group text-center"><div className="relative mx-auto aspect-square w-full overflow-hidden rounded-full"><Image src={image} alt="" fill className="object-cover transition duration-700 group-hover:scale-110" sizes="17vw" /></div><h3 className="mt-5 font-serif text-xl">{title}</h3><p className="mx-auto mt-1 max-w-40 text-xs leading-5 text-neutral-500">{text}</p></Link>)}</div></section>;
 }
 
 export function Campaigns() {
