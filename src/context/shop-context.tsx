@@ -16,9 +16,10 @@ interface ShopContextValue {
   setFavoritesOpen: (open: boolean) => void;
   setSearchOpen: (open: boolean) => void;
   setQuickProduct: (product: Product | null) => void;
-  addToCart: (product: Product, size?: number, quantity?: number) => void;
+  addToCart: (product: Product, size?: number, quantity?: number, options?: { openCart?: boolean }) => void;
   updateQuantity: (productId: number, size: number, quantity: number) => void;
   removeFromCart: (productId: number, size: number) => void;
+  clearCart: () => void;
   toggleFavorite: (productId: number) => void;
 }
 
@@ -68,7 +69,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     if (auth.user) auth.saveUserFavorites(favorites);
   }, [cart, favorites, hydrated, auth.user]);
 
-  const addToCart = (product: Product, size = product.sizes[1], quantity = 1) => {
+  const addToCart = (product: Product, size = product.sizes[1], quantity = 1, options?: { openCart?: boolean }) => {
     setCart((current) => {
       const found = current.find((item) => item.product.id === product.id && item.size === size);
       if (found) {
@@ -80,7 +81,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     });
     setQuickProduct(null);
     setFavoritesOpen(false);
-    setCartOpen(true);
+    if (options?.openCart !== false) setCartOpen(true);
     toast.success(`${product.name} sepete eklendi`);
   };
 
@@ -95,6 +96,8 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
   const removeFromCart = (productId: number, size: number) =>
     setCart((current) => current.filter((item) => item.product.id !== productId || item.size !== size));
+
+  const clearCart = () => setCart([]);
 
   const toggleFavorite = (productId: number) =>
     setFavorites((current) => {
@@ -120,6 +123,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       addToCart,
       updateQuantity,
       removeFromCart,
+      clearCart,
       toggleFavorite,
     }),
     [cart, favorites, cartOpen, favoritesOpen, searchOpen, quickProduct],

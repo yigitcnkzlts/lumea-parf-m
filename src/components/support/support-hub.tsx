@@ -33,7 +33,7 @@ const faqs = [
   },
   {
     q: "Ödeme nasıl yapılır?",
-    a: "Siparişinizi WhatsApp üzerinden iletin. Ödeme havale/EFT veya size yönlendirdiğimiz yöntemle alınır. Online kart ödeme altyapısı henüz yoktur.",
+    a: "Sepete ürün ekleyip Ödemeye Geç ile siparişi tamamlayın. Havale/EFT veya WhatsApp yönlendirmesi seçebilirsiniz. IBAN bilgisi yalnızca sipariş onayından sonra paylaşılır. Online kart ödeme yoktur.",
   },
   {
     q: "Siparişimi nasıl takip ederim?",

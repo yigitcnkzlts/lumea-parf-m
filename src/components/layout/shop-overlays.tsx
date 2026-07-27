@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Heart, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
 import { formatPrice, products } from "@/data/products";
 import { useShop } from "@/context/shop-context";
-import { FREE_SHIPPING_THRESHOLD } from "@/lib/contact";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from "@/lib/contact";
 
 function useEscape(close: () => void, active: boolean) {
   useEffect(() => {
@@ -27,6 +27,8 @@ export function ShopOverlays() {
   useEscape(() => shop.setQuickProduct(null), Boolean(shop.quickProduct));
 
   const subtotal = shop.cart.reduce((sum, item) => sum + item.product.salePrice * item.quantity, 0);
+  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_FEE;
+  const total = subtotal + shipping;
   const favoriteProducts = products.filter((product) => shop.favorites.includes(product.id));
   const results = query.trim()
     ? products.filter((product) =>
@@ -79,12 +81,20 @@ export function ShopOverlays() {
               ))}
             </div>
             <div className="border-t border-black/10 p-6">
-              <div className="mb-3 flex justify-between text-sm"><span>Ara toplam</span><b>{formatPrice(subtotal)}</b></div>
+              <div className="mb-2 flex justify-between text-sm"><span>Ara toplam</span><b>{formatPrice(subtotal)}</b></div>
+              <div className="mb-3 flex justify-between text-sm text-neutral-600"><span>Kargo</span><b>{shop.cart.length === 0 ? "—" : shipping === 0 ? "Ücretsiz" : formatPrice(shipping)}</b></div>
+              <div className="mb-4 flex justify-between border-t border-black/10 pt-3 text-sm"><span>Toplam</span><b>{formatPrice(total)}</b></div>
               <div className="mb-5 h-1 overflow-hidden rounded bg-black/10"><div className="h-full bg-[#aa8654]" style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)}%` }} /></div>
-              <p className="mb-4 text-xs text-neutral-500">{subtotal >= FREE_SHIPPING_THRESHOLD ? "Ücretsiz kargo kazandınız." : `Ücretsiz kargoya ${formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} kaldı.`}</p>
+              <p className="mb-4 text-xs text-neutral-500">{subtotal >= FREE_SHIPPING_THRESHOLD ? "Ücretsiz kargo kazandınız." : shop.cart.length ? `Ücretsiz kargoya ${formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} kaldı.` : "Ürün ekleyerek başlayın."}</p>
               <div className="grid grid-cols-2 gap-3">
                 <Link href="/urunler" onClick={() => shop.setCartOpen(false)} className="border border-black px-4 py-3 text-center text-xs tracking-wider">ALIŞVERİŞE DEVAM</Link>
-                <Link href="/siparis" onClick={() => shop.setCartOpen(false)} className="bg-black px-4 py-3 text-center text-xs tracking-wider text-white">SİPARİŞ VER</Link>
+                <Link
+                  href="/siparis"
+                  onClick={() => shop.setCartOpen(false)}
+                  className={`px-4 py-3 text-center text-xs tracking-wider ${shop.cart.length ? "bg-black text-white" : "pointer-events-none bg-neutral-300 text-white"}`}
+                >
+                  ÖDEMEYE GEÇ
+                </Link>
               </div>
             </div>
           </aside>
