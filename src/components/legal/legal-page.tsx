@@ -30,7 +30,7 @@ export function LegalPage({
         ))}
         <p className="border-t border-black/10 pt-8 text-sm text-neutral-500">
           Sorularınız için <Link href="/iletisim" className="underline">iletişim</Link> veya{" "}
-          <Link href="/musteri-hizmetleri" className="underline">müşteri hizmetleri</Link> sayfalarını kullanabilirsiniz.
+          <Link href="/hizmetler" className="underline">hizmetler</Link> sayfalarını kullanabilirsiniz.
         </p>
       </div>
     </main>

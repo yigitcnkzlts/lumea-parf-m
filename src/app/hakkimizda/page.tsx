@@ -67,7 +67,7 @@ export default function AboutPage() {
                   <span className="font-serif text-5xl leading-none text-[#e0c08a]">%100</span>
                 </li>
                 <li className="border-b border-white/15">
-                  <Link href="/musteri-hizmetleri#kargo" className="group flex items-end justify-between gap-6 py-7">
+                  <Link href="/hizmetler#kargo" className="group flex items-end justify-between gap-6 py-7">
                     <span className="pb-1 text-[11px] tracking-[.2em] text-white/45 transition group-hover:text-white/75">Yurt içi kargo</span>
                     <span className="font-serif text-3xl leading-none tracking-[.04em] text-[#e0c08a] transition group-hover:text-white">Türkiye</span>
                   </Link>
@@ -85,7 +85,7 @@ export default function AboutPage() {
               <p className="font-serif text-3xl text-[#e0c08a]">%100</p>
               <p className="mt-2 text-[9px] tracking-[.16em] text-white/45">ORİJİNAL</p>
             </div>
-            <Link href="/musteri-hizmetleri#kargo" className="flex-1 py-7 text-center">
+            <Link href="/hizmetler#kargo" className="flex-1 py-7 text-center">
               <p className="font-serif text-2xl tracking-wide text-[#e0c08a] sm:text-3xl">TR</p>
               <p className="mt-2 text-[9px] tracking-[.16em] text-white/45">YURT İÇİ</p>
             </Link>

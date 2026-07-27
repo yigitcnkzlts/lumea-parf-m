@@ -20,6 +20,7 @@ const links = [
   ["Unisex", "/unisex"],
   ["Markalar", "/markalar"],
   ["Kampanyalar", "/kampanyalar"],
+  ["Hizmetler", "/hizmetler"],
   ["Hakkımızda", "/hakkimizda"],
   ["İletişim", "/iletisim"],
 ];

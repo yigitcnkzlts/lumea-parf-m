@@ -3,12 +3,14 @@ import { Camera, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { whatsappLink } from "@/lib/contact";
 
 const groups: [string, [string, string][]][] = [
-  ["Kurumsal", [["Hakkımızda", "/hakkimizda"], ["İletişim", "/iletisim"], ["Müşteri Hizmetleri", "/musteri-hizmetleri"]]],
-  ["Müşteri Hizmetleri", [
-    ["Sıkça Sorulan Sorular", "/musteri-hizmetleri#sss"],
-    ["Kargo ve Teslimat", "/musteri-hizmetleri#kargo"],
-    ["İade ve Değişim", "/musteri-hizmetleri#iade"],
-    ["Sipariş Takibi", "/musteri-hizmetleri#takip"],
+  ["Kurumsal", [["Hakkımızda", "/hakkimizda"], ["İletişim", "/iletisim"], ["Hizmetler", "/hizmetler"]]],
+  ["Hizmetler", [
+    ["Genel Bakış", "/hizmetler#genel"],
+    ["Kargo ve Teslimat", "/hizmetler#kargo"],
+    ["Sipariş Takibi", "/hizmetler#takip"],
+    ["İade ve Değişim", "/hizmetler#iade"],
+    ["Ödeme", "/hizmetler#odeme"],
+    ["SSS", "/hizmetler#sss"],
   ]],
   ["Kategoriler", [["Kadın", "/kadin-parfumleri"], ["Erkek", "/erkek-parfumleri"], ["Unisex", "/unisex"], ["Niş Parfümler", "/urunler"]]],
   ["Yasal", [
