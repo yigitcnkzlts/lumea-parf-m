@@ -4,8 +4,11 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
+import { brands } from "@/data/brands";
 import { products } from "@/data/products";
 import type { Category } from "@/types/product";
+
+const scentOptions = ["Odunsu", "Çiçeksi", "Oryantal", "Meyveli"] as const;
 
 const content: Record<Category, { title: string; eyebrow: string; description: string; image: string }> = {
   Kadın: {
@@ -17,7 +20,7 @@ const content: Record<Category, { title: string; eyebrow: string; description: s
   Erkek: {
     title: "Erkek Parfümleri",
     eyebrow: "GÜÇLÜ BİR İMZA",
-    description: "Ferah, odunsu ve baharatlı notalarla stilinize karakter katan seçkin erkek parfümleri.",
+    description: "Odunsu, oryantal ve meyveli notalarla stilinize karakter katan seçkin erkek parfümleri.",
     image: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=2000&q=90",
   },
   Unisex: {
@@ -33,15 +36,16 @@ export function CategoryLanding({ category }: { category: Category }) {
   const categoryProducts = products.filter((product) => product.category === category);
   const [query, setQuery] = useState("");
   const [family, setFamily] = useState("Tümü");
+  const [brand, setBrand] = useState("Tümü");
   const [maxPrice, setMaxPrice] = useState(9000);
   const [sort, setSort] = useState("featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const families = Array.from(new Set(categoryProducts.map((product) => product.scentFamily)));
   const filteredProducts = useMemo(() => {
     const result = categoryProducts.filter((product) =>
       `${product.brand} ${product.name}`.toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR")) &&
       (family === "Tümü" || product.scentFamily === family) &&
+      (brand === "Tümü" || product.brand === brand) &&
       product.salePrice <= maxPrice,
     );
     return [...result].sort((a, b) =>
@@ -50,11 +54,12 @@ export function CategoryLanding({ category }: { category: Category }) {
       sort === "rating" ? b.rating - a.rating :
       Number(b.isBestSeller) - Number(a.isBestSeller),
     );
-  }, [categoryProducts, query, family, maxPrice, sort]);
+  }, [categoryProducts, query, family, brand, maxPrice, sort]);
 
   const resetFilters = () => {
     setQuery("");
     setFamily("Tümü");
+    setBrand("Tümü");
     setMaxPrice(9000);
     setSort("featured");
   };
@@ -62,12 +67,30 @@ export function CategoryLanding({ category }: { category: Category }) {
   const filterControls = (
     <>
       <label className="block text-[10px] tracking-[.16em]">
+        MARKA
+        <select value={brand} onChange={(event) => setBrand(event.target.value)} className="mt-3 w-full border border-black/15 bg-transparent px-3 py-3 text-xs">
+          <option>Tümü</option>
+          {brands.map((item) => <option key={item}>{item}</option>)}
+        </select>
+      </label>
+      <label className="mt-6 block text-[10px] tracking-[.16em]">
         KOKU AİLESİ
         <select value={family} onChange={(event) => setFamily(event.target.value)} className="mt-3 w-full border border-black/15 bg-transparent px-3 py-3 text-xs">
           <option>Tümü</option>
-          {families.map((item) => <option key={item}>{item}</option>)}
+          {scentOptions.map((item) => <option key={item}>{item}</option>)}
         </select>
       </label>
+      <div className="mt-6">
+        <p className="text-[10px] tracking-[.16em]">MARKA HIZLI SEÇİM</p>
+        <div className="mt-3 flex max-h-56 flex-wrap gap-2 overflow-y-auto">
+          <button type="button" onClick={() => setBrand("Tümü")} className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === "Tümü" ? "bg-black text-white" : "border border-black/15"}`}>TÜMÜ</button>
+          {brands.map((item) => (
+            <button key={item} type="button" onClick={() => setBrand(item)} className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === item ? "bg-black text-white" : "border border-black/15"}`}>
+              {item}
+            </button>
+          ))}
+        </div>
+      </div>
       <label className="mt-6 block text-[10px] tracking-[.16em]">
         EN YÜKSEK FİYAT
         <input type="range" min="3500" max="9000" step="100" value={maxPrice} onChange={(event) => setMaxPrice(Number(event.target.value))} className="mt-4 w-full accent-black" />
@@ -87,6 +110,7 @@ export function CategoryLanding({ category }: { category: Category }) {
             <p className="text-[10px] tracking-[.3em] text-[#e1bd88]">{page.eyebrow}</p>
             <h1 className="mt-4 font-serif text-6xl leading-none md:text-8xl">{page.title}</h1>
             <p className="mt-6 max-w-xl leading-7 text-white/70">{page.description}</p>
+            <p className="mt-6 text-[10px] tracking-[.2em] text-white/50">{brands.length} MARKA · {categoryProducts.length} ÜRÜN</p>
           </div>
         </div>
       </section>
@@ -112,7 +136,7 @@ export function CategoryLanding({ category }: { category: Category }) {
           </select>
         </div>
         <div className="flex gap-10">
-          <aside className="hidden w-56 shrink-0 border-t border-black/10 pt-6 lg:block">{filterControls}</aside>
+          <aside className="hidden w-64 shrink-0 border-t border-black/10 pt-6 lg:block">{filterControls}</aside>
           {filteredProducts.length ? (
             <div className="grid min-w-0 flex-1 grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3">
               {filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
@@ -120,13 +144,14 @@ export function CategoryLanding({ category }: { category: Category }) {
           ) : (
             <div className="grid min-h-80 flex-1 place-content-center text-center">
               <p className="font-serif text-2xl">Eşleşen ürün bulunamadı</p>
+              <p className="mt-2 text-sm text-neutral-500">Bu marka için {category.toLocaleLowerCase("tr-TR")} kategorisinde ürün yakında eklenebilir.</p>
               <button onClick={resetFilters} className="mt-3 text-xs underline">Filtreleri temizle</button>
             </div>
           )}
         </div>
         {filtersOpen && (
           <div className="fixed inset-0 z-[70] bg-black/40" onMouseDown={() => setFiltersOpen(false)}>
-            <aside className="ml-auto h-full w-[88%] max-w-sm bg-[#faf8f3] p-7" onMouseDown={(event) => event.stopPropagation()}>
+            <aside className="ml-auto h-full w-[88%] max-w-sm overflow-y-auto bg-[#faf8f3] p-7" onMouseDown={(event) => event.stopPropagation()}>
               <div className="mb-10 flex items-center justify-between"><h2 className="font-serif text-3xl">Filtreler</h2><button aria-label="Filtreleri kapat" onClick={() => setFiltersOpen(false)}><X /></button></div>
               {filterControls}
               <button onClick={() => setFiltersOpen(false)} className="btn-dark mt-10 w-full">{filteredProducts.length} ÜRÜNÜ GÖSTER</button>

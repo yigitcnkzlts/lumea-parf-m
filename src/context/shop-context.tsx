@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { CartItem, Product } from "@/types/product";
+import { useAuth } from "@/context/auth-context";
 
 interface ShopContextValue {
   cart: CartItem[];
@@ -24,6 +25,7 @@ interface ShopContextValue {
 const ShopContext = createContext<ShopContextValue | null>(null);
 
 export function ShopProvider({ children }: { children: React.ReactNode }) {
+  const auth = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
@@ -36,7 +38,13 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     queueMicrotask(() => {
       try {
         setCart(JSON.parse(localStorage.getItem("bee-cart") ?? "[]") as CartItem[]);
-        setFavorites(JSON.parse(localStorage.getItem("bee-favorites") ?? "[]") as number[]);
+        const guestFavorites = JSON.parse(localStorage.getItem("bee-favorites") ?? "[]") as number[];
+        if (auth.user) {
+          const userFavorites = auth.getUserFavorites();
+          setFavorites(userFavorites.length ? userFavorites : guestFavorites);
+        } else {
+          setFavorites(guestFavorites);
+        }
       } catch {
         localStorage.removeItem("bee-cart");
         localStorage.removeItem("bee-favorites");
@@ -47,9 +55,18 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
+    if (auth.user) {
+      const userFavorites = auth.getUserFavorites();
+      setFavorites(userFavorites);
+    }
+  }, [auth.user, hydrated]);
+
+  useEffect(() => {
+    if (!hydrated) return;
     localStorage.setItem("bee-cart", JSON.stringify(cart));
     localStorage.setItem("bee-favorites", JSON.stringify(favorites));
-  }, [cart, favorites, hydrated]);
+    if (auth.user) auth.saveUserFavorites(favorites);
+  }, [cart, favorites, hydrated, auth.user]);
 
   const addToCart = (product: Product, size = product.sizes[1], quantity = 1) => {
     setCart((current) => {

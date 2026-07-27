@@ -38,18 +38,18 @@ export default function AboutPage() {
             Bee, parfümü yalnızca bir aksesuar değil; kişiliğin en zarif ifadesi olarak görür.
             Seçkin markaları özenle buluşturur, Tekirdağ’dan tüm Türkiye’ye güvenle ulaştırırız.
           </p>
-          <div className="mt-14 grid max-w-3xl grid-cols-3 border-y border-white/10 py-8">
-            <div>
-              <b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">{brands.length}</b>
+          <div className="mt-14 grid max-w-4xl grid-cols-1 gap-6 border-y border-white/10 py-8 sm:grid-cols-3 sm:gap-0">
+            <div className="sm:pr-6">
+              <b className="font-serif text-4xl text-[#d2b17e] md:text-5xl">{brands.length}</b>
               <p className="mt-2 text-[9px] tracking-widest text-white/45">SEÇKİN MARKA</p>
             </div>
-            <div className="border-x border-white/10 text-center">
-              <b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">%100</b>
+            <div className="border-white/10 sm:border-x sm:px-6">
+              <b className="font-serif text-4xl text-[#d2b17e] md:text-5xl">%100</b>
               <p className="mt-2 text-[9px] tracking-widest text-white/45">ORİJİNAL ÜRÜN</p>
             </div>
-            <div className="text-right">
-              <b className="font-serif text-3xl text-[#d2b17e] md:text-5xl">Yİ</b>
-              <p className="mt-2 text-[9px] tracking-widest text-white/45">YURT İÇİ KARGO</p>
+            <div className="sm:pl-6 sm:text-right">
+              <b className="font-serif text-3xl text-[#d2b17e] md:text-4xl">YURT İÇİ</b>
+              <p className="mt-2 text-[9px] tracking-widest text-white/45">TEKİRDAĞ’DAN KARGO</p>
             </div>
           </div>
         </div>

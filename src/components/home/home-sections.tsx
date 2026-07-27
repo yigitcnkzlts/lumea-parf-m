@@ -6,10 +6,11 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, BadgeCheck, Camera, Headphones, MessageCircle, PackageCheck, RotateCcw, ShieldCheck, Sparkles, Star, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, Headphones, MessageCircle, PackageCheck, RotateCcw, ShieldCheck, Sparkles, X } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
 import { brands } from "@/data/brands";
 import { products } from "@/data/products";
+import { whatsappLink } from "@/lib/contact";
 
 const categoryImages = [
   ["Kadın Parfümleri", "Zarafetin unutulmaz ifadesi", "/kadin-parfumleri", "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=85"],
@@ -63,8 +64,42 @@ export function Campaigns() {
 
 export function TrustAndReviews() {
   const perks = [[ShieldCheck, "Orijinal Ürün", "Güvenilir tedarik"], [MessageCircle, "WhatsApp Sipariş", "Kolay ve hızlı iletişim"], [PackageCheck, "Yurt İçi Kargo", "Tekirdağ’dan gönderim"], [RotateCcw, "Kolay İade", "14 gün mühürlü ürün"], [Headphones, "Kişisel Destek", "Doğrudan site sahibi"]];
-  const reviews = [["Elif A.", "Coco Mademoiselle", "Paketleme başlı başına bir deneyimdi. Ürün tamamen orijinal ve teslimat çok hızlıydı."], ["Mert K.", "Sauvage Elixir", "Koku danışmanının önerisi tam isabet oldu. Kalıcılığı ve performansı harika."], ["Deniz S.", "Libre Intense", "Bee artık parfüm alışverişindeki tek adresim. Her detay çok özenli."]];
-  return <><section id="hakkimizda" className="border-y border-black/10 bg-white py-12"><div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-8 px-5 md:grid-cols-5 lg:px-8">{perks.map(([Icon, title, text]) => { const I = Icon as typeof ShieldCheck; return <div key={title as string} className="text-center"><I className="mx-auto text-[#9d7747]" strokeWidth={1.2} /><h3 className="mt-3 font-serif text-lg">{title as string}</h3><p className="mt-1 text-[11px] text-neutral-500">{text as string}</p></div>; })}</div></section><section className="section-shell"><SectionTitle eyebrow="SİZDEN GELENLER" title="Bee Deneyimleri" /><div className="grid gap-4 md:grid-cols-3">{reviews.map(([name, product, text]) => <article key={name} className="border border-black/10 bg-white p-7 md:p-9"><div className="flex gap-1 text-[#b68c55]">{Array.from({length:5}).map((_,i)=><Star key={i} size={13} fill="currentColor" />)}</div><blockquote className="mt-6 font-serif text-xl leading-8">“{text}”</blockquote><div className="mt-7 border-t border-black/10 pt-5"><div className="flex items-center justify-between"><b className="text-sm">{name}</b><span className="flex items-center gap-1 text-[9px] text-emerald-700"><BadgeCheck size={13} /> DOĞRULANMIŞ</span></div><p className="mt-1 text-xs text-neutral-500">{product}</p></div></article>)}</div></section></>;
+  return (
+    <>
+      <section id="guven" className="border-y border-black/10 bg-white py-12">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-8 px-5 md:grid-cols-5 lg:px-8">
+          {perks.map(([Icon, title, text]) => {
+            const I = Icon as typeof ShieldCheck;
+            return (
+              <div key={title as string} className="text-center">
+                <I className="mx-auto text-[#9d7747]" strokeWidth={1.2} />
+                <h3 className="mt-3 font-serif text-lg">{title as string}</h3>
+                <p className="mt-1 text-[11px] text-neutral-500">{text as string}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+      <section className="section-shell">
+        <div className="mx-auto max-w-3xl border border-black/10 bg-[#141312] px-8 py-14 text-center text-white md:px-16 md:py-20">
+          <p className="text-[10px] tracking-[.3em] text-[#d0ad7b]">WHATSAPP</p>
+          <h2 className="mt-4 font-serif text-4xl md:text-6xl">Bize yazın, hemen yardımcı olalım</h2>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/65">
+            Sipariş, koku önerisi veya kargo sorusu için tek mesaj yeterli. Tekirdağ’dan yurt içi gönderim.
+          </p>
+          <a
+            href={whatsappLink("Merhaba Bee! Parfüm hakkında bilgi almak istiyorum.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-dark mx-auto mt-9 border border-[#c9a775] bg-[#c9a775] text-black hover:bg-white"
+          >
+            <MessageCircle size={16} /> WHATSAPP İLE YAZ
+          </a>
+          <p className="mt-5 text-xs tracking-[.16em] text-white/45">0545 226 75 31</p>
+        </div>
+      </section>
+    </>
+  );
 }
 
 export function GuideAndInstagram() {
