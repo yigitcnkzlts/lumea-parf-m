@@ -22,6 +22,7 @@ import {
 import {
   DeliveryErrors,
   formatTrPhone,
+  isDeliveryComplete,
   normalizeTrPhone,
   validateDelivery,
 } from "@/lib/validation";
@@ -113,6 +114,12 @@ export function OrderForm() {
       .join("\n");
   }, [cart, subtotal, shipping, total, payment, selectedPlan, installment, installmentAmount, name, phone, email, city, district, address, note, auth.user]);
 
+  const deliveryInput = useMemo(
+    () => ({ name, phone, email, city, district, address, cities: TURKEY_CITIES }),
+    [name, phone, email, city, district, address],
+  );
+  const canGoPayment = isDeliveryComplete(deliveryInput);
+
   const copyIban = async () => {
     try {
       await navigator.clipboard.writeText(BANK_ACCOUNT.iban.replace(/\s/g, ""));
@@ -135,22 +142,15 @@ export function OrderForm() {
 
   const goPayment = (event: FormEvent) => {
     event.preventDefault();
-    const nextErrors = validateDelivery({
-      name,
-      phone,
-      email,
-      city,
-      district,
-      address,
-      cities: TURKEY_CITIES,
-    });
+    const nextErrors = validateDelivery(deliveryInput);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) {
-      toast.error("Lütfen formdaki hataları düzeltin.");
+      toast.error("Tüm zorunlu alanları doğru doldurun, sonra ödemeye geçin.");
       return;
     }
     setPhone(formatTrPhone(phone));
     setStep(2);
+    toast.success("Teslimat bilgileri tamam — ödeme adımına geçildi.");
   };
 
   const goConfirm = () => setStep(3);
@@ -166,15 +166,7 @@ export function OrderForm() {
       toast.error("Devam etmek için zorunlu onayları işaretleyin.");
       return;
     }
-    const nextErrors = validateDelivery({
-      name,
-      phone,
-      email,
-      city,
-      district,
-      address,
-      cities: TURKEY_CITIES,
-    });
+    const nextErrors = validateDelivery(deliveryInput);
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
       setStep(1);
@@ -364,7 +356,18 @@ export function OrderForm() {
                 <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
               </label>
             </div>
-            <button type="submit" className="btn-dark mt-8 w-full sm:w-auto">ÖDEMEYE GEÇ</button>
+            <button
+              type="submit"
+              disabled={!canGoPayment}
+              className={`btn-dark mt-8 w-full sm:w-auto ${!canGoPayment ? "pointer-events-none opacity-40" : ""}`}
+            >
+              ÖDEMEYE GEÇ
+            </button>
+            {!canGoPayment && (
+              <p className="mt-3 text-xs text-neutral-500">
+                Ad soyad, telefon, şehir, ilçe ve açık adresi eksiksiz doldurunca ödeme adımı açılır.
+              </p>
+            )}
           </form>
         )}
 

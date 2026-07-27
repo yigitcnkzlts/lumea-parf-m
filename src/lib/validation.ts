@@ -71,3 +71,7 @@ export function validateDelivery(input: {
 
   return errors;
 }
+
+export function isDeliveryComplete(input: Parameters<typeof validateDelivery>[0]) {
+  return Object.keys(validateDelivery(input)).length === 0;
+}
