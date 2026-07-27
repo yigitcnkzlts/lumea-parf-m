@@ -1,12 +1,14 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, ChevronLeft, Copy, CreditCard, MessageCircle, Package, Truck } from "lucide-react";
+import { Check, ChevronLeft, Copy, CreditCard, Lock, MessageCircle, Package, Truck, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { formatPrice } from "@/data/products";
+import { TURKEY_CITIES } from "@/data/cities";
 import { useShop } from "@/context/shop-context";
+import { useAuth } from "@/context/auth-context";
 import {
   BANK_ACCOUNT,
   CONTACT_EMAIL,
@@ -17,10 +19,12 @@ import {
   hasBankDetails,
   whatsappLink,
 } from "@/lib/contact";
-
-const cities = [
-  "Adana", "Ankara", "Antalya", "Bursa", "İstanbul", "İzmir", "Tekirdağ", "Kocaeli", "Gaziantep", "Konya", "Diğer",
-];
+import {
+  DeliveryErrors,
+  formatTrPhone,
+  normalizeTrPhone,
+  validateDelivery,
+} from "@/lib/validation";
 
 const steps = [
   { id: 1, label: "Teslimat" },
@@ -30,8 +34,15 @@ const steps = [
 
 type Step = 1 | 2 | 3;
 
+function fieldClass(error?: string) {
+  return `mt-2 w-full border px-4 py-3 text-sm outline-none transition ${
+    error ? "border-red-500 focus:border-red-600" : "border-black/15 focus:border-black"
+  }`;
+}
+
 export function OrderForm() {
   const shop = useShop();
+  const auth = useAuth();
   const [step, setStep] = useState<Step>(1);
   const [done, setDone] = useState(false);
   const [name, setName] = useState("");
@@ -46,7 +57,16 @@ export function OrderForm() {
   const [copied, setCopied] = useState(false);
   const [kvkk, setKvkk] = useState(false);
   const [distance, setDistance] = useState(false);
+  const [errors, setErrors] = useState<DeliveryErrors>({});
   const [orderSnapshot, setOrderSnapshot] = useState(shop.cart);
+  const [prefilled, setPrefilled] = useState(false);
+
+  useEffect(() => {
+    if (!auth.user || prefilled) return;
+    setName((current) => current || auth.user!.name);
+    setEmail((current) => current || auth.user!.email);
+    setPrefilled(true);
+  }, [auth.user, prefilled]);
 
   const cart = done ? orderSnapshot : shop.cart;
   const subtotal = cart.reduce((sum, item) => sum + item.product.salePrice * item.quantity, 0);
@@ -81,8 +101,9 @@ export function OrderForm() {
       `Ödeme planı: ${selectedPlan.label}${installment !== "pesin" ? ` (yaklaşık ${formatPrice(installmentAmount)} x${installment})` : ""}`,
       ...bankLines,
       "",
+      `Hesap: ${auth.user?.email || "-"}`,
       `Ad Soyad: ${name || "-"}`,
-      `Telefon: ${phone || "-"}`,
+      `Telefon: ${normalizeTrPhone(phone) || "-"}`,
       email ? `E-posta: ${email}` : "",
       `Şehir: ${city}${district ? ` / ${district}` : ""}`,
       `Adres: ${address || "-"}`,
@@ -90,7 +111,7 @@ export function OrderForm() {
     ]
       .filter(Boolean)
       .join("\n");
-  }, [cart, subtotal, shipping, total, payment, selectedPlan, installment, installmentAmount, name, phone, email, city, district, address, note]);
+  }, [cart, subtotal, shipping, total, payment, selectedPlan, installment, installmentAmount, name, phone, email, city, district, address, note, auth.user]);
 
   const copyIban = async () => {
     try {
@@ -103,12 +124,32 @@ export function OrderForm() {
     }
   };
 
+  const clearError = (key: keyof DeliveryErrors) => {
+    setErrors((current) => {
+      if (!current[key]) return current;
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+  };
+
   const goPayment = (event: FormEvent) => {
     event.preventDefault();
-    if (!name.trim() || !phone.trim() || !address.trim()) {
-      toast.error("Teslimat bilgilerini eksiksiz doldurun.");
+    const nextErrors = validateDelivery({
+      name,
+      phone,
+      email,
+      city,
+      district,
+      address,
+      cities: TURKEY_CITIES,
+    });
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length) {
+      toast.error("Lütfen formdaki hataları düzeltin.");
       return;
     }
+    setPhone(formatTrPhone(phone));
     setStep(2);
   };
 
@@ -116,8 +157,28 @@ export function OrderForm() {
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
+    if (!auth.user) {
+      toast.error("Sipariş için giriş yapmalısınız.");
+      auth.setAuthOpen(true);
+      return;
+    }
     if (!kvkk || !distance) {
       toast.error("Devam etmek için zorunlu onayları işaretleyin.");
+      return;
+    }
+    const nextErrors = validateDelivery({
+      name,
+      phone,
+      email,
+      city,
+      district,
+      address,
+      cities: TURKEY_CITIES,
+    });
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      setStep(1);
+      toast.error("Teslimat bilgileri eksik veya hatalı.");
       return;
     }
     setOrderSnapshot(shop.cart);
@@ -134,6 +195,27 @@ export function OrderForm() {
         <p className="mt-5 font-serif text-3xl">Sepetiniz boş</p>
         <p className="mt-3 text-sm text-neutral-500">Sipariş için önce ürün ekleyin.</p>
         <Link href="/urunler" className="btn-dark mx-auto mt-8 w-fit">ÜRÜNLERE GİT</Link>
+      </div>
+    );
+  }
+
+  if (!done && !auth.user) {
+    return (
+      <div className="border border-black/10 bg-white px-8 py-16 text-center">
+        <Lock className="mx-auto text-[#9c7749]" strokeWidth={1.2} size={36} />
+        <p className="mt-5 font-serif text-3xl">Sipariş için giriş gerekli</p>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-neutral-500">
+          Teslimat ve ödeme adımlarına geçmek için önce giriş yapın veya hesap oluşturun.
+          Sepetiniz korunur.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <button type="button" onClick={() => auth.setAuthOpen(true)} className="btn-dark">
+            <UserRound size={16} /> GİRİŞ YAP / KAYIT OL
+          </button>
+          <Link href="/urunler" className="inline-flex items-center border border-black px-6 py-3 text-xs tracking-[.16em]">
+            ALIŞVERİŞE DEVAM
+          </Link>
+        </div>
       </div>
     );
   }
@@ -194,6 +276,11 @@ export function OrderForm() {
   return (
     <div className="grid gap-10 lg:grid-cols-[1.05fr_.95fr]">
       <div>
+        <div className="mb-4 flex items-center gap-2 text-xs text-neutral-500">
+          <UserRound size={14} className="text-[#9c7749]" />
+          Giriş yapıldı: <b className="text-black">{auth.user?.name}</b>
+        </div>
+
         <ol className="mb-8 grid grid-cols-3 border border-black/10 bg-white">
           {steps.map((item) => (
             <li
@@ -207,30 +294,71 @@ export function OrderForm() {
         </ol>
 
         {step === 1 && (
-          <form onSubmit={goPayment} className="border border-black/10 bg-white p-7 md:p-10">
+          <form onSubmit={goPayment} noValidate className="border border-black/10 bg-white p-7 md:p-10">
             <p className="text-[10px] tracking-[.25em] text-[#956f42]">ADIM 1</p>
             <h2 className="mt-3 font-serif text-3xl md:text-4xl">Teslimat bilgileri</h2>
             <p className="mt-3 text-sm text-neutral-500">Siparişiniz Tekirdağ’dan yurt içi kargo ile gönderilir.</p>
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
               <label className="text-[10px] tracking-widest text-neutral-500">AD SOYAD *
-                <input required value={name} onChange={(e) => setName(e.target.value)} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
+                <input
+                  value={name}
+                  onChange={(e) => { setName(e.target.value); clearError("name"); }}
+                  autoComplete="name"
+                  className={fieldClass(errors.name)}
+                />
+                {errors.name && <span className="mt-1 block text-[11px] text-red-600">{errors.name}</span>}
               </label>
               <label className="text-[10px] tracking-widest text-neutral-500">TELEFON *
-                <input required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="05xx xxx xx xx" className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
+                <input
+                  value={phone}
+                  onChange={(e) => { setPhone(formatTrPhone(e.target.value)); clearError("phone"); }}
+                  onBlur={() => setPhone((value) => (value ? formatTrPhone(value) : value))}
+                  inputMode="tel"
+                  placeholder="05XX XXX XX XX"
+                  autoComplete="tel"
+                  className={fieldClass(errors.phone)}
+                />
+                {errors.phone && <span className="mt-1 block text-[11px] text-red-600">{errors.phone}</span>}
               </label>
               <label className="text-[10px] tracking-widest text-neutral-500 sm:col-span-2">E-POSTA (OPSİYONEL)
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); clearError("email"); }}
+                  autoComplete="email"
+                  className={fieldClass(errors.email)}
+                />
+                {errors.email && <span className="mt-1 block text-[11px] text-red-600">{errors.email}</span>}
               </label>
               <label className="text-[10px] tracking-widest text-neutral-500">ŞEHİR *
-                <select value={city} onChange={(e) => setCity(e.target.value)} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black">
-                  {cities.map((item) => <option key={item}>{item}</option>)}
+                <select
+                  value={city}
+                  onChange={(e) => { setCity(e.target.value); clearError("city"); }}
+                  className={fieldClass(errors.city)}
+                >
+                  <option value="">İl seçin</option>
+                  {TURKEY_CITIES.map((item) => <option key={item} value={item}>{item}</option>)}
                 </select>
+                {errors.city && <span className="mt-1 block text-[11px] text-red-600">{errors.city}</span>}
               </label>
-              <label className="text-[10px] tracking-widest text-neutral-500">İLÇE
-                <input value={district} onChange={(e) => setDistrict(e.target.value)} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
+              <label className="text-[10px] tracking-widest text-neutral-500">İLÇE *
+                <input
+                  value={district}
+                  onChange={(e) => { setDistrict(e.target.value); clearError("district"); }}
+                  placeholder="Örn. Çankaya"
+                  className={fieldClass(errors.district)}
+                />
+                {errors.district && <span className="mt-1 block text-[11px] text-red-600">{errors.district}</span>}
               </label>
               <label className="text-[10px] tracking-widest text-neutral-500 sm:col-span-2">AÇIK ADRES *
-                <textarea required value={address} onChange={(e) => setAddress(e.target.value)} rows={3} placeholder="Mahalle, sokak, bina no, daire" className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
+                <textarea
+                  value={address}
+                  onChange={(e) => { setAddress(e.target.value); clearError("address"); }}
+                  rows={3}
+                  placeholder="Mahalle, sokak, bina no, daire"
+                  className={fieldClass(errors.address)}
+                />
+                {errors.address && <span className="mt-1 block text-[11px] text-red-600">{errors.address}</span>}
               </label>
               <label className="text-[10px] tracking-widest text-neutral-500 sm:col-span-2">SİPARİŞ NOTU
                 <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
