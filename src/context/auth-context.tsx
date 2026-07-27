@@ -22,7 +22,8 @@ interface AuthContextValue {
   setAuthOpen: (open: boolean) => void;
   loginWithEmail: (email: string, password: string) => boolean;
   registerWithEmail: (name: string, email: string, password: string) => boolean;
-  loginWithProvider: (provider: "google" | "facebook", name: string, email: string) => void;
+  loginWithProvider: (provider: AuthProvider, name: string, email: string) => void;
+  loginWithEmailOnly: (name: string, email: string) => void;
   logout: () => void;
   getUserFavorites: () => number[];
   saveUserFavorites: (ids: number[]) => void;
@@ -96,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
-  const loginWithProvider = (provider: "google" | "facebook", name: string, email: string) => {
+  const loginWithProvider = (provider: AuthProvider, name: string, email: string) => {
     const users = readUsers();
     const existing = users.find((item) => item.email.toLocaleLowerCase("tr-TR") === email.toLocaleLowerCase("tr-TR"));
     if (!existing) {
@@ -105,6 +106,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       writeUsers(users.map((item) => (item.email === existing.email ? { ...item, name, provider } : item)));
     }
     persistSession({ name, email, provider });
+  };
+
+  const loginWithEmailOnly = (name: string, email: string) => {
+    loginWithProvider("email", name || email.split("@")[0], email);
   };
 
   const logout = () => {
@@ -134,6 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loginWithEmail,
       registerWithEmail,
       loginWithProvider,
+      loginWithEmailOnly,
       logout,
       getUserFavorites,
       saveUserFavorites,

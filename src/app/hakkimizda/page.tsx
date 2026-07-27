@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowDownRight, Gem, HeartHandshake, MapPin, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowDownRight, Gem, HeartHandshake, MapPin, Package, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { brands } from "@/data/brands";
 
 export const metadata: Metadata = {
@@ -24,33 +24,49 @@ export default function AboutPage() {
   return (
     <main>
       <section className="relative overflow-hidden bg-[#141312] px-5 py-24 text-white md:py-36">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(201,167,117,.18),transparent_42%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(201,167,117,.22),transparent_45%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,.35))]" />
         <div className="relative mx-auto max-w-[1500px]">
-          <p className="font-serif text-[clamp(3rem,8vw,7rem)] leading-none tracking-[.14em]">BEE</p>
+          <p className="font-serif text-[clamp(3.4rem,9vw,8rem)] leading-none tracking-[.16em]">BEE</p>
           <div className="mt-6 flex items-center gap-4">
-            <span className="h-px w-12 bg-[#c9a775]" />
-            <p className="text-[10px] tracking-[.3em] text-[#c9a775]">BEE KOZMETİK · TEKİRDAĞ</p>
+            <span className="h-px w-14 bg-[#c9a775]" />
+            <p className="text-[10px] tracking-[.32em] text-[#c9a775]">BEE KOZMETİK · TEKİRDAĞ</p>
           </div>
           <h1 className="mt-8 max-w-4xl font-serif text-5xl leading-[.95] md:text-7xl lg:text-8xl">
             Koku, hatıranın görünmez hâlidir.
           </h1>
-          <p className="mt-8 max-w-2xl text-sm leading-7 text-white/60 md:text-base">
+          <p className="mt-8 max-w-2xl text-sm leading-7 text-white/65 md:text-base">
             Bee, parfümü yalnızca bir aksesuar değil; kişiliğin en zarif ifadesi olarak görür.
             Seçkin markaları özenle buluşturur, Tekirdağ’dan tüm Türkiye’ye güvenle ulaştırırız.
           </p>
-          <div className="mt-14 grid max-w-4xl grid-cols-1 gap-6 border-y border-white/10 py-8 sm:grid-cols-3 sm:gap-0">
-            <div className="sm:pr-6">
-              <b className="font-serif text-4xl text-[#d2b17e] md:text-5xl">{brands.length}</b>
-              <p className="mt-2 text-[9px] tracking-widest text-white/45">SEÇKİN MARKA</p>
+
+          <div className="mt-14 grid max-w-5xl gap-4 sm:grid-cols-3">
+            <Link href="/markalar" className="group border border-white/10 bg-white/[.03] p-6 transition hover:border-[#c9a775]/50 hover:bg-white/[.06]">
+              <p className="font-serif text-5xl text-[#d2b17e] transition group-hover:tracking-wide">{brands.length}</p>
+              <p className="mt-3 text-[10px] tracking-[.22em] text-white/50">SEÇKİN MARKA</p>
+              <p className="mt-2 text-xs text-white/35">Markalarımıza göz atın →</p>
+            </Link>
+            <div className="border border-white/10 bg-white/[.03] p-6">
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="text-[#d2b17e]" strokeWidth={1.2} />
+                <p className="font-serif text-5xl text-[#d2b17e]">%100</p>
+              </div>
+              <p className="mt-3 text-[10px] tracking-[.22em] text-white/50">ORİJİNAL ÜRÜN</p>
+              <p className="mt-2 text-xs text-white/35">Güvenilir tedarik</p>
             </div>
-            <div className="border-white/10 sm:border-x sm:px-6">
-              <b className="font-serif text-4xl text-[#d2b17e] md:text-5xl">%100</b>
-              <p className="mt-2 text-[9px] tracking-widest text-white/45">ORİJİNAL ÜRÜN</p>
-            </div>
-            <div className="sm:pl-6 sm:text-right">
-              <b className="font-serif text-3xl text-[#d2b17e] md:text-4xl">YURT İÇİ</b>
-              <p className="mt-2 text-[9px] tracking-widest text-white/45">TEKİRDAĞ’DAN KARGO</p>
-            </div>
+            <Link href="/musteri-hizmetleri#kargo" className="group border border-white/10 bg-white/[.03] p-6 transition hover:border-[#c9a775]/50 hover:bg-white/[.06]">
+              <div className="flex items-center gap-3">
+                <Truck className="text-[#d2b17e]" strokeWidth={1.2} />
+                <p className="font-serif text-3xl leading-none text-[#d2b17e] md:text-4xl">YURT İÇİ</p>
+              </div>
+              <p className="mt-3 text-[10px] tracking-[.22em] text-white/50">TEKİRDAĞ’DAN KARGO</p>
+              <p className="mt-2 text-xs text-white/35">Kargo bilgisini inceleyin →</p>
+            </Link>
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-3">
+            <Link href="/urunler" className="btn-dark border border-[#c9a775] bg-[#c9a775] text-black hover:bg-white">KOLEKSİYONU KEŞFET</Link>
+            <Link href="/siparis" className="inline-flex items-center gap-2 border border-white/30 px-7 py-4 text-xs tracking-[.15em] transition hover:bg-white hover:text-black">SİPARİŞ / ÖDEME</Link>
           </div>
         </div>
       </section>
@@ -120,6 +136,9 @@ export default function AboutPage() {
               [ShieldCheck, "Orijinal ürün"],
               [Gem, "Seçkin markalar"],
               [HeartHandshake, "Kişisel destek"],
+              [Truck, "Yurt içi kargo"],
+              [Package, "Özenli paket"],
+              [Sparkles, "WhatsApp destek"],
             ].map(([Icon, label]) => {
               const Item = Icon as typeof ShieldCheck;
               return (
@@ -129,10 +148,6 @@ export default function AboutPage() {
                 </div>
               );
             })}
-            <div className="border border-black/10 bg-white/50 px-5 py-8 text-center sm:col-span-3 sm:flex sm:items-center sm:justify-center sm:gap-3 sm:py-6">
-              <Sparkles className="mx-auto text-[#9c7749] sm:mx-0" strokeWidth={1.2} size={20} />
-              <p className="mt-3 text-xs tracking-[.16em] text-neutral-600 sm:mt-0">ÖZENLİ PAKETLEME · HIZLI YURT İÇİ GÖNDERİM</p>
-            </div>
           </div>
         </div>
       </section>

@@ -13,7 +13,7 @@ export default function OrderPage() {
         <p className="text-[10px] tracking-[.3em] text-[#956f42]">SİPARİŞ</p>
         <h1 className="mt-4 font-serif text-5xl md:text-7xl">Siparişini tamamla</h1>
         <p className="mt-5 leading-7 text-neutral-600">
-          Sepetinizdeki ürünler WhatsApp mesajına dönüştürülür. Tekirdağ’dan yurt içi kargo ile gönderilir.
+          Teslimat bilgisi, IBAN havale ve taksit planını seçin; sipariş WhatsApp’a düşsün. Tekirdağ’dan yurt içi kargo.
         </p>
       </header>
       <OrderForm />
