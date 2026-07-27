@@ -23,51 +23,71 @@ const steps = [
 export default function AboutPage() {
   return (
     <main>
-      <section className="relative min-h-[88vh] overflow-hidden bg-[#0e0d0c] px-5 py-28 text-white md:py-40">
-        <div className="pointer-events-none absolute -right-24 top-10 h-[28rem] w-[28rem] rounded-full border border-[#c9a775]/15" />
-        <div className="pointer-events-none absolute -right-8 top-28 h-[18rem] w-[18rem] rounded-full border border-[#c9a775]/10" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_0%,rgba(201,167,117,.18),transparent_55%)]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/50 to-transparent" />
+      <section className="relative overflow-hidden bg-[#0e0d0c] text-white">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_18%_12%,rgba(201,167,117,.22),transparent_42%),radial-gradient(ellipse_at_88%_78%,rgba(201,167,117,.08),transparent_45%)]" />
+        <div className="pointer-events-none absolute -right-20 top-16 h-[26rem] w-[26rem] rounded-full border border-[#c9a775]/12" />
+        <div className="pointer-events-none absolute -right-4 top-36 h-[16rem] w-[16rem] rounded-full border border-[#c9a775]/08" />
 
-        <div className="relative mx-auto flex min-h-[calc(88vh-14rem)] max-w-[1500px] flex-col justify-between">
-          <div>
-            <p className="font-serif text-[clamp(4rem,11vw,9.5rem)] leading-none tracking-[.18em]">BEE</p>
-            <div className="mt-7 flex flex-wrap items-center gap-4">
-              <span className="h-px w-16 bg-[#c9a775]" />
-              <p className="text-[10px] tracking-[.34em] text-[#d4b48a]">BEE KOZMETİK · TEKİRDAĞ</p>
+        <div className="relative mx-auto max-w-[1500px] px-5 pt-28 md:px-8 md:pt-36 lg:pb-28">
+          <div className="grid items-end gap-14 lg:grid-cols-[1.2fr_.8fr] lg:gap-24">
+            <div>
+              <div className="flex items-center gap-4">
+                <span className="h-px w-10 bg-[#c9a775]" />
+                <p className="text-[10px] tracking-[.34em] text-[#d4b48a]">BEE KOZMETİK · TEKİRDAĞ</p>
+              </div>
+              <p className="mt-6 font-serif text-[clamp(3.4rem,9vw,7.5rem)] leading-none tracking-[.2em]">BEE</p>
+              <h1 className="mt-8 max-w-2xl font-serif text-[clamp(2.1rem,4.2vw,3.75rem)] font-light leading-[1.05] tracking-[-.02em] text-white/95">
+                Koku, hatıranın görünmez hâlidir.
+              </h1>
+              <p className="mt-7 max-w-lg text-sm leading-8 text-white/55 md:text-[15px]">
+                Bee, parfümü yalnızca bir aksesuar değil; kişiliğin en zarif ifadesi olarak görür.
+                Seçkin markaları özenle buluşturur, Tekirdağ’dan tüm Türkiye’ye güvenle ulaştırırız.
+              </p>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <Link href="/urunler" className="inline-flex items-center gap-2 bg-[#c9a775] px-7 py-4 text-xs tracking-[.16em] text-black transition hover:bg-white">
+                  KOLEKSİYONU KEŞFET <ArrowDownRight size={16} />
+                </Link>
+                <Link href="/siparis" className="inline-flex items-center gap-2 border border-white/25 px-7 py-4 text-xs tracking-[.16em] transition hover:border-white hover:bg-white hover:text-black">
+                  SİPARİŞ / ÖDEME
+                </Link>
+              </div>
             </div>
-            <h1 className="mt-10 max-w-4xl font-serif text-[clamp(2.6rem,6vw,6.2rem)] font-light leading-[.96] tracking-[-.02em]">
-              Koku, hatıranın<br className="hidden sm:block" /> görünmez hâlidir.
-            </h1>
-            <p className="mt-8 max-w-xl text-sm leading-8 text-white/60 md:text-[15px]">
-              Bee, parfümü yalnızca bir aksesuar değil; kişiliğin en zarif ifadesi olarak görür.
-              Seçkin markaları özenle buluşturur, Tekirdağ’dan tüm Türkiye’ye güvenle ulaştırırız.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <Link href="/urunler" className="inline-flex items-center gap-2 bg-[#c9a775] px-7 py-4 text-xs tracking-[.16em] text-black transition hover:bg-white">
-                KOLEKSİYONU KEŞFET <ArrowDownRight size={16} />
-              </Link>
-              <Link href="/siparis" className="inline-flex items-center gap-2 border border-white/25 px-7 py-4 text-xs tracking-[.16em] transition hover:border-white hover:bg-white hover:text-black">
-                SİPARİŞ / ÖDEME
-              </Link>
+
+            <div className="hidden lg:block">
+              <p className="text-[10px] tracking-[.3em] text-white/35">VAATLERİMİZ</p>
+              <ul className="mt-8 border-t border-white/15">
+                <li className="border-b border-white/15">
+                  <Link href="/markalar" className="group flex items-end justify-between gap-6 py-7">
+                    <span className="pb-1 text-[11px] tracking-[.2em] text-white/45 transition group-hover:text-white/75">Seçkin marka</span>
+                    <span className="font-serif text-5xl leading-none text-[#e0c08a] transition group-hover:text-white">{brands.length}</span>
+                  </Link>
+                </li>
+                <li className="flex items-end justify-between gap-6 border-b border-white/15 py-7">
+                  <span className="pb-1 text-[11px] tracking-[.2em] text-white/45">Orijinal ürün</span>
+                  <span className="font-serif text-5xl leading-none text-[#e0c08a]">%100</span>
+                </li>
+                <li className="border-b border-white/15">
+                  <Link href="/musteri-hizmetleri#kargo" className="group flex items-end justify-between gap-6 py-7">
+                    <span className="pb-1 text-[11px] tracking-[.2em] text-white/45 transition group-hover:text-white/75">Yurt içi kargo</span>
+                    <span className="font-serif text-3xl leading-none tracking-[.04em] text-[#e0c08a] transition group-hover:text-white">Türkiye</span>
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
 
-          <div className="mt-20 grid border-t border-white/10 pt-8 sm:grid-cols-3">
-            <Link href="/markalar" className="group py-4 sm:pr-8">
-              <p className="font-serif text-5xl text-[#e0c08a] transition duration-500 group-hover:tracking-[.08em] md:text-6xl">{brands.length}</p>
-              <p className="mt-3 text-[10px] tracking-[.24em] text-white/45">SEÇKİN MARKA</p>
-              <p className="mt-2 text-[11px] text-white/30 transition group-hover:text-[#c9a775]">Markaları keşfet →</p>
+          <div className="mt-16 flex border-t border-white/10 lg:hidden">
+            <Link href="/markalar" className="flex-1 py-7 text-center">
+              <p className="font-serif text-3xl text-[#e0c08a]">{brands.length}</p>
+              <p className="mt-2 text-[9px] tracking-[.16em] text-white/45">MARKA</p>
             </Link>
-            <div className="border-white/10 py-4 sm:border-x sm:px-8">
-              <p className="font-serif text-5xl text-[#e0c08a] md:text-6xl">%100</p>
-              <p className="mt-3 text-[10px] tracking-[.24em] text-white/45">ORİJİNAL ÜRÜN</p>
-              <p className="mt-2 text-[11px] text-white/30">Güvenilir tedarik</p>
+            <div className="flex-1 border-x border-white/10 py-7 text-center">
+              <p className="font-serif text-3xl text-[#e0c08a]">%100</p>
+              <p className="mt-2 text-[9px] tracking-[.16em] text-white/45">ORİJİNAL</p>
             </div>
-            <Link href="/musteri-hizmetleri#kargo" className="group py-4 sm:pl-8">
-              <p className="font-serif text-4xl text-[#e0c08a] transition duration-500 group-hover:tracking-[.06em] md:text-5xl">YURT İÇİ</p>
-              <p className="mt-3 text-[10px] tracking-[.24em] text-white/45">TEKİRDAĞ’DAN KARGO</p>
-              <p className="mt-2 text-[11px] text-white/30 transition group-hover:text-[#c9a775]">Kargo detayları →</p>
+            <Link href="/musteri-hizmetleri#kargo" className="flex-1 py-7 text-center">
+              <p className="font-serif text-2xl tracking-wide text-[#e0c08a] sm:text-3xl">TR</p>
+              <p className="mt-2 text-[9px] tracking-[.16em] text-white/45">YURT İÇİ</p>
             </Link>
           </div>
         </div>
