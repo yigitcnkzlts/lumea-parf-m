@@ -33,7 +33,7 @@ const faqs = [
   },
   {
     q: "Ödeme nasıl yapılır?",
-    a: "Güvenli ödeme altyapısı üzerinden kredi/banka kartı ile ödeme yapabilirsiniz. Detaylar ödeme adımında yer alır.",
+    a: "Siparişinizi WhatsApp üzerinden iletin. Ödeme havale/EFT veya size yönlendirdiğimiz yöntemle alınır. Online kart ödeme altyapısı henüz yoktur.",
   },
   {
     q: "Siparişimi nasıl takip ederim?",

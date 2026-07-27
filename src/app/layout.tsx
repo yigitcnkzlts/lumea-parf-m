@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { ShopOverlays } from "@/components/layout/shop-overlays";
+import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { ShopProvider } from "@/context/shop-context";
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
           {children}
           <Footer />
           <ShopOverlays />
+          <WhatsAppFab />
           <Toaster position="bottom-center" richColors />
         </ShopProvider>
       </body>

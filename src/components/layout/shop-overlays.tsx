@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
+import { Heart, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
 import { formatPrice, products } from "@/data/products";
 import { useShop } from "@/context/shop-context";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/contact";
 
 function useEscape(close: () => void, active: boolean) {
   useEffect(() => {
@@ -21,10 +22,12 @@ export function ShopOverlays() {
   const [query, setQuery] = useState("");
   const [quickSize, setQuickSize] = useState(50);
   useEscape(() => shop.setCartOpen(false), shop.cartOpen);
+  useEscape(() => shop.setFavoritesOpen(false), shop.favoritesOpen);
   useEscape(() => shop.setSearchOpen(false), shop.searchOpen);
   useEscape(() => shop.setQuickProduct(null), Boolean(shop.quickProduct));
 
   const subtotal = shop.cart.reduce((sum, item) => sum + item.product.salePrice * item.quantity, 0);
+  const favoriteProducts = products.filter((product) => shop.favorites.includes(product.id));
   const results = query.trim()
     ? products.filter((product) =>
         `${product.brand} ${product.name}`.toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR")),
@@ -77,12 +80,53 @@ export function ShopOverlays() {
             </div>
             <div className="border-t border-black/10 p-6">
               <div className="mb-3 flex justify-between text-sm"><span>Ara toplam</span><b>{formatPrice(subtotal)}</b></div>
-              <div className="mb-5 h-1 overflow-hidden rounded bg-black/10"><div className="h-full bg-[#aa8654]" style={{ width: `${Math.min(100, subtotal / 15)}%` }} /></div>
-              <p className="mb-4 text-xs text-neutral-500">{subtotal >= 1500 ? "Ücretsiz kargo kazandınız." : `Ücretsiz kargoya ${formatPrice(1500 - subtotal)} kaldı.`}</p>
+              <div className="mb-5 h-1 overflow-hidden rounded bg-black/10"><div className="h-full bg-[#aa8654]" style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)}%` }} /></div>
+              <p className="mb-4 text-xs text-neutral-500">{subtotal >= FREE_SHIPPING_THRESHOLD ? "Ücretsiz kargo kazandınız." : `Ücretsiz kargoya ${formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} kaldı.`}</p>
               <div className="grid grid-cols-2 gap-3">
-                <button className="border border-black px-4 py-3 text-xs tracking-wider">SEPETE GİT</button>
-                <button className="bg-black px-4 py-3 text-xs tracking-wider text-white">ÖDEMEYE GEÇ</button>
+                <Link href="/urunler" onClick={() => shop.setCartOpen(false)} className="border border-black px-4 py-3 text-center text-xs tracking-wider">ALIŞVERİŞE DEVAM</Link>
+                <Link href="/siparis" onClick={() => shop.setCartOpen(false)} className="bg-black px-4 py-3 text-center text-xs tracking-wider text-white">SİPARİŞ VER</Link>
               </div>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {shop.favoritesOpen && (
+        <div className="fixed inset-0 z-[80] bg-black/35 backdrop-blur-sm" onMouseDown={() => shop.setFavoritesOpen(false)}>
+          <aside
+            aria-label="Favoriler"
+            className="ml-auto flex h-full w-full max-w-md flex-col bg-[#fbfaf7] shadow-2xl"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-black/10 px-6 py-5">
+              <div>
+                <p className="font-serif text-2xl">Favorileriniz</p>
+                <p className="text-xs text-neutral-500">{favoriteProducts.length} ürün</p>
+              </div>
+              <button aria-label="Favorileri kapat" onClick={() => shop.setFavoritesOpen(false)}><X /></button>
+            </div>
+            <div className="flex-1 space-y-5 overflow-y-auto p-6">
+              {favoriteProducts.length === 0 ? (
+                <div className="grid h-full place-content-center text-center text-neutral-500">
+                  <Heart className="mx-auto mb-4" size={32} strokeWidth={1} />
+                  <p>Henüz favori ürün yok.</p>
+                </div>
+              ) : favoriteProducts.map((product) => (
+                <article key={product.id} className="flex gap-4 border-b border-black/10 pb-5">
+                  <Link href={`/urunler/${product.slug}`} onClick={() => shop.setFavoritesOpen(false)} className="relative h-28 w-24 shrink-0 overflow-hidden bg-[#f1eee7]">
+                    <Image src={product.images[0]} alt={product.name} fill className="object-cover" sizes="96px" />
+                  </Link>
+                  <div className="flex flex-1 flex-col">
+                    <p className="text-[10px] tracking-[.18em] text-neutral-500">{product.brand}</p>
+                    <Link href={`/urunler/${product.slug}`} onClick={() => shop.setFavoritesOpen(false)} className="font-serif text-lg">{product.name}</Link>
+                    <b className="mt-1 text-sm">{formatPrice(product.salePrice)}</b>
+                    <div className="mt-auto flex gap-2">
+                      <button onClick={() => shop.addToCart(product)} className="bg-black px-3 py-2 text-[10px] tracking-wider text-white">SEPETE EKLE</button>
+                      <button onClick={() => shop.toggleFavorite(product.id)} className="border border-black/15 px-3 py-2 text-[10px] tracking-wider">KALDIR</button>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </aside>
         </div>

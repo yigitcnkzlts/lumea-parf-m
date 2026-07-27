@@ -8,9 +8,11 @@ interface ShopContextValue {
   cart: CartItem[];
   favorites: number[];
   cartOpen: boolean;
+  favoritesOpen: boolean;
   searchOpen: boolean;
   quickProduct: Product | null;
   setCartOpen: (open: boolean) => void;
+  setFavoritesOpen: (open: boolean) => void;
   setSearchOpen: (open: boolean) => void;
   setQuickProduct: (product: Product | null) => void;
   addToCart: (product: Product, size?: number, quantity?: number) => void;
@@ -25,6 +27,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [favoritesOpen, setFavoritesOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [quickProduct, setQuickProduct] = useState<Product | null>(null);
   const [hydrated, setHydrated] = useState(false);
@@ -59,6 +62,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       return [...current, { product, size, quantity }];
     });
     setQuickProduct(null);
+    setFavoritesOpen(false);
     setCartOpen(true);
     toast.success(`${product.name} sepete eklendi`);
   };
@@ -76,18 +80,24 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     setCart((current) => current.filter((item) => item.product.id !== productId || item.size !== size));
 
   const toggleFavorite = (productId: number) =>
-    setFavorites((current) =>
-      current.includes(productId) ? current.filter((id) => id !== productId) : [...current, productId],
-    );
+    setFavorites((current) => {
+      const next = current.includes(productId)
+        ? current.filter((id) => id !== productId)
+        : [...current, productId];
+      toast.success(current.includes(productId) ? "Favorilerden çıkarıldı" : "Favorilere eklendi");
+      return next;
+    });
 
   const value = useMemo(
     () => ({
       cart,
       favorites,
       cartOpen,
+      favoritesOpen,
       searchOpen,
       quickProduct,
       setCartOpen,
+      setFavoritesOpen,
       setSearchOpen,
       setQuickProduct,
       addToCart,
@@ -95,7 +105,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       removeFromCart,
       toggleFavorite,
     }),
-    [cart, favorites, cartOpen, searchOpen, quickProduct],
+    [cart, favorites, cartOpen, favoritesOpen, searchOpen, quickProduct],
   );
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;

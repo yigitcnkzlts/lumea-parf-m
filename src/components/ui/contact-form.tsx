@@ -3,6 +3,8 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { MessageCircle } from "lucide-react";
+import { CONTACT_EMAIL, whatsappLink } from "@/lib/contact";
 
 const schema = z.object({
   name: z.string().min(2, "Adınızı girin."),
@@ -25,7 +27,10 @@ export function ContactForm() {
       }
       return;
     }
-    toast.success("Mesajınız alındı. En kısa sürede size döneceğiz.");
+    const text = `Merhaba Bee,\nKonu: ${result.data.subject}\nAd: ${result.data.name}\nE-posta: ${result.data.email}\n\n${result.data.message}`;
+    window.open(whatsappLink(text), "_blank", "noopener,noreferrer");
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(result.data.subject)}&body=${encodeURIComponent(text)}`;
+    toast.success("WhatsApp ve e-posta açıldı. Mesajınızı gönderebilirsiniz.");
     reset();
   };
 
@@ -57,7 +62,7 @@ export function ContactForm() {
         <textarea {...register("message")} rows={5} className={`${fieldClass} resize-none`} placeholder="Size nasıl yardımcı olabiliriz?" />
         {errors.message && <span className="mt-2 block text-xs text-red-700">{errors.message.message}</span>}
       </label>
-      <button className="btn-dark mt-8">MESAJI GÖNDER</button>
+      <button className="btn-dark mt-8"><MessageCircle size={16} /> WHATSAPP / E-POSTA GÖNDER</button>
     </form>
   );
 }

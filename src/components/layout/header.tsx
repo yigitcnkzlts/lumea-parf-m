@@ -7,8 +7,8 @@ import { useShop } from "@/context/shop-context";
 
 const notices = [
   "1.500 TL üzeri ücretsiz kargo",
-  "Seçili ürünlerde özel indirim",
-  "Güvenli ödeme ve hızlı teslimat",
+  "WhatsApp ile kolay sipariş",
+  "Yurt içi hızlı teslimat",
   "Orijinal ürün garantisi",
 ];
 
@@ -60,8 +60,8 @@ export function Header() {
           </nav>
           <div className="flex items-center gap-3 md:gap-5">
             <button aria-label="Ara" onClick={() => shop.setSearchOpen(true)}><Search size={20} strokeWidth={1.4} /></button>
-            <button aria-label="Hesabım" className="hidden sm:block"><UserRound size={20} strokeWidth={1.4} /></button>
-            <button aria-label="Favoriler" className="relative hidden sm:block"><Heart size={20} strokeWidth={1.4} />{shop.favorites.length > 0 && <span className="badge">{shop.favorites.length}</span>}</button>
+            <Link href="/musteri-hizmetleri" aria-label="Müşteri hizmetleri" className="hidden sm:block"><UserRound size={20} strokeWidth={1.4} /></Link>
+            <button aria-label="Favoriler" className="relative hidden sm:block" onClick={() => shop.setFavoritesOpen(true)}><Heart size={20} strokeWidth={1.4} />{shop.favorites.length > 0 && <span className="badge">{shop.favorites.length}</span>}</button>
             <button aria-label="Sepet" className="relative" onClick={() => shop.setCartOpen(true)}><ShoppingBag size={20} strokeWidth={1.4} />{cartCount > 0 && <span className="badge">{cartCount}</span>}</button>
           </div>
         </div>
