@@ -1,39 +1,57 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { ArrowDown, Search, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
-import { brands } from "@/data/brands";
-import { products } from "@/data/products";
+import { formatPrice, products } from "@/data/products";
 import type { Category } from "@/types/product";
 
 const scentOptions = ["Odunsu", "Çiçeksi", "Oryantal", "Meyveli"] as const;
 
-const content: Record<Category, { title: string; eyebrow: string; description: string; image: string }> = {
+const content: Record<
+  Category,
+  {
+    title: string;
+    brandLabel: string;
+    eyebrow: string;
+    description: string;
+    image: string;
+  }
+> = {
   Kadın: {
     title: "Kadın Parfümleri",
-    eyebrow: "ZARAFETİN KOKUSU",
-    description: "Işıltılı çiçeklerden sıcak oryantal notalara, karakterinizi tamamlayan seçkin kadın parfümlerini keşfedin.",
-    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=2000&q=90",
+    brandLabel: "KADIN",
+    eyebrow: "BEE · KADIN",
+    description: "Çiçeksi, oryantal ve meyveli notalarla karakterinizi tamamlayan seçkin koleksiyon.",
+    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=2400&q=90",
   },
   Erkek: {
     title: "Erkek Parfümleri",
-    eyebrow: "GÜÇLÜ BİR İMZA",
-    description: "Odunsu, oryantal ve meyveli notalarla stilinize karakter katan seçkin erkek parfümleri.",
-    image: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=2000&q=90",
+    brandLabel: "ERKEK",
+    eyebrow: "BEE · ERKEK KOLEKSİYONU",
+    description: "Odunsu, oryantal ve meyveli imzalar. Stilinizi tamamlayan seçkin erkek parfümleri.",
+    image: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=2400&q=90",
   },
   Unisex: {
     title: "Unisex Parfümler",
-    eyebrow: "SINIRLARIN ÖTESİNDE",
-    description: "Kurallardan bağımsız, özgün ve modern koku kompozisyonlarıyla kendinizi ifade edin.",
-    image: "https://images.unsplash.com/photo-1619994403073-2cec844b8e63?auto=format&fit=crop&w=2000&q=90",
+    brandLabel: "UNISEX",
+    eyebrow: "BEE · UNISEX",
+    description: "Kurallardan bağımsız, modern ve özgün koku kompozisyonları.",
+    image: "https://images.unsplash.com/photo-1619994403073-2cec844b8e63?auto=format&fit=crop&w=2400&q=90",
   },
 };
 
 export function CategoryLanding({ category }: { category: Category }) {
   const page = content[category];
+  const isMen = category === "Erkek";
   const categoryProducts = products.filter((product) => product.category === category);
+  const categoryBrands = useMemo(
+    () => Array.from(new Set(categoryProducts.map((product) => product.brand))).sort((a, b) => a.localeCompare(b, "tr")),
+    [categoryProducts],
+  );
+
   const [query, setQuery] = useState("");
   const [family, setFamily] = useState("Tümü");
   const [brand, setBrand] = useState("Tümü");
@@ -42,19 +60,27 @@ export function CategoryLanding({ category }: { category: Category }) {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
-    const result = categoryProducts.filter((product) =>
-      `${product.brand} ${product.name}`.toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR")) &&
-      (family === "Tümü" || product.scentFamily === family) &&
-      (brand === "Tümü" || product.brand === brand) &&
-      product.salePrice <= maxPrice,
+    const result = categoryProducts.filter(
+      (product) =>
+        `${product.brand} ${product.name}`.toLocaleLowerCase("tr-TR").includes(query.toLocaleLowerCase("tr-TR")) &&
+        (family === "Tümü" || product.scentFamily === family) &&
+        (brand === "Tümü" || product.brand === brand) &&
+        product.salePrice <= maxPrice,
     );
     return [...result].sort((a, b) =>
-      sort === "low" ? a.salePrice - b.salePrice :
-      sort === "high" ? b.salePrice - a.salePrice :
-      sort === "rating" ? b.rating - a.rating :
-      Number(b.isBestSeller) - Number(a.isBestSeller),
+      sort === "low"
+        ? a.salePrice - b.salePrice
+        : sort === "high"
+          ? b.salePrice - a.salePrice
+          : sort === "rating"
+            ? b.rating - a.rating
+            : Number(b.isBestSeller) - Number(a.isBestSeller),
     );
   }, [categoryProducts, query, family, brand, maxPrice, sort]);
+
+  const priceMin = categoryProducts.length
+    ? Math.min(...categoryProducts.map((product) => product.salePrice))
+    : 0;
 
   const resetFilters = () => {
     setQuery("");
@@ -68,24 +94,47 @@ export function CategoryLanding({ category }: { category: Category }) {
     <>
       <label className="block text-[10px] tracking-[.16em]">
         MARKA
-        <select value={brand} onChange={(event) => setBrand(event.target.value)} className="mt-3 w-full border border-black/15 bg-transparent px-3 py-3 text-xs">
+        <select
+          value={brand}
+          onChange={(event) => setBrand(event.target.value)}
+          className="mt-3 w-full border border-black/15 bg-transparent px-3 py-3 text-xs"
+        >
           <option>Tümü</option>
-          {brands.map((item) => <option key={item}>{item}</option>)}
+          {categoryBrands.map((item) => (
+            <option key={item}>{item}</option>
+          ))}
         </select>
       </label>
       <label className="mt-6 block text-[10px] tracking-[.16em]">
         KOKU AİLESİ
-        <select value={family} onChange={(event) => setFamily(event.target.value)} className="mt-3 w-full border border-black/15 bg-transparent px-3 py-3 text-xs">
+        <select
+          value={family}
+          onChange={(event) => setFamily(event.target.value)}
+          className="mt-3 w-full border border-black/15 bg-transparent px-3 py-3 text-xs"
+        >
           <option>Tümü</option>
-          {scentOptions.map((item) => <option key={item}>{item}</option>)}
+          {scentOptions.map((item) => (
+            <option key={item}>{item}</option>
+          ))}
         </select>
       </label>
       <div className="mt-6">
-        <p className="text-[10px] tracking-[.16em]">MARKA HIZLI SEÇİM</p>
+        <p className="text-[10px] tracking-[.16em]">MARKALAR</p>
         <div className="mt-3 flex max-h-56 flex-wrap gap-2 overflow-y-auto">
-          <button type="button" onClick={() => setBrand("Tümü")} className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === "Tümü" ? "bg-black text-white" : "border border-black/15"}`}>TÜMÜ</button>
-          {brands.map((item) => (
-            <button key={item} type="button" onClick={() => setBrand(item)} className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === item ? "bg-black text-white" : "border border-black/15"}`}>
+          <button
+            type="button"
+            onClick={() => setBrand("Tümü")}
+            className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === "Tümü" ? "bg-black text-white" : "border border-black/15"}`}
+          >
+            TÜMÜ
+          </button>
+          {categoryBrands.map((item) => (
+            <button
+              key={item}
+              type="button"
+              onClick={() => setBrand(item)}
+              className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === item ? "bg-black text-white" : "border border-black/15"}`}
+            >
               {item}
             </button>
           ))}
@@ -93,72 +142,238 @@ export function CategoryLanding({ category }: { category: Category }) {
       </div>
       <label className="mt-6 block text-[10px] tracking-[.16em]">
         EN YÜKSEK FİYAT
-        <input type="range" min="3500" max="9000" step="100" value={maxPrice} onChange={(event) => setMaxPrice(Number(event.target.value))} className="mt-4 w-full accent-black" />
+        <input
+          type="range"
+          min="3500"
+          max="9000"
+          step="100"
+          value={maxPrice}
+          onChange={(event) => setMaxPrice(Number(event.target.value))}
+          className="mt-4 w-full accent-black"
+        />
         <span className="mt-2 block text-xs text-neutral-500">{maxPrice.toLocaleString("tr-TR")} TL</span>
       </label>
-      <button onClick={resetFilters} className="mt-6 text-[10px] underline underline-offset-4">FİLTRELERİ TEMİZLE</button>
+      <button type="button" onClick={resetFilters} className="mt-6 text-[10px] underline underline-offset-4">
+        FİLTRELERİ TEMİZLE
+      </button>
     </>
   );
 
   return (
     <main>
-      <section className="relative min-h-[520px] overflow-hidden">
-        <Image src={page.image} alt={page.title} fill priority className="object-cover" sizes="100vw" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
-        <div className="relative mx-auto flex min-h-[520px] max-w-[1500px] items-center px-5 text-white lg:px-8">
-          <div className="max-w-2xl">
-            <p className="text-[10px] tracking-[.3em] text-[#e1bd88]">{page.eyebrow}</p>
-            <h1 className="mt-4 font-serif text-6xl leading-none md:text-8xl">{page.title}</h1>
-            <p className="mt-6 max-w-xl leading-7 text-white/70">{page.description}</p>
-            <p className="mt-6 text-[10px] tracking-[.2em] text-white/50">{brands.length} MARKA · {categoryProducts.length} ÜRÜN</p>
+      <section className={`relative overflow-hidden ${isMen ? "min-h-[88vh]" : "min-h-[70vh]"}`}>
+        <Image
+          src={page.image}
+          alt=""
+          fill
+          priority
+          className={`object-cover ${isMen ? "object-[center_28%] scale-105" : "object-center"}`}
+          sizes="100vw"
+        />
+        <div
+          className={`absolute inset-0 ${
+            isMen
+              ? "bg-[linear-gradient(105deg,rgba(8,7,6,.88)_0%,rgba(8,7,6,.55)_42%,rgba(8,7,6,.2)_100%)]"
+              : "bg-gradient-to-r from-black/75 via-black/40 to-transparent"
+          }`}
+        />
+        {isMen && (
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(201,167,117,.12),transparent_50%)]" />
+        )}
+
+        <div className={`relative mx-auto flex max-w-[1500px] items-end px-5 text-white lg:px-8 ${isMen ? "min-h-[88vh] pb-16 pt-28 md:pb-20" : "min-h-[70vh] items-center py-24"}`}>
+          <div className={`max-w-2xl ${isMen ? "" : ""}`}>
+            <div className="flex items-center gap-4">
+              <span className="h-px w-10 bg-[#c9a775]" />
+              <p className="text-[10px] tracking-[.34em] text-[#d4b48a]">{page.eyebrow}</p>
+            </div>
+            <h1
+              className={`mt-6 font-serif leading-none ${
+                isMen
+                  ? "text-[clamp(3.5rem,10vw,8rem)] tracking-[.14em]"
+                  : "text-6xl tracking-normal md:text-8xl"
+              }`}
+            >
+              {isMen ? "ERKEK" : page.title}
+            </h1>
+            {isMen && (
+              <p className="mt-3 font-serif text-2xl font-light tracking-[.08em] text-white/70 md:text-3xl">
+                Parfümleri
+              </p>
+            )}
+            <p className={`mt-7 max-w-lg text-sm leading-8 text-white/60 md:text-[15px]`}>
+              {page.description}
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <a
+                href="#koleksiyon"
+                className="inline-flex items-center gap-2 bg-[#c9a775] px-7 py-4 text-xs tracking-[.16em] text-black transition hover:bg-white"
+              >
+                KOLEKSİYONU KEŞFET <ArrowDown size={14} />
+              </a>
+              <Link
+                href="/markalar"
+                className="border border-white/25 px-7 py-4 text-xs tracking-[.16em] transition hover:border-white hover:bg-white hover:text-black"
+              >
+                MARKALAR
+              </Link>
+            </div>
+            <div className="mt-12 flex flex-wrap gap-8 border-t border-white/10 pt-7 text-[10px] tracking-[.2em] text-white/40">
+              <p>
+                <span className="font-serif text-3xl tracking-normal text-[#e0c08a]">{categoryProducts.length}</span>
+                <span className="ml-3">ÜRÜN</span>
+              </p>
+              <p>
+                <span className="font-serif text-3xl tracking-normal text-[#e0c08a]">{categoryBrands.length}</span>
+                <span className="ml-3">MARKA</span>
+              </p>
+              {priceMin > 0 && (
+                <p>
+                  <span className="font-serif text-3xl tracking-normal text-[#e0c08a]">{formatPrice(priceMin).replace(" TL", "")}</span>
+                  <span className="ml-3">TL’DEN</span>
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </section>
-      <section className="section-shell">
-        <div className="mb-8 flex flex-col justify-between gap-5 border-b border-black/10 pb-7 md:flex-row md:items-end">
-          <div>
-            <p className="text-[10px] tracking-[.25em] text-[#956f42]">BEE SEÇKİSİ</p>
-            <h2 className="mt-2 font-serif text-4xl md:text-5xl">{category} Koleksiyonu</h2>
+
+      {isMen && (
+        <section className="border-b border-black/10 bg-[#11100e] text-white">
+          <div className="mx-auto grid max-w-[1500px] divide-y divide-white/10 md:grid-cols-3 md:divide-x md:divide-y-0">
+            {[
+              ["Orijinal ürün", "Güvenilir tedarik, seçkin markalar"],
+              ["Yurt içi kargo", "Tekirdağ’dan tüm Türkiye’ye"],
+              ["Site siparişi", "Havale / EFT ile güvenli ödeme"],
+            ].map(([title, text]) => (
+              <div key={title} className="px-6 py-8 lg:px-10">
+                <p className="font-serif text-2xl text-[#e0c08a]">{title}</p>
+                <p className="mt-2 text-sm text-white/45">{text}</p>
+              </div>
+            ))}
           </div>
-          <p className="text-xs text-neutral-500">{filteredProducts.length} ürün gösteriliyor</p>
-        </div>
-        <div className="mb-8 flex flex-wrap items-center gap-3">
-          <div className="relative min-w-56 flex-1 md:max-w-sm">
-            <Search className="absolute left-3 top-3" size={16} />
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ürün veya marka ara" className="w-full border border-black/15 bg-transparent py-3 pl-10 pr-3 text-xs outline-none focus:border-black" />
-          </div>
-          <button onClick={() => setFiltersOpen(true)} className="flex items-center gap-2 border border-black/15 px-4 py-3 text-xs lg:hidden"><SlidersHorizontal size={16} /> FİLTRELE</button>
-          <select aria-label="Ürünleri sırala" value={sort} onChange={(event) => setSort(event.target.value)} className="border border-black/15 bg-transparent px-3 py-3 text-xs">
-            <option value="featured">Önerilen sıralama</option>
-            <option value="low">Fiyat: Artan</option>
-            <option value="high">Fiyat: Azalan</option>
-            <option value="rating">En yüksek puan</option>
-          </select>
-        </div>
-        <div className="flex gap-10">
-          <aside className="hidden w-64 shrink-0 border-t border-black/10 pt-6 lg:block">{filterControls}</aside>
-          {filteredProducts.length ? (
-            <div className="grid min-w-0 flex-1 grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3">
-              {filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
+        </section>
+      )}
+
+      <section id="koleksiyon" className={`scroll-mt-28 ${isMen ? "bg-[#f7f4ed]" : ""}`}>
+        <div className="section-shell">
+          <div className="mb-10 flex flex-col justify-between gap-6 border-b border-black/10 pb-8 md:flex-row md:items-end">
+            <div>
+              <p className="text-[10px] tracking-[.28em] text-[#956f42]">SATIŞ</p>
+              <h2 className="mt-3 font-serif text-4xl md:text-5xl">
+                {isMen ? "Erkek koleksiyonu" : `${page.brandLabel} koleksiyonu`}
+              </h2>
+              <p className="mt-3 text-sm text-neutral-500">
+                {filteredProducts.length} ürün · yalnızca bu kategori
+              </p>
             </div>
-          ) : (
-            <div className="grid min-h-80 flex-1 place-content-center text-center">
-              <p className="font-serif text-2xl">Eşleşen ürün bulunamadı</p>
-              <p className="mt-2 text-sm text-neutral-500">Bu marka için {category.toLocaleLowerCase("tr-TR")} kategorisinde ürün yakında eklenebilir.</p>
-              <button onClick={resetFilters} className="mt-3 text-xs underline">Filtreleri temizle</button>
+            <div className="flex flex-wrap gap-2">
+              {(["Tümü", ...scentOptions] as const).map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setFamily(item)}
+                  className={`px-4 py-2 text-[10px] tracking-[.16em] transition ${
+                    family === item ? "bg-black text-white" : "border border-black/15 text-neutral-600 hover:border-black"
+                  }`}
+                >
+                  {item.toLocaleUpperCase("tr-TR")}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-8 flex flex-wrap items-center gap-3">
+            <div className="relative min-w-56 flex-1 md:max-w-sm">
+              <Search className="absolute left-3 top-3.5 text-neutral-400" size={16} />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Ürün veya marka ara"
+                className="w-full border border-black/15 bg-white/60 py-3.5 pl-10 pr-3 text-xs outline-none focus:border-black"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(true)}
+              className="flex items-center gap-2 border border-black/15 bg-white/60 px-4 py-3.5 text-xs lg:hidden"
+            >
+              <SlidersHorizontal size={16} /> FİLTRELE
+            </button>
+            <select
+              aria-label="Ürünleri sırala"
+              value={sort}
+              onChange={(event) => setSort(event.target.value)}
+              className="border border-black/15 bg-white/60 px-3 py-3.5 text-xs"
+            >
+              <option value="featured">Önerilen</option>
+              <option value="low">Fiyat: Artan</option>
+              <option value="high">Fiyat: Azalan</option>
+              <option value="rating">En yüksek puan</option>
+            </select>
+          </div>
+
+          {categoryBrands.length > 0 && (
+            <div className="mb-10 flex gap-2 overflow-x-auto pb-1">
+              <button
+                type="button"
+                onClick={() => setBrand("Tümü")}
+                className={`shrink-0 px-4 py-2 text-[10px] tracking-[.14em] ${brand === "Tümü" ? "bg-black text-white" : "border border-black/15"}`}
+              >
+                TÜM MARKALAR
+              </button>
+              {categoryBrands.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setBrand(item)}
+                  className={`shrink-0 px-4 py-2 text-[10px] tracking-[.14em] ${brand === item ? "bg-black text-white" : "border border-black/15"}`}
+                >
+                  {item}
+                </button>
+              ))}
             </div>
           )}
-        </div>
-        {filtersOpen && (
-          <div className="fixed inset-0 z-[70] bg-black/40" onMouseDown={() => setFiltersOpen(false)}>
-            <aside className="ml-auto h-full w-[88%] max-w-sm overflow-y-auto bg-[#faf8f3] p-7" onMouseDown={(event) => event.stopPropagation()}>
-              <div className="mb-10 flex items-center justify-between"><h2 className="font-serif text-3xl">Filtreler</h2><button aria-label="Filtreleri kapat" onClick={() => setFiltersOpen(false)}><X /></button></div>
-              {filterControls}
-              <button onClick={() => setFiltersOpen(false)} className="btn-dark mt-10 w-full">{filteredProducts.length} ÜRÜNÜ GÖSTER</button>
-            </aside>
+
+          <div className="flex gap-10">
+            <aside className="hidden w-64 shrink-0 border-t border-black/10 pt-6 lg:block">{filterControls}</aside>
+            {filteredProducts.length ? (
+              <div className={`grid min-w-0 flex-1 gap-x-5 gap-y-12 ${isMen ? "grid-cols-2 md:grid-cols-3" : "grid-cols-2 md:grid-cols-3"}`}>
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid min-h-80 flex-1 place-content-center text-center">
+                <p className="font-serif text-2xl">Eşleşen ürün bulunamadı</p>
+                <button type="button" onClick={resetFilters} className="mt-3 text-xs underline">
+                  Filtreleri temizle
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </section>
+
+      {filtersOpen && (
+        <div className="fixed inset-0 z-[70] bg-black/40" onMouseDown={() => setFiltersOpen(false)}>
+          <aside
+            className="ml-auto h-full w-[88%] max-w-sm overflow-y-auto bg-[#faf8f3] p-7"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="mb-10 flex items-center justify-between">
+              <h2 className="font-serif text-3xl">Filtreler</h2>
+              <button type="button" aria-label="Filtreleri kapat" onClick={() => setFiltersOpen(false)}>
+                <X />
+              </button>
+            </div>
+            {filterControls}
+            <button type="button" onClick={() => setFiltersOpen(false)} className="btn-dark mt-10 w-full">
+              {filteredProducts.length} ÜRÜNÜ GÖSTER
+            </button>
+          </aside>
+        </div>
+      )}
     </main>
   );
 }

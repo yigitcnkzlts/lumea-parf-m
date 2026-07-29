@@ -14,7 +14,7 @@ import { whatsappLink } from "@/lib/contact";
 
 const categoryImages = [
   ["Kadın Parfümleri", "Zarafetin unutulmaz ifadesi", "/kadin-parfumleri", "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=85"],
-  ["Erkek Parfümleri", "Güçlü ve karakterli seçimler", "/erkek-parfumleri", "https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=1200&q=85"],
+  ["Erkek Parfümleri", "Güçlü ve karakterli seçimler", "/erkek-parfumleri", "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1200&q=85"],
   ["Unisex Parfümler", "Sınırların ötesinde kokular", "/unisex", "https://images.unsplash.com/photo-1619994403073-2cec844b8e63?auto=format&fit=crop&w=1200&q=85"],
   ["Niş Parfümler", "Nadir ve özgün kompozisyonlar", "/urunler", "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1200&q=85"],
 ];
