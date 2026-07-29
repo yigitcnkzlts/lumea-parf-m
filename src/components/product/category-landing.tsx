@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowDown, Search, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
+import { brands } from "@/data/brands";
 import { products } from "@/data/products";
 import type { Category } from "@/types/product";
 
@@ -47,10 +48,11 @@ export function CategoryLanding({ category }: { category: Category }) {
   const page = content[category];
   const isMen = category === "Erkek";
   const categoryProducts = products.filter((product) => product.category === category);
-  const categoryBrands = useMemo(
-    () => Array.from(new Set(categoryProducts.map((product) => product.brand))).sort((a, b) => a.localeCompare(b, "tr")),
-    [categoryProducts],
-  );
+  /** Bu kategoride ürünü olan markalar — site marka sırasına göre */
+  const categoryBrands = useMemo(() => {
+    const withProducts = new Set(categoryProducts.map((product) => product.brand));
+    return brands.filter((item) => withProducts.has(item));
+  }, [categoryProducts]);
 
   const [query, setQuery] = useState("");
   const [family, setFamily] = useState("Tümü");
@@ -115,22 +117,11 @@ export function CategoryLanding({ category }: { category: Category }) {
         </select>
       </label>
       <div className="mt-6">
-        <p className="text-[10px] tracking-[.16em]">MARKALAR</p>
-        <div className="mt-3 flex max-h-56 flex-wrap gap-2 overflow-y-auto">
-          <button
-            type="button"
-            onClick={() => setBrand("Tümü")}
-            className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === "Tümü" ? "bg-black text-white" : "border border-black/15"}`}
-          >
-            TÜMÜ
-          </button>
+        <p className="text-[10px] tracking-[.16em]">SEÇKİN MARKALAR</p>
+        <div className="mt-3 flex max-h-64 flex-wrap gap-2 overflow-y-auto">
+          <button type="button" onClick={() => setBrand("Tümü")} className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === "Tümü" ? "bg-black text-white" : "border border-black/15"}`}>TÜMÜ</button>
           {categoryBrands.map((item) => (
-            <button
-              key={item}
-              type="button"
-              onClick={() => setBrand(item)}
-              className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === item ? "bg-black text-white" : "border border-black/15"}`}
-            >
+            <button key={item} type="button" onClick={() => setBrand(item)} className={`px-3 py-1.5 text-[10px] tracking-wider ${brand === item ? "bg-black text-white" : "border border-black/15"}`}>
               {item}
             </button>
           ))}
@@ -293,24 +284,31 @@ export function CategoryLanding({ category }: { category: Category }) {
           </div>
 
           {categoryBrands.length > 0 && (
-            <div className="mb-10 flex gap-2 overflow-x-auto pb-1">
-              <button
-                type="button"
-                onClick={() => setBrand("Tümü")}
-                className={`shrink-0 px-4 py-2 text-[10px] tracking-[.14em] ${brand === "Tümü" ? "bg-black text-white" : "border border-black/15"}`}
-              >
-                TÜM MARKALAR
-              </button>
-              {categoryBrands.map((item) => (
+            <div className="mb-10">
+              <p className="mb-4 text-[10px] tracking-[.28em] text-[#956f42]">SEÇKİN MARKALAR</p>
+              <div className="flex flex-wrap gap-2">
                 <button
-                  key={item}
                   type="button"
-                  onClick={() => setBrand(item)}
-                  className={`shrink-0 px-4 py-2 text-[10px] tracking-[.14em] ${brand === item ? "bg-black text-white" : "border border-black/15"}`}
+                  onClick={() => setBrand("Tümü")}
+                  className={`px-4 py-2 text-[10px] tracking-[.14em] ${brand === "Tümü" ? "bg-black text-white" : "border border-black/15"}`}
                 >
-                  {item}
+                  TÜMÜ
                 </button>
-              ))}
+                {categoryBrands.map((item) => {
+                  const count = categoryProducts.filter((product) => product.brand === item).length;
+                  return (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => setBrand(item)}
+                      className={`px-4 py-2 text-[10px] tracking-[.14em] ${brand === item ? "bg-black text-white" : "border border-black/15"}`}
+                    >
+                      {item}
+                      <span className={`ml-2 ${brand === item ? "text-white/50" : "text-neutral-400"}`}>{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
 

@@ -55,6 +55,23 @@ export const products: Product[] = [
   make(9, "burberry-goddess", "BURBERRY", "Goddess", "Kadın", "Oryantal", 6190, 5590, 0),
   make(10, "givenchy-gentleman-reserve", "GIVENCHY", "Gentleman Réserve Privée", "Erkek", "Oryantal", 6490, 5790, 3),
   make(11, "calvin-klein-everyone", "CALVIN KLEIN", "CK Everyone", "Unisex", "Meyveli", 4290, 3690, 5, { stock: 0 }),
+
+  // Erkek koleksiyonu — sitedeki markalar
+  make(12, "chanel-bleu-de-chanel", "CHANEL", "Bleu de Chanel", "Erkek", "Odunsu", 7450, 6690, 4, { isBestSeller: true, isNew: false }),
+  make(13, "burberry-hero", "BURBERRY", "Hero", "Erkek", "Odunsu", 5890, 5290, 1, { isNew: false }),
+  make(14, "calvin-klein-eternity-men", "CALVIN KLEIN", "Eternity for Men", "Erkek", "Çiçeksi", 3990, 3490, 5, { isNew: false }),
+  make(15, "paco-rabanne-1-million", "PACO RABANNE", "1 Million", "Erkek", "Oryantal", 5690, 4990, 0, { isBestSeller: true, isNew: false }),
+  make(16, "prada-luna-rossa", "PRADA", "Luna Rossa", "Erkek", "Meyveli", 6290, 5590, 2, { isNew: false }),
+  make(17, "tom-ford-oud-wood", "TOM FORD", "Oud Wood", "Erkek", "Odunsu", 9490, 8490, 3, { isBestSeller: true, isNew: false }),
+  make(18, "ysl-y-edp", "YVES SAINT LAURENT", "Y Eau de Parfum", "Erkek", "Odunsu", 6790, 5990, 1, { isBestSeller: true, isNew: false }),
+  make(19, "valentino-uomo-born-in-roma", "VALENTINO", "Uomo Born in Roma", "Erkek", "Oryantal", 6590, 5890, 4, { isNew: false }),
+  make(20, "trussardi-uomo", "TRUSSARDI", "Uomo", "Erkek", "Odunsu", 4890, 4290, 5, { isNew: false }),
+  make(21, "philipp-plein-no-limits", "PHILIPP PLEIN", "No Limits", "Erkek", "Oryantal", 7190, 6490, 0, { isNew: true }),
+  make(22, "clive-christian-no1-men", "CLIVE CHRISTIAN", "No.1 Men", "Erkek", "Oryantal", 12990, 11490, 3, { isNew: false, isBestSeller: false }),
+  make(23, "kilian-black-phantom", "KILIAN", "Black Phantom", "Erkek", "Oryantal", 10990, 9790, 1, { isNew: false }),
+  make(24, "mfk-gentle-fluidity-silver", "MAISON FRANCIS KURKDJIAN", "Gentle Fluidity Silver", "Erkek", "Odunsu", 9890, 8890, 2, { isNew: false }),
+  make(25, "marfa-memoir", "MARFA", "Memoir", "Erkek", "Odunsu", 8290, 7490, 4, { isNew: true }),
+  make(26, "opulent-shaik-gold", "OPULENT SHAIK", "Gold Edition", "Erkek", "Oryantal", 8790, 7890, 0, { isNew: true }),
 ];
 
 export const formatPrice = (value: number) =>
