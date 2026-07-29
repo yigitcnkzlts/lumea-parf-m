@@ -148,65 +148,94 @@ export function CategoryLanding({ category }: { category: Category }) {
 
   return (
     <main>
-      <section className={`relative overflow-hidden ${isMen ? "min-h-[62vh] bg-[#0c0b0a]" : "min-h-[70vh]"}`}>
-        <Image
-          src={page.image}
-          alt={isMen ? "Erkek parfümleri" : ""}
-          fill
-          priority
-          className={`object-cover ${isMen ? "object-[center_right] opacity-95" : "object-center"}`}
-          sizes="100vw"
-        />
-        <div
-          className={`absolute inset-0 ${
-            isMen
-              ? "bg-[linear-gradient(95deg,rgba(10,9,8,.94)_0%,rgba(10,9,8,.72)_38%,rgba(10,9,8,.28)_100%)]"
-              : "bg-gradient-to-r from-black/75 via-black/40 to-transparent"
-          }`}
-        />
-
-        <div
-          className={`relative mx-auto flex max-w-[1500px] px-5 text-white lg:px-8 ${
-            isMen ? "min-h-[62vh] items-center py-20 md:py-24" : "min-h-[70vh] items-center py-24"
-          }`}
-        >
-          <div className="max-w-xl">
-            <div className="flex items-center gap-4">
-              <span className="h-px w-10 bg-[#c9a775]" />
-              <p className="text-[10px] tracking-[.34em] text-[#d4b48a]">{page.eyebrow}</p>
+      {isMen ? (
+        <section className="overflow-hidden bg-[#0c0b0a] text-white">
+          <div className="mx-auto grid max-w-[1500px] lg:grid-cols-2 lg:items-stretch">
+            <div className="flex flex-col justify-center px-5 py-16 lg:px-8 lg:py-24">
+              <div className="max-w-xl">
+                <div className="flex items-center gap-4">
+                  <span className="h-px w-10 bg-[#c9a775]" />
+                  <p className="text-[10px] tracking-[.34em] text-[#d4b48a]">{page.eyebrow}</p>
+                </div>
+                <h1 className="mt-6 font-serif text-[clamp(2.8rem,6vw,5.5rem)] leading-none tracking-[.1em]">
+                  ERKEK
+                </h1>
+                <p className="mt-2 font-serif text-xl font-light tracking-[.06em] text-white/65 md:text-2xl">
+                  Parfümleri
+                </p>
+                <p className="mt-6 max-w-md text-sm leading-8 text-white/55 md:text-[15px]">
+                  {page.description}
+                </p>
+                <div className="mt-9 flex flex-wrap items-center gap-3">
+                  <a
+                    href="#koleksiyon"
+                    className="inline-flex items-center gap-2 bg-[#c9a775] px-7 py-4 text-xs tracking-[.16em] text-black transition hover:bg-white"
+                  >
+                    KOLEKSİYONU KEŞFET <ArrowDown size={14} />
+                  </a>
+                  <Link
+                    href="/markalar"
+                    className="border border-white/25 px-7 py-4 text-xs tracking-[.16em] transition hover:border-white hover:bg-white hover:text-black"
+                  >
+                    MARKALAR
+                  </Link>
+                </div>
+              </div>
             </div>
-            <h1
-              className={`mt-6 font-serif leading-none ${
-                isMen ? "text-[clamp(2.8rem,6vw,5.5rem)] tracking-[.1em]" : "text-6xl tracking-normal md:text-8xl"
-              }`}
-            >
-              {isMen ? "ERKEK" : page.title}
-            </h1>
-            {isMen && (
-              <p className="mt-2 font-serif text-xl font-light tracking-[.06em] text-white/65 md:text-2xl">
-                Parfümleri
-              </p>
-            )}
-            <p className="mt-6 max-w-md text-sm leading-8 text-white/55 md:text-[15px]">
-              {page.description}
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <a
-                href="#koleksiyon"
-                className="inline-flex items-center gap-2 bg-[#c9a775] px-7 py-4 text-xs tracking-[.16em] text-black transition hover:bg-white"
-              >
-                KOLEKSİYONU KEŞFET <ArrowDown size={14} />
-              </a>
-              <Link
-                href="/markalar"
-                className="border border-white/25 px-7 py-4 text-xs tracking-[.16em] transition hover:border-white hover:bg-white hover:text-black"
-              >
-                MARKALAR
-              </Link>
+
+            <div className="relative min-h-[320px] bg-[#0c0b0a] sm:min-h-[420px] lg:min-h-[560px]">
+              <Image
+                src={page.image}
+                alt="Erkek parfümleri"
+                fill
+                priority
+                className="object-contain object-center p-4 sm:p-6 lg:p-8"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="relative min-h-[70vh] overflow-hidden">
+          <Image
+            src={page.image}
+            alt=""
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
+          <div className="relative mx-auto flex min-h-[70vh] max-w-[1500px] items-center px-5 py-24 text-white lg:px-8">
+            <div className="max-w-xl">
+              <div className="flex items-center gap-4">
+                <span className="h-px w-10 bg-[#c9a775]" />
+                <p className="text-[10px] tracking-[.34em] text-[#d4b48a]">{page.eyebrow}</p>
+              </div>
+              <h1 className="mt-6 font-serif text-6xl leading-none tracking-normal md:text-8xl">
+                {page.title}
+              </h1>
+              <p className="mt-6 max-w-md text-sm leading-8 text-white/55 md:text-[15px]">
+                {page.description}
+              </p>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <a
+                  href="#koleksiyon"
+                  className="inline-flex items-center gap-2 bg-[#c9a775] px-7 py-4 text-xs tracking-[.16em] text-black transition hover:bg-white"
+                >
+                  KOLEKSİYONU KEŞFET <ArrowDown size={14} />
+                </a>
+                <Link
+                  href="/markalar"
+                  className="border border-white/25 px-7 py-4 text-xs tracking-[.16em] transition hover:border-white hover:bg-white hover:text-black"
+                >
+                  MARKALAR
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {isMen && (
         <section className="border-b border-black/10 bg-[#11100e] text-white">
