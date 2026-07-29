@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowDown, Search, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
-import { formatPrice, products } from "@/data/products";
+import { products } from "@/data/products";
 import type { Category } from "@/types/product";
 
 const scentOptions = ["Odunsu", "Çiçeksi", "Oryantal", "Meyveli"] as const;
@@ -30,9 +30,9 @@ const content: Record<
   Erkek: {
     title: "Erkek Parfümleri",
     brandLabel: "ERKEK",
-    eyebrow: "BEE · ERKEK KOLEKSİYONU",
+    eyebrow: "BEE · ERKEK",
     description: "Odunsu, oryantal ve meyveli imzalar. Stilinizi tamamlayan seçkin erkek parfümleri.",
-    image: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=2400&q=90",
+    image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=2400&q=90",
   },
   Unisex: {
     title: "Unisex Parfümler",
@@ -77,10 +77,6 @@ export function CategoryLanding({ category }: { category: Category }) {
             : Number(b.isBestSeller) - Number(a.isBestSeller),
     );
   }, [categoryProducts, query, family, brand, maxPrice, sort]);
-
-  const priceMin = categoryProducts.length
-    ? Math.min(...categoryProducts.map((product) => product.salePrice))
-    : 0;
 
   const resetFilters = () => {
     setQuery("");
@@ -161,50 +157,49 @@ export function CategoryLanding({ category }: { category: Category }) {
 
   return (
     <main>
-      <section className={`relative overflow-hidden ${isMen ? "min-h-[88vh]" : "min-h-[70vh]"}`}>
+      <section className={`relative overflow-hidden ${isMen ? "min-h-[62vh]" : "min-h-[70vh]"}`}>
         <Image
           src={page.image}
           alt=""
           fill
           priority
-          className={`object-cover ${isMen ? "object-[center_28%] scale-105" : "object-center"}`}
+          className={`object-cover ${isMen ? "object-[68%_center]" : "object-center"}`}
           sizes="100vw"
         />
         <div
           className={`absolute inset-0 ${
             isMen
-              ? "bg-[linear-gradient(105deg,rgba(8,7,6,.88)_0%,rgba(8,7,6,.55)_42%,rgba(8,7,6,.2)_100%)]"
+              ? "bg-[linear-gradient(100deg,rgba(10,9,8,.92)_0%,rgba(10,9,8,.55)_48%,rgba(10,9,8,.25)_100%)]"
               : "bg-gradient-to-r from-black/75 via-black/40 to-transparent"
           }`}
         />
-        {isMen && (
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_40%,rgba(201,167,117,.12),transparent_50%)]" />
-        )}
 
-        <div className={`relative mx-auto flex max-w-[1500px] items-end px-5 text-white lg:px-8 ${isMen ? "min-h-[88vh] pb-16 pt-28 md:pb-20" : "min-h-[70vh] items-center py-24"}`}>
-          <div className={`max-w-2xl ${isMen ? "" : ""}`}>
+        <div
+          className={`relative mx-auto flex max-w-[1500px] px-5 text-white lg:px-8 ${
+            isMen ? "min-h-[62vh] items-center py-20 md:py-24" : "min-h-[70vh] items-center py-24"
+          }`}
+        >
+          <div className="max-w-xl">
             <div className="flex items-center gap-4">
               <span className="h-px w-10 bg-[#c9a775]" />
               <p className="text-[10px] tracking-[.34em] text-[#d4b48a]">{page.eyebrow}</p>
             </div>
             <h1
               className={`mt-6 font-serif leading-none ${
-                isMen
-                  ? "text-[clamp(3.5rem,10vw,8rem)] tracking-[.14em]"
-                  : "text-6xl tracking-normal md:text-8xl"
+                isMen ? "text-[clamp(2.8rem,6vw,5.5rem)] tracking-[.1em]" : "text-6xl tracking-normal md:text-8xl"
               }`}
             >
               {isMen ? "ERKEK" : page.title}
             </h1>
             {isMen && (
-              <p className="mt-3 font-serif text-2xl font-light tracking-[.08em] text-white/70 md:text-3xl">
+              <p className="mt-2 font-serif text-xl font-light tracking-[.06em] text-white/65 md:text-2xl">
                 Parfümleri
               </p>
             )}
-            <p className={`mt-7 max-w-lg text-sm leading-8 text-white/60 md:text-[15px]`}>
+            <p className="mt-6 max-w-md text-sm leading-8 text-white/55 md:text-[15px]">
               {page.description}
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-3">
+            <div className="mt-9 flex flex-wrap items-center gap-3">
               <a
                 href="#koleksiyon"
                 className="inline-flex items-center gap-2 bg-[#c9a775] px-7 py-4 text-xs tracking-[.16em] text-black transition hover:bg-white"
@@ -217,22 +212,6 @@ export function CategoryLanding({ category }: { category: Category }) {
               >
                 MARKALAR
               </Link>
-            </div>
-            <div className="mt-12 flex flex-wrap gap-8 border-t border-white/10 pt-7 text-[10px] tracking-[.2em] text-white/40">
-              <p>
-                <span className="font-serif text-3xl tracking-normal text-[#e0c08a]">{categoryProducts.length}</span>
-                <span className="ml-3">ÜRÜN</span>
-              </p>
-              <p>
-                <span className="font-serif text-3xl tracking-normal text-[#e0c08a]">{categoryBrands.length}</span>
-                <span className="ml-3">MARKA</span>
-              </p>
-              {priceMin > 0 && (
-                <p>
-                  <span className="font-serif text-3xl tracking-normal text-[#e0c08a]">{formatPrice(priceMin).replace(" TL", "")}</span>
-                  <span className="ml-3">TL’DEN</span>
-                </p>
-              )}
             </div>
           </div>
         </div>
