@@ -21,9 +21,9 @@ export function hasBankDetails() {
 }
 
 export const INSTALLMENT_OPTIONS = [
-  { id: "pesin", label: "Peşin", note: "Tek seferde ödeme" },
-  { id: "2", label: "2 Taksit", note: "WhatsApp ile planlanır" },
-  { id: "3", label: "3 Taksit", note: "WhatsApp ile planlanır" },
+  { id: "pesin", label: "Peşin", note: "Tek seferde havale / EFT" },
+  { id: "2", label: "2 Taksit", note: "Site sahibi ile planlanır" },
+  { id: "3", label: "3 Taksit", note: "Site sahibi ile planlanır" },
 ] as const;
 
 export function whatsappLink(text: string) {

@@ -11,7 +11,7 @@ export default function DistanceSalesPage() {
     <LegalPage
       eyebrow="YASAL"
       title="Mesafeli Satış Sözleşmesi"
-      description="WhatsApp / site üzerinden verilen siparişler için genel bilgilendirme."
+      description="Site üzerinden verilen siparişler için genel bilgilendirme."
       sections={[
         {
           heading: "Konu",

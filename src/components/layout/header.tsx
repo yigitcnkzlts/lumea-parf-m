@@ -8,7 +8,7 @@ import { useShop } from "@/context/shop-context";
 
 const notices = [
   "1.500 TL üzeri ücretsiz kargo",
-  "WhatsApp ile kolay sipariş",
+  "WhatsApp destek hattı",
   "Yurt içi hızlı teslimat",
   "Orijinal ürün garantisi",
 ];

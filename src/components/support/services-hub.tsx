@@ -91,7 +91,7 @@ const faqs = [
   },
   {
     q: "Ödeme nasıl yapılır?",
-    a: "Sepete ürün ekleyip Ödemeye Geç ile siparişi tamamlayın. Havale/EFT veya WhatsApp yönlendirmesi seçebilirsiniz. IBAN bilgisi yalnızca sipariş onayından sonra paylaşılır.",
+    a: "Sepete ürün ekleyip siteden siparişi tamamlayın. Ödeme Havale/EFT ile yapılır; IBAN sipariş onayından sonra bu sitede gösterilir.",
   },
   {
     q: "Siparişimi kim takip ediyor?",
@@ -307,8 +307,8 @@ export function ServicesHub() {
             <p className="text-[10px] tracking-[.28em] text-[#956f42]">ÖDEME</p>
             <h2 className="mt-3 font-serif text-4xl md:text-5xl">Nasıl ödersiniz?</h2>
             <p className="mt-5 text-sm leading-7 text-neutral-600">
-              Online kart ödeme yoktur. Siparişi siteden oluşturur, ödemeyi havale/EFT veya WhatsApp yönlendirmesi ile tamamlarsınız.
-              IBAN bilgisi sipariş onayından sonra paylaşılır.
+              Online kart ödeme yoktur. Siparişi siteden oluşturursunuz; ödemeyi Havale/EFT ile tamamlarsınız.
+              IBAN bilgisi sipariş onayından sonra sitede gösterilir.
             </p>
             <Link href="/siparis" className="mt-8 inline-flex border border-black px-6 py-4 text-xs tracking-[.16em] transition hover:bg-black hover:text-white">
               SİPARİŞ SAYFASINA GİT

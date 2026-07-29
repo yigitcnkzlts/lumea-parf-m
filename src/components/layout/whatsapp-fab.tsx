@@ -13,7 +13,7 @@ export function WhatsAppFab() {
       aria-label="WhatsApp ile yazın"
       className="fixed bottom-5 right-5 z-[60] inline-flex items-center gap-2 bg-[#181816] px-4 py-3 text-[10px] tracking-[.14em] text-white shadow-lg transition hover:bg-[#9b784a] md:bottom-8 md:right-8"
     >
-      <MessageCircle size={16} /> WHATSAPP
+      <MessageCircle size={16} /> DESTEK
     </Link>
   );
 }

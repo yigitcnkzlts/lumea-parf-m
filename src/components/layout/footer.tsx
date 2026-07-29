@@ -45,7 +45,7 @@ export function Footer() {
         <div className="flex flex-col gap-6 pt-7 text-xs text-white/45 md:flex-row md:items-center md:justify-between">
           <p>© 2026 Bee Kozmetik. Tüm hakları saklıdır.</p>
           <div className="flex gap-3">
-            <span className="payment">WhatsApp Sipariş</span>
+            <span className="payment">Site Siparişi</span>
             <span className="payment">Havale / EFT</span>
           </div>
           <div className="flex gap-4">
