@@ -33,7 +33,7 @@ const content: Record<
     brandLabel: "ERKEK",
     eyebrow: "BEE · ERKEK",
     description: "Odunsu, oryantal ve meyveli imzalar. Stilinizi tamamlayan seçkin erkek parfümleri.",
-    image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=2400&q=90",
+    image: "/images/erkek-hero.jpg",
   },
   Unisex: {
     title: "Unisex Parfümler",
@@ -148,19 +148,19 @@ export function CategoryLanding({ category }: { category: Category }) {
 
   return (
     <main>
-      <section className={`relative overflow-hidden ${isMen ? "min-h-[62vh]" : "min-h-[70vh]"}`}>
+      <section className={`relative overflow-hidden ${isMen ? "min-h-[62vh] bg-[#0c0b0a]" : "min-h-[70vh]"}`}>
         <Image
           src={page.image}
-          alt=""
+          alt={isMen ? "Erkek parfümleri" : ""}
           fill
           priority
-          className={`object-cover ${isMen ? "object-[68%_center]" : "object-center"}`}
+          className={`object-cover ${isMen ? "object-[center_right] opacity-95" : "object-center"}`}
           sizes="100vw"
         />
         <div
           className={`absolute inset-0 ${
             isMen
-              ? "bg-[linear-gradient(100deg,rgba(10,9,8,.92)_0%,rgba(10,9,8,.55)_48%,rgba(10,9,8,.25)_100%)]"
+              ? "bg-[linear-gradient(95deg,rgba(10,9,8,.94)_0%,rgba(10,9,8,.72)_38%,rgba(10,9,8,.28)_100%)]"
               : "bg-gradient-to-r from-black/75 via-black/40 to-transparent"
           }`}
         />

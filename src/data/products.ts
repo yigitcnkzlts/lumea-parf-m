@@ -45,7 +45,9 @@ const make = (
 
 export const products: Product[] = [
   make(1, "chanel-coco-mademoiselle", "CHANEL", "Coco Mademoiselle", "Kadın", "Oryantal", 6850, 5790, 0),
-  make(2, "dior-sauvage-elixir", "DIOR", "Sauvage Elixir", "Erkek", "Oryantal", 7290, 6490, 1),
+  make(2, "dior-sauvage-elixir", "DIOR", "Sauvage Elixir", "Erkek", "Oryantal", 7290, 6490, 1, {
+    images: ["/images/dior-sauvage.jpg", "/images/erkek-hero.jpg"],
+  }),
   make(3, "ysl-libre-intense", "YVES SAINT LAURENT", "Libre Intense", "Kadın", "Çiçeksi", 6490, 5490, 2),
   make(4, "tom-ford-ombre-leather", "TOM FORD", "Ombré Leather", "Unisex", "Odunsu", 8990, 7790, 3),
   make(5, "armani-acqua-di-gio", "GIORGIO ARMANI", "Acqua di Giò", "Erkek", "Meyveli", 5990, 5190, 4),
