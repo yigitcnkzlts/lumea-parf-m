@@ -30,8 +30,31 @@ const instagram = [
 ];
 
 export function BrandMarquee() {
-  const line = brands.map((brand) => <Link key={brand} href={`/urunler?brand=${encodeURIComponent(brand)}`} className="mx-8 shrink-0 font-serif text-xl tracking-[.08em] text-neutral-700 md:mx-12 md:text-2xl">{brand}</Link>);
-  return <section aria-label="Markalar" className="marquee-mask overflow-hidden border-y border-black/10 bg-[#f7f4ed] py-7"><div className="marquee-track flex w-max hover:[animation-play-state:paused]">{line}{brands.map((brand) => <Link aria-hidden="true" tabIndex={-1} key={`copy-${brand}`} href={`/urunler?brand=${encodeURIComponent(brand)}`} className="mx-8 shrink-0 font-serif text-xl tracking-[.08em] text-neutral-700 md:mx-12 md:text-2xl">{brand}</Link>)}</div></section>;
+  const item = (brand: string, key: string, hidden = false) => (
+    <Link
+      key={key}
+      href={`/urunler?brand=${encodeURIComponent(brand)}`}
+      aria-hidden={hidden || undefined}
+      tabIndex={hidden ? -1 : undefined}
+      className="mx-6 shrink-0 font-serif text-lg tracking-[.14em] text-neutral-700 transition hover:text-[#8a6438] md:mx-10 md:text-2xl"
+    >
+      {brand}
+      <span className="mx-6 text-[#c9a775]/70 md:mx-10">·</span>
+    </Link>
+  );
+  return (
+    <section aria-label="Markalar" className="marquee-mask overflow-hidden border-y border-black/10 bg-[#f3efe6] py-8 md:py-10">
+      <div className="mb-5 flex items-center justify-center gap-4 px-5">
+        <span className="h-px w-8 bg-[#c9a775]/70" />
+        <p className="text-[10px] tracking-[.3em] text-[#956f42]">SEÇKİN MARKALAR</p>
+        <span className="h-px w-8 bg-[#c9a775]/70" />
+      </div>
+      <div className="marquee-track flex w-max hover:[animation-play-state:paused]">
+        {brands.map((brand) => item(brand, brand))}
+        {brands.map((brand) => item(brand, `copy-${brand}`, true))}
+      </div>
+    </section>
+  );
 }
 
 export function CategorySection() {
