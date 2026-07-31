@@ -49,14 +49,8 @@ export function CheckoutForm() {
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_FEE;
   const total = subtotal + shipping;
 
-  const ensureAuth = () => {
-    if (!auth.user) {
-      auth.setAuthOpen(true);
-      toast.error("Ödeme için giriş yapmalısınız.");
-      return false;
-    }
-    return true;
-  };
+  const ensureAuth = () =>
+    auth.requireAuth("Satın alma için giriş yapın veya kayıt olun.");
 
   const onSubmitAddress = async (event: FormEvent) => {
     event.preventDefault();

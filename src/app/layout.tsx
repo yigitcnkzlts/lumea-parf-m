@@ -23,11 +23,19 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  applicationName: "Bee Kozmetik",
   title: {
-    default: "Bee Parfüm | Kokunuz, İmzanızdır",
-    template: "%s | Bee Parfüm",
+    default: "Bee Kozmetik | Kokunuz, İmzanızdır",
+    template: "%s | Bee Kozmetik",
   },
-  description: "Dünyanın seçkin parfüm markalarını Bee ayrıcalığıyla keşfedin.",
+  description: "Dünyanın seçkin parfüm markalarını Bee Kozmetik ayrıcalığıyla keşfedin.",
+  openGraph: {
+    siteName: "Bee Kozmetik",
+    title: "Bee Kozmetik | Kokunuz, İmzanızdır",
+    description: "Dünyanın seçkin parfüm markalarını Bee Kozmetik ayrıcalığıyla keşfedin.",
+    locale: "tr_TR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

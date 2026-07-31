@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { CheckoutForm } from "@/components/checkout/checkout-form";
+import { RequireLogin } from "@/components/checkout/require-login";
 
 export const metadata: Metadata = {
   title: "Ödeme",
-  description: "Bee Parfüm güvenli ödeme.",
+  description: "Bee Kozmetik güvenli ödeme.",
 };
 
 export default function OdemePage() {
@@ -14,10 +15,13 @@ export default function OdemePage() {
         <p className="text-[10px] tracking-[.28em] text-[#956f42]">ÖDEME</p>
         <h1 className="mt-3 font-serif text-5xl md:text-6xl">Güvenli ödeme</h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-neutral-600">
-          Kart bilgileriniz Bee Parfüm sunucularından geçmez. Ödeme iyzico Checkout Form ve 3D Secure ile alınır.
+          Kart bilgileriniz Bee Kozmetik sunucularından geçmez. Ödeme iyzico Checkout Form ve 3D Secure ile alınır.
+          Satın alma için üye girişi zorunludur.
         </p>
         <div className="mt-10">
-          <CheckoutForm />
+          <RequireLogin message="Satın alma için giriş yapın veya kayıt olun.">
+            <CheckoutForm />
+          </RequireLogin>
         </div>
       </section>
     </main>

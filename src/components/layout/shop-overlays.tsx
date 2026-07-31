@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Heart, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { formatPrice, products } from "@/data/products";
+import { useAuth } from "@/context/auth-context";
 import { useShop } from "@/context/shop-context";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from "@/lib/contact";
 
@@ -19,6 +21,8 @@ function useEscape(close: () => void, active: boolean) {
 
 export function ShopOverlays() {
   const shop = useShop();
+  const auth = useAuth();
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [quickSize, setQuickSize] = useState(50);
   useEscape(() => shop.setCartOpen(false), shop.cartOpen);
@@ -88,13 +92,18 @@ export function ShopOverlays() {
               <p className="mb-4 text-xs text-neutral-500">{subtotal >= FREE_SHIPPING_THRESHOLD ? "Ücretsiz kargo kazandınız." : shop.cart.length ? `Ücretsiz kargoya ${formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} kaldı.` : "Ürün ekleyerek başlayın."}</p>
               <div className="grid grid-cols-2 gap-3">
                 <Link href="/sepet" onClick={() => shop.setCartOpen(false)} className="border border-black px-4 py-3 text-center text-xs tracking-wider">SEPETİ GÖR</Link>
-                <Link
-                  href="/odeme"
-                  onClick={() => shop.setCartOpen(false)}
-                  className={`px-4 py-3 text-center text-xs tracking-wider ${shop.cart.length ? "bg-black text-white" : "pointer-events-none bg-neutral-300 text-white"}`}
+                <button
+                  type="button"
+                  disabled={!shop.cart.length}
+                  onClick={() => {
+                    if (!auth.requireAuth("Satın alma için giriş yapın veya kayıt olun.")) return;
+                    shop.setCartOpen(false);
+                    router.push("/odeme");
+                  }}
+                  className={`px-4 py-3 text-center text-xs tracking-wider ${shop.cart.length ? "bg-black text-white" : "cursor-not-allowed bg-neutral-300 text-white"}`}
                 >
                   ÖDEMEYE GEÇ
-                </Link>
+                </button>
               </div>
             </div>
           </aside>

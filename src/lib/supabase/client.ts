@@ -7,8 +7,8 @@ export function createClient() {
   if (!isSupabaseConfigured()) {
     throw new Error("Supabase is not configured");
   }
-  const { url, anonKey } = getSupabasePublicEnv();
-  return createBrowserClient(url, anonKey);
+  const { url, publishableKey } = getSupabasePublicEnv();
+  return createBrowserClient(url, publishableKey);
 }
 
 export function tryCreateClient() {

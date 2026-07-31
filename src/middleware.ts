@@ -11,8 +11,8 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  const { url, anonKey } = getSupabasePublicEnv();
-  const supabase = createServerClient(url, anonKey, {
+  const { url, publishableKey } = getSupabasePublicEnv();
+  const supabase = createServerClient(url, publishableKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ProductsView } from "@/components/product/products-view";
 
 export const metadata: Metadata = {
-  title: "Parfümler | BEE Parfüm",
+  title: "Parfümler",
   description: "Kadın, erkek ve unisex seçkin parfüm koleksiyonunu keşfedin.",
 };
 

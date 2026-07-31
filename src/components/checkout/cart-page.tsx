@@ -2,16 +2,25 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { formatPrice } from "@/data/products";
+import { useAuth } from "@/context/auth-context";
 import { useShop } from "@/context/shop-context";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from "@/lib/contact";
 
 export function CartPageClient() {
   const shop = useShop();
+  const auth = useAuth();
+  const router = useRouter();
   const subtotal = shop.cart.reduce((sum, item) => sum + item.product.salePrice * item.quantity, 0);
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_FEE;
   const total = subtotal + shipping;
+
+  const goCheckout = () => {
+    if (!auth.requireAuth("Satın alma için giriş yapın veya kayıt olun.")) return;
+    router.push("/odeme");
+  };
 
   if (!shop.cart.length) {
     return (
@@ -57,7 +66,9 @@ export function CartPageClient() {
           <div className="flex justify-between text-white/70"><span>Kargo</span><b>{shipping === 0 ? "Ücretsiz" : formatPrice(shipping)}</b></div>
           <div className="flex justify-between border-t border-white/10 pt-3 text-base"><span>Genel toplam</span><b>{formatPrice(total)}</b></div>
         </div>
-        <Link href="/odeme" className="btn-dark mt-8 flex w-full bg-white !text-black hover:!bg-[#c9a775]">ÖDEMEYE GEÇ</Link>
+        <button type="button" onClick={goCheckout} className="btn-dark mt-8 flex w-full bg-white !text-black hover:!bg-[#c9a775]">
+          ÖDEMEYE GEÇ
+        </button>
         <Link href="/urunler" className="mt-3 block text-center text-xs tracking-wider text-white/70 underline">Alışverişe devam</Link>
       </aside>
     </div>

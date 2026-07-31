@@ -5,7 +5,7 @@ import { BadgePercent, CheckCircle2, PackageCheck, RotateCcw } from "lucide-reac
 
 export const metadata: Metadata = {
   title: "Kampanyalar",
-  description: "BEE Parfüm kampanyalarını ve özel fırsatlarını keşfedin.",
+  description: "Bee Kozmetik kampanyalarını ve özel fırsatlarını keşfedin.",
 };
 
 const campaigns = [

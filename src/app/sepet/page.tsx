@@ -3,7 +3,7 @@ import { CartPageClient } from "@/components/checkout/cart-page";
 
 export const metadata: Metadata = {
   title: "Sepet",
-  description: "Bee Parfüm sepetiniz.",
+  description: "Bee Kozmetik sepetiniz.",
 };
 
 export default function SepetPage() {

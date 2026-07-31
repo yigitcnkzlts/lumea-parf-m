@@ -1,18 +1,19 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
+import { mapAuthError } from "@/lib/auth/validation";
 import { tryCreateClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
-export type AuthProvider = "email" | "google" | "facebook";
+export type AuthProviderKind = "email" | "google" | "facebook";
 
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  provider: AuthProvider;
+  provider: AuthProviderKind;
   role?: "customer" | "admin";
 }
 
@@ -21,11 +22,13 @@ interface AuthContextValue {
   loading: boolean;
   configured: boolean;
   authOpen: boolean;
-  setAuthOpen: (open: boolean) => void;
+  authMessage: string | null;
+  setAuthOpen: (open: boolean, message?: string | null) => void;
+  requireAuth: (message?: string) => boolean;
   loginWithEmail: (email: string, password: string) => Promise<boolean>;
   registerWithEmail: (name: string, email: string, password: string) => Promise<boolean>;
-  loginWithProvider: (provider: AuthProvider) => Promise<boolean>;
-  loginWithEmailOnly: (name: string, email: string) => Promise<boolean>;
+  loginWithProvider: (provider: AuthProviderKind) => Promise<boolean>;
+  loginWithEmailOnly: (email: string) => Promise<boolean>;
   logout: () => Promise<void>;
   getUserFavorites: () => number[];
   saveUserFavorites: (ids: number[]) => void;
@@ -35,7 +38,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 function mapUser(user: User, role?: "customer" | "admin"): AuthUser {
   const provider = (user.app_metadata?.provider as string) || "email";
-  const mappedProvider: AuthProvider =
+  const mappedProvider: AuthProviderKind =
     provider === "google" ? "google" : provider === "facebook" ? "facebook" : "email";
   const name =
     (user.user_metadata?.full_name as string) ||
@@ -54,9 +57,25 @@ function mapUser(user: User, role?: "customer" | "admin"): AuthUser {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
-  const [authOpen, setAuthOpen] = useState(false);
+  const [authOpen, setAuthOpenState] = useState(false);
+  const [authMessage, setAuthMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const configured = isSupabaseConfigured();
+
+  const setAuthOpen = useCallback((open: boolean, message: string | null = null) => {
+    setAuthOpenState(open);
+    setAuthMessage(open ? message : null);
+  }, []);
+
+  const requireAuth = useCallback(
+    (message = "Devam etmek için giriş yapın veya kayıt olun.") => {
+      if (user) return true;
+      setAuthOpen(true, message);
+      toast.error(message);
+      return false;
+    },
+    [user, setAuthOpen],
+  );
 
   useEffect(() => {
     let active = true;
@@ -110,7 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const ensureConfigured = () => {
     if (!configured) {
-      toast.error("Supabase henüz yapılandırılmadı. Lütfen proje yöneticisine bildirin.");
+      toast.error("Supabase henüz bağlanmadı. .env.local dosyasını kontrol edin.");
       return false;
     }
     return true;
@@ -120,9 +139,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!ensureConfigured()) return false;
     const supabase = tryCreateClient();
     if (!supabase) return false;
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
+    });
     if (error) {
-      toast.error(error.message === "Invalid login credentials" ? "E-posta veya şifre hatalı." : error.message);
+      toast.error(mapAuthError(error.message));
       return false;
     }
     setAuthOpen(false);
@@ -134,21 +156,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!ensureConfigured()) return false;
     const supabase = tryCreateClient();
     if (!supabase) return false;
-    const { error } = await supabase.auth.signUp({
-      email,
+    const normalizedEmail = email.trim().toLowerCase();
+    const { data, error } = await supabase.auth.signUp({
+      email: normalizedEmail,
       password,
-      options: { data: { full_name: name } },
+      options: {
+        data: { full_name: name.trim() },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
     if (error) {
-      toast.error(error.message);
+      toast.error(mapAuthError(error.message));
       return false;
     }
+
+    if (data.user?.id) {
+      await supabase.from("profiles").update({ full_name: name.trim() }).eq("id", data.user.id);
+    }
+
+    if (!data.session) {
+      toast.success("Kayıt alındı. Giriş için e-postanızdaki doğrulama linkine tıklayın.");
+      setAuthOpen(false);
+      return true;
+    }
+
     setAuthOpen(false);
-    toast.success("Kayıt tamamlandı. Giriş yaptınız.");
+    toast.success("Kayıt tamamlandı. Hoş geldiniz!");
     return true;
   };
 
-  const loginWithProvider = async (provider: AuthProvider) => {
+  const loginWithProvider = async (provider: AuthProviderKind) => {
     if (!ensureConfigured()) return false;
     if (provider === "email") {
       toast.error("E-posta ile giriş için formu kullanın.");
@@ -160,27 +197,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: provider === "google" ? { prompt: "select_account" } : undefined,
       },
     });
     if (error) {
-      toast.error(error.message);
+      toast.error(mapAuthError(error.message));
       return false;
     }
     return true;
   };
 
-  const loginWithEmailOnly = async (_name: string, email: string) => {
+  const loginWithEmailOnly = async (email: string) => {
     if (!ensureConfigured()) return false;
     const supabase = tryCreateClient();
     if (!supabase) return false;
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: email.trim().toLowerCase(),
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
+        shouldCreateUser: true,
       },
     });
     if (error) {
-      toast.error(error.message);
+      toast.error(mapAuthError(error.message));
       return false;
     }
     toast.success("Giriş bağlantısı e-posta adresinize gönderildi.");
@@ -211,7 +250,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       configured,
       authOpen,
+      authMessage,
       setAuthOpen,
+      requireAuth,
       loginWithEmail,
       registerWithEmail,
       loginWithProvider,
@@ -220,7 +261,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       getUserFavorites,
       saveUserFavorites,
     }),
-    [user, authOpen, loading, configured, favorites],
+    [user, authOpen, authMessage, loading, configured, favorites, setAuthOpen, requireAuth],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -231,3 +272,6 @@ export function useAuth() {
   if (!context) throw new Error("useAuth must be used inside AuthProvider");
   return context;
 }
+
+/** @deprecated use AuthProviderKind */
+export type AuthProvider = AuthProviderKind;

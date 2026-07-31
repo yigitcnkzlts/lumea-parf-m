@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/ui/contact-form";
 
 export const metadata: Metadata = {
   title: "İletişim",
-  description: "BEE Parfüm müşteri hizmetleriyle iletişime geçin.",
+  description: "Bee Kozmetik müşteri hizmetleriyle iletişime geçin.",
 };
 
 export default function ContactPage() {
