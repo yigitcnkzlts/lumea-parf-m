@@ -16,6 +16,7 @@ export function AuthModal() {
   const [kvkk, setKvkk] = useState(false);
   const [terms, setTerms] = useState(false);
   const [marketing, setMarketing] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   if (!auth.authOpen) return null;
 
@@ -30,26 +31,41 @@ export function AuthModal() {
     return true;
   };
 
-  const onEmail = (event: FormEvent) => {
+  const onEmail = async (event: FormEvent) => {
     event.preventDefault();
-    if (mode === "login") {
-      auth.loginWithEmail(email, password);
-      return;
+    setBusy(true);
+    try {
+      if (mode === "login") {
+        await auth.loginWithEmail(email, password);
+        return;
+      }
+      if (!ensureConsent()) return;
+      await auth.registerWithEmail(name, email, password);
+    } finally {
+      setBusy(false);
     }
-    if (!ensureConsent()) return;
-    auth.registerWithEmail(name, email, password);
   };
 
-  const onSocial = (event: FormEvent) => {
+  const onSocial = async (event: FormEvent) => {
     event.preventDefault();
     if (!ensureConsent()) return;
-    auth.loginWithProvider(social, name || email.split("@")[0], email);
+    setBusy(true);
+    try {
+      await auth.loginWithProvider(social);
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const onMailLogin = (event: FormEvent) => {
+  const onMailLogin = async (event: FormEvent) => {
     event.preventDefault();
     if (!ensureConsent()) return;
-    auth.loginWithEmailOnly(name, email);
+    setBusy(true);
+    try {
+      await auth.loginWithEmailOnly(name, email);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const startSocial = (provider: "google" | "facebook") => {
@@ -88,6 +104,11 @@ export function AuthModal() {
           {mode === "register" ? "Kayıt ol" : mode === "social" ? `${social === "google" ? "Google" : "Facebook"} ile giriş` : mode === "mail" ? "E-posta ile giriş" : "Giriş yap"}
         </h2>
         <p className="mt-3 text-sm text-neutral-600">Favorilerinizi kaydedin, siparişlerinizi kolaylaştırın.</p>
+        {!auth.configured && (
+          <p className="mt-4 border border-[#956f42]/30 bg-[#956f42]/10 px-3 py-2 text-xs text-[#6d4f2d]">
+            Supabase Auth henüz bağlanmadı. Ortam değişkenleri eklendikten sonra giriş aktif olur.
+          </p>
+        )}
 
         {(mode === "login" || mode === "register") && (
           <>
@@ -99,7 +120,7 @@ export function AuthModal() {
                 <span className="font-serif text-base">f</span> FACEBOOK İLE DEVAM ET
               </button>
               <button type="button" onClick={() => setMode("mail")} className="flex items-center justify-center gap-2 border border-black/15 py-3 text-xs tracking-[.12em] transition hover:border-black">
-                <Mail size={16} /> E-POSTA İLE GİRİŞ
+                <Mail size={16} /> E-POSTA LİNKİ İLE GİRİŞ
               </button>
             </div>
             <div className="my-7 flex items-center gap-3 text-[10px] tracking-widest text-neutral-400">
@@ -118,7 +139,7 @@ export function AuthModal() {
                 <input required type="password" minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
               </label>
               {consentBlock}
-              <button className="btn-dark w-full"><Mail size={16} /> {mode === "login" ? "GİRİŞ YAP" : "KAYIT OL"}</button>
+              <button disabled={busy} className="btn-dark w-full"><Mail size={16} /> {mode === "login" ? "GİRİŞ YAP" : "KAYIT OL"}</button>
             </form>
             <button type="button" className="mt-5 text-xs underline" onClick={() => setMode(mode === "login" ? "register" : "login")}>
               {mode === "login" ? "Hesabınız yok mu? Kayıt olun" : "Zaten üye misiniz? Giriş yapın"}
@@ -129,23 +150,19 @@ export function AuthModal() {
         {mode === "social" && (
           <form onSubmit={onSocial} className="mt-8 space-y-4">
             <p className="text-sm leading-6 text-neutral-600">
-              {social === "google" ? "Google" : "Facebook"} ile devam için bilgilerinizi onaylayın.
+              {social === "google" ? "Google" : "Facebook"} hesabınızla güvenli giriş için onaylayın. Kart bilgisi istenmez.
             </p>
-            <label className="block text-[10px] tracking-widest text-neutral-500">AD SOYAD
-              <input required value={name} onChange={(e) => setName(e.target.value)} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
-            </label>
-            <label className="block text-[10px] tracking-widest text-neutral-500">E-POSTA
-              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
-            </label>
             {consentBlock}
-            <button className="btn-dark w-full">DEVAM ET</button>
+            <button disabled={busy} className="btn-dark w-full">
+              {social === "google" ? "GOOGLE İLE DEVAM ET" : "FACEBOOK İLE DEVAM ET"}
+            </button>
             <button type="button" className="text-xs underline" onClick={() => setMode("login")}>Geri dön</button>
           </form>
         )}
 
         {mode === "mail" && (
           <form onSubmit={onMailLogin} className="mt-8 space-y-4">
-            <p className="text-sm leading-6 text-neutral-600">Şifre olmadan e-posta adresinizle hızlı giriş yapın.</p>
+            <p className="text-sm leading-6 text-neutral-600">Şifresiz giriş bağlantısı e-posta adresinize gönderilir.</p>
             <label className="block text-[10px] tracking-widest text-neutral-500">AD SOYAD
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder="İsteğe bağlı" className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
             </label>
@@ -153,7 +170,7 @@ export function AuthModal() {
               <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-2 w-full border border-black/15 px-4 py-3 text-sm outline-none focus:border-black" />
             </label>
             {consentBlock}
-            <button className="btn-dark w-full"><Mail size={16} /> E-POSTA İLE GİR</button>
+            <button disabled={busy} className="btn-dark w-full"><Mail size={16} /> LİNK GÖNDER</button>
             <button type="button" className="text-xs underline" onClick={() => setMode("login")}>Geri dön</button>
           </form>
         )}

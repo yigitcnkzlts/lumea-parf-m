@@ -87,9 +87,9 @@ export function ShopOverlays() {
               <div className="mb-5 h-1 overflow-hidden rounded bg-black/10"><div className="h-full bg-[#aa8654]" style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)}%` }} /></div>
               <p className="mb-4 text-xs text-neutral-500">{subtotal >= FREE_SHIPPING_THRESHOLD ? "Ücretsiz kargo kazandınız." : shop.cart.length ? `Ücretsiz kargoya ${formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} kaldı.` : "Ürün ekleyerek başlayın."}</p>
               <div className="grid grid-cols-2 gap-3">
-                <Link href="/urunler" onClick={() => shop.setCartOpen(false)} className="border border-black px-4 py-3 text-center text-xs tracking-wider">ALIŞVERİŞE DEVAM</Link>
+                <Link href="/sepet" onClick={() => shop.setCartOpen(false)} className="border border-black px-4 py-3 text-center text-xs tracking-wider">SEPETİ GÖR</Link>
                 <Link
-                  href="/siparis"
+                  href="/odeme"
                   onClick={() => shop.setCartOpen(false)}
                   className={`px-4 py-3 text-center text-xs tracking-wider ${shop.cart.length ? "bg-black text-white" : "pointer-events-none bg-neutral-300 text-white"}`}
                 >

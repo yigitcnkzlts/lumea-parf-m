@@ -51,8 +51,13 @@ export function Header() {
 
   const openAccount = () => {
     if (auth.user) {
-      const leave = window.confirm(`${auth.user.name}, çıkış yapmak ister misiniz?`);
-      if (leave) auth.logout();
+      const choice = window.prompt(
+        `${auth.user.name}\n\n1 = Siparişlerim\n2 = Çıkış yap${auth.user.role === "admin" ? "\n3 = Admin siparişler" : ""}\n\nSeçiminiz:`,
+        "1",
+      );
+      if (choice === "1") window.location.href = "/hesabim/siparislerim";
+      else if (choice === "2") void auth.logout();
+      else if (choice === "3" && auth.user.role === "admin") window.location.href = "/admin/siparisler";
       return;
     }
     auth.setAuthOpen(true);

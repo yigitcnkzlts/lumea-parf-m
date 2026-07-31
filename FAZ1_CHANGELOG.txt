@@ -1,0 +1,83 @@
+Bee Parfüm — Faz 1 yedek noktası
+================================
+Tarih: 2026-07-28
+Backup branch: backup/pre-faz1-checkout
+Feature branch: feat/faz1-checkout-supabase
+Commit: 442eb7e (Show full Dior men hero image without cropping.)
+
+Değiştirilecek / eklenecek dosyalar (plan)
+------------------------------------------
+YENİ — Veritabanı
+  supabase/migrations/001_initial_schema.sql
+  supabase/migrations/002_rls_policies.sql
+  supabase/seed/products.sql
+  scripts/generate-product-seed.mjs
+
+YENİ — Config
+  .env.example
+  src/lib/supabase/env.ts
+  src/lib/supabase/client.ts
+  src/lib/supabase/server.ts
+  src/lib/supabase/admin.ts
+  src/lib/supabase/middleware.ts
+  src/middleware.ts
+
+YENİ — Ticaret / ödeme
+  src/lib/commerce/types.ts
+  src/lib/commerce/pricing.ts
+  src/lib/commerce/stock.ts
+  src/lib/commerce/orders.ts
+  src/lib/commerce/checkout.ts
+  src/lib/payments/types.ts
+  src/lib/payments/provider.ts
+  src/lib/payments/iyzico.ts
+  src/lib/payments/index.ts
+  src/lib/notifications/jobs.ts
+  src/lib/notifications/email.ts
+  src/lib/notifications/sms.ts
+
+YENİ — API
+  src/app/api/checkout/create/route.ts
+  src/app/api/checkout/cancel/route.ts
+  src/app/api/payments/iyzico/callback/route.ts
+  src/app/api/payments/iyzico/webhook/route.ts
+  src/app/api/admin/orders/route.ts
+  src/app/api/admin/orders/[id]/route.ts
+  src/app/api/account/orders/route.ts
+
+YENİ — Sayfalar
+  src/app/sepet/page.tsx
+  src/app/odeme/page.tsx
+  src/app/odeme/basarili/page.tsx
+  src/app/odeme/basarisiz/page.tsx
+  src/app/hesabim/siparislerim/page.tsx
+  src/app/hesabim/siparislerim/[id]/page.tsx
+  src/app/admin/layout.tsx
+  src/app/admin/siparisler/page.tsx
+  src/app/admin/siparisler/[id]/page.tsx
+  src/components/checkout/*
+  src/components/account/*
+  src/components/admin/*
+
+GÜNCELLENECEK
+  package.json
+  src/context/auth-context.tsx
+  src/components/auth/auth-modal.tsx
+  src/components/layout/header.tsx
+  src/components/layout/shop-overlays.tsx
+  src/app/siparis/page.tsx (ödeme akışına yönlendirme)
+  src/lib/contact.ts (gerekirse)
+
+DOKUNULMAYACAK (mümkün olduğunca)
+  Mevcut ürün/katalog UI, hero, markalar, hizmetler tasarım dili
+
+Durum (2026-07-28)
+------------------
+- backup/pre-faz1-checkout ve feat/faz1-checkout-supabase branch'leri oluşturuldu
+- Şema + RLS + seed SQL hazır
+- Auth Supabase'e taşındı (env yoksa giriş çalışmaz; sahte localStorage kullanıcı yok)
+- Checkout sunucu fiyat/stok doğrulaması + awaiting_payment + rezervasyon
+- iyzico soyutlama: anahtar yoksa ödeme başlatılmaz, sahte paid YOK
+- Sayfalar: /sepet /odeme /odeme/basarili /odeme/basarisiz /hesabim/... /admin/...
+- typecheck + build OK; smoke-commerce OK
+- Sonraki adım: kullanıcıdan Supabase + (sonra) iyzico sandbox anahtarları
