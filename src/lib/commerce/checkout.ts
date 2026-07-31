@@ -2,6 +2,7 @@ import { priceCartFromDatabase } from "@/lib/commerce/pricing";
 import { createAwaitingPaymentOrder } from "@/lib/commerce/orders";
 import type { CheckoutAddressInput, CheckoutCartLine } from "@/lib/commerce/types";
 import { getPaymentProvider, isIyzicoConfigured, missingIyzicoMessage } from "@/lib/payments";
+import { enabledInstallmentCounts, quoteInstallment, getInstallmentPlans } from "@/lib/payments/installments";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSiteUrl, isSupabaseServiceConfigured, missingSupabaseMessage } from "@/lib/supabase/env";
 
@@ -11,6 +12,7 @@ export async function createCheckoutSession(input: {
   address: CheckoutAddressInput;
   clientIp: string;
   idempotencyKey?: string;
+  preferredInstallment?: number;
 }) {
   if (!isSupabaseServiceConfigured()) {
     throw new Error(missingSupabaseMessage());
@@ -18,6 +20,13 @@ export async function createCheckoutSession(input: {
 
   // Prices and stock always from DB — never trust client totals.
   const priced = await priceCartFromDatabase(input.items);
+  const plans = getInstallmentPlans();
+  const preferred =
+    plans.find((p) => p.count === input.preferredInstallment)?.count ?? plans[0]?.count ?? 1;
+  const installmentQuote = quoteInstallment(
+    priced.total,
+    plans.find((p) => p.count === preferred) ?? plans[0],
+  );
 
   const { order, reused } = await createAwaitingPaymentOrder({
     userId: input.userId,
@@ -26,11 +35,23 @@ export async function createCheckoutSession(input: {
     idempotencyKey: input.idempotencyKey,
   });
 
+  const admin = createAdminClient();
+  await admin
+    .from("orders")
+    .update({
+      metadata: {
+        preferredInstallment: preferred,
+        installmentPreview: installmentQuote,
+      },
+    })
+    .eq("id", order.id);
+
   if (!isIyzicoConfigured()) {
     return {
       order,
       priced,
       reused,
+      installmentQuote,
       payment: null as null,
       requiresPaymentConfig: true as const,
       message: missingIyzicoMessage(),
@@ -49,6 +70,8 @@ export async function createCheckoutSession(input: {
     orderNumber: order.order_number,
     total: Number(order.total),
     currency: "TRY",
+    preferredInstallment: preferred,
+    enabledInstallments: enabledInstallmentCounts(plans),
     callbackUrl,
     customer: {
       id: input.userId || order.id,
@@ -69,7 +92,6 @@ export async function createCheckoutSession(input: {
     })),
   });
 
-  const admin = createAdminClient();
   await admin
     .from("orders")
     .update({
@@ -83,6 +105,7 @@ export async function createCheckoutSession(input: {
     order,
     priced,
     reused,
+    installmentQuote,
     payment: {
       token: init.token,
       checkoutFormContent: init.checkoutFormContent,

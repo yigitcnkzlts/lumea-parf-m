@@ -25,6 +25,7 @@ const bodySchema = z.object({
     note: z.string().trim().max(500).optional(),
   }),
   idempotencyKey: z.string().trim().max(80).optional(),
+  preferredInstallment: z.number().int().min(1).max(12).optional(),
 });
 
 export async function POST(request: Request) {
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
       address: parsed.data.address,
       clientIp,
       idempotencyKey: parsed.data.idempotencyKey,
+      preferredInstallment: parsed.data.preferredInstallment,
     });
 
     return NextResponse.json({
@@ -66,6 +68,7 @@ export async function POST(request: Request) {
         total: result.priced.total,
         lines: result.priced.lines,
       },
+      installmentQuote: result.installmentQuote,
       payment: result.payment
         ? {
             // Token used only to render iyzico form — never card data

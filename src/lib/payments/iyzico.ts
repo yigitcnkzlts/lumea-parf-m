@@ -72,7 +72,9 @@ export class IyzicoCheckoutFormProvider implements PaymentProvider {
       basketId: input.orderId,
       paymentGroup: "PRODUCT",
       callbackUrl: input.callbackUrl,
-      enabledInstallments: [1, 2, 3, 6, 9],
+      enabledInstallments: input.enabledInstallments?.length
+        ? input.enabledInstallments
+        : [1, 2, 3, 6, 9],
       buyer: {
         id: input.customer.id,
         name: name || "Musteri",

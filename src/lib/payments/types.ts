@@ -5,6 +5,9 @@ export interface InitializeCheckoutInput {
   orderNumber: string;
   total: number;
   currency: "TRY";
+  /** Preferred installment count shown first in Checkout Form */
+  preferredInstallment?: number;
+  enabledInstallments?: number[];
   customer: {
     id: string;
     name: string;
