@@ -178,8 +178,9 @@ export function AuthModal() {
         </p>
 
         {!auth.configured && (
-          <p className="mt-4 border border-[#956f42]/30 bg-[#956f42]/10 px-3 py-2 text-xs text-[#6d4f2d]">
-            Supabase henüz bağlanmadı. `.env.local` dosyasını ekleyip sunucuyu yeniden başlatın.
+          <p className="mt-4 border border-[#956f42]/30 bg-[#956f42]/10 px-3 py-2 text-xs leading-5 text-[#6d4f2d]">
+            Supabase bağlı değil. Terminalde sunucuyu durdurup (`Ctrl+C`) tekrar <b>npm run dev</b> çalıştırın.
+            Canlı sitedeyseniz Vercel Environment Variables eksik demektir.
           </p>
         )}
 

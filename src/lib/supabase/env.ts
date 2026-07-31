@@ -14,9 +14,16 @@ export function getSupabasePublicEnv() {
 
 export function isSupabaseConfigured() {
   const { url, publishableKey } = getSupabasePublicEnv();
+  const looksLikeKey =
+    publishableKey.startsWith("sb_publishable_") ||
+    publishableKey.startsWith("eyJ") ||
+    (publishableKey.length > 20 && !publishableKey.includes("YOUR_"));
+
   return Boolean(
     url &&
       publishableKey &&
+      looksLikeKey &&
+      /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(url) &&
       !url.includes("YOUR_PROJECT_REF") &&
       !url.includes("BURAYA_PROJECT_REF") &&
       !publishableKey.includes("YOUR_SUPABASE") &&
