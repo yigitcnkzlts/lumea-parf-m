@@ -108,7 +108,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const next = mapUser(sessionUser, profile?.role === "admin" ? "admin" : "customer");
       if (profile?.full_name) next.name = profile.full_name;
       setUser(next);
-      setFavorites((profile?.favorite_product_ids as number[]) ?? []);
+
+      const profileFavs = (profile?.favorite_product_ids as number[]) ?? [];
+      let guestFavs: number[] = [];
+      try {
+        guestFavs = JSON.parse(localStorage.getItem("bee-favorites") ?? "[]") as number[];
+      } catch {
+        guestFavs = [];
+      }
+      const merged = Array.from(new Set([...profileFavs, ...guestFavs]));
+      setFavorites(merged);
+      if (merged.length !== profileFavs.length) {
+        void supabase.from("profiles").update({ favorite_product_ids: merged }).eq("id", sessionUser.id);
+      }
     };
 
     void supabase.auth.getSession().then(({ data }) =>

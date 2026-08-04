@@ -159,8 +159,21 @@ export async function PATCH(request: Request) {
     }
 
     const admin = createAdminClient();
+
+    let previousStock: number | null = null;
+    if (rest.stock !== undefined) {
+      const { data: before } = await admin.from("products").select("stock").eq("id", productId).maybeSingle();
+      previousStock = before ? Number(before.stock) : null;
+    }
+
     const { data, error } = await admin.from("products").update(update).eq("id", productId).select(SELECT).single();
     if (error) throw new Error(error.message);
+
+    if (previousStock === 0 && rest.stock !== undefined && rest.stock > 0) {
+      const { notifyStockAlertsForProduct } = await import("@/lib/commerce/stock-alerts");
+      await notifyStockAlertsForProduct(productId);
+    }
+
     return NextResponse.json({ ok: true, product: data });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Güncelleme başarısız.";

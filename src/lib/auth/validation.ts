@@ -72,7 +72,10 @@ export function mapAuthError(message: string) {
   if (m.includes("password")) return "Şifre gereksinimlerini karşılamıyor.";
   if (m.includes("rate limit") || m.includes("too many")) return "Çok fazla deneme. Biraz sonra tekrar deneyin.";
   if (m.includes("provider is not enabled") || m.includes("unsupported provider")) {
-    return "Bu giriş yöntemi henüz Supabase’de açılmamış.";
+    return "Bu giriş yöntemi henüz açık değil. Şimdilik e-posta + şifre kullanın. (Supabase → Authentication → Providers)";
+  }
+  if (m.includes("error sending magic link") || m.includes("error sending confirmation") || m.includes("unable to send")) {
+    return "E-posta gönderilemedi. Supabase Auth e-posta / SMTP ayarını kontrol edin.";
   }
   if (m.includes("network") || m.includes("fetch")) return "Bağlantı hatası. İnternetinizi kontrol edin.";
   return message || "İşlem başarısız. Tekrar deneyin.";

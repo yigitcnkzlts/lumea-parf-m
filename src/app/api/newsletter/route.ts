@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseServiceConfigured, missingSupabaseMessage } from "@/lib/supabase/env";
+import { sendWelcomeNewsletter } from "@/lib/notifications/email";
 
 const schema = z.object({
   email: z.string().trim().email().max(160),
@@ -15,10 +16,11 @@ export async function POST(request: Request) {
     const parsed = schema.safeParse(await request.json());
     if (!parsed.success) return NextResponse.json({ error: "Geçerli e-posta girin." }, { status: 400 });
 
+    const email = parsed.data.email.toLowerCase();
     const admin = createAdminClient();
     const { error } = await admin.from("newsletter_subscribers").upsert(
       {
-        email: parsed.data.email.toLowerCase(),
+        email,
         source: "site",
         is_active: true,
       },
@@ -26,7 +28,14 @@ export async function POST(request: Request) {
     );
 
     if (error) throw new Error(error.message);
-    return NextResponse.json({ ok: true });
+
+    const mail = await sendWelcomeNewsletter(email);
+
+    return NextResponse.json({
+      ok: true,
+      emailSent: mail.sent,
+      emailNote: mail.reason,
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Kayıt başarısız.";
     return NextResponse.json({ error: message }, { status: 400 });

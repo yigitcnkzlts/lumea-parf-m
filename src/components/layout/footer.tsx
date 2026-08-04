@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Camera, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { BeeLogo } from "@/components/brand/bee-logo";
 import { whatsappLink } from "@/lib/contact";
 
 const groups: [string, [string, string][]][] = [
@@ -27,7 +28,7 @@ export function Footer() {
       <div className="mx-auto max-w-[1500px] px-5 py-16 lg:px-8 lg:py-24">
         <div className="grid gap-12 border-b border-white/10 pb-14 md:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2">
-            <Link href="/" className="font-serif text-4xl tracking-[.1em]">BEE</Link>
+            <BeeLogo invert href="/" />
             <p className="mt-5 max-w-sm text-sm leading-7 text-white/55">Kokunun kişisel bir imza olduğuna inanıyoruz. Dünyanın seçkin parfümlerini özenle seçerek sizinle buluşturuyoruz.</p>
             <div className="mt-7 space-y-3 text-xs text-white/65">
               <p className="flex gap-3"><MapPin size={16} /> Tekirdağ, Süleymanpaşa</p>

@@ -9,11 +9,17 @@ Bee Kozmetik — satışa açılış kontrol listesi
    - IYZICO_API_KEY / IYZICO_SECRET_KEY (canlı merchant)
    - IYZICO_BASE_URL = https://api.iyzipay.com  (canlı; sandbox değil)
    - IYZICO_CALLBACK_URL = https://sizin-domain.com/api/payments/iyzico/callback
+   - ADMIN_PANEL_PASSWORD
+   - EMAIL_PROVIDER=resend + RESEND_API_KEY + EMAIL_FROM  (bülten + stok maili)
+   - Opsiyonel: NEXT_PUBLIC_GA_MEASUREMENT_ID, NEXT_PUBLIC_META_PIXEL_ID
+   - Opsiyonel: NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION, INSTAGRAM_ACCESS_TOKEN
 
 2) Supabase
-   - migrations/001 ve 002 çalıştırıldı mı?
+   - migrations/001, 002, 003 çalıştırıldı mı?
    - seed/products.sql yüklendi mi?
    - Auth → URL Configuration: Site URL + Redirect URLs (callback)
+   - Auth → Providers: Google / Facebook (isteğe bağlı)
+   - Auth → Emails/SMTP: magic link için
 
 3) iyzico
    - Sandbox ile test siparişi (ödeme başarılı / başarısız)
@@ -25,16 +31,15 @@ Bee Kozmetik — satışa açılış kontrol listesi
    - Giriş / kayıt
    - Sepet → ödeme → iyzico formu
    - /hesabim/siparislerim
-   - /admin/siparisler ve /admin/stok
+   - /admin (şifre) → siparişler / stok / bildirimler
+   - Bülten abone → Resend ile mail
+   - Stok 0→N → stok uyarı maili
 
-5) Güvenlik
+5) Marka varlıkları
+   - public/images/about + products + instagram (MARKA_HAZIRLIK.txt)
+   - Gerçek ürün görselleri admin upload ile
+
+6) Güvenlik
    - Service role ve iyzico secret asla public env’de olmasın
    - Chat/log’a sızan anahtarları rotate edin
    - Sahte “ödeme başarılı” yok; yalnızca provider callback
-
-6) Faz 3 (yorum / upload / alert)
-   - Supabase SQL Editor’de migrations/003_reviews_alerts_storage.sql çalıştır
-   - Storage bucket: product-images (migration oluşturur)
-   - Admin panel: /admin  → sadece ADMIN_PANEL_PASSWORD ile giriş
-   - Vercel’e de ADMIN_PANEL_PASSWORD ekle (Production)
-   - Opsiyonel: NEXT_PUBLIC_GA_MEASUREMENT_ID, NEXT_PUBLIC_META_PIXEL_ID

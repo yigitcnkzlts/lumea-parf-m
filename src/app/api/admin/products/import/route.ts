@@ -49,12 +49,25 @@ export async function POST(request: Request) {
 
     const admin = createAdminClient();
     let updated = 0;
+    const restocked: number[] = [];
     for (const row of rows) {
+      const { data: before } = await admin.from("products").select("stock").eq("id", row.id).maybeSingle();
+      const prev = before ? Number(before.stock) : null;
       const { error } = await admin.from("products").update({ stock: row.stock }).eq("id", row.id);
-      if (!error) updated += 1;
+      if (!error) {
+        updated += 1;
+        if (prev === 0 && row.stock > 0) restocked.push(row.id);
+      }
     }
 
-    return NextResponse.json({ ok: true, updated, total: rows.length });
+    if (restocked.length) {
+      const { notifyStockAlertsForProduct } = await import("@/lib/commerce/stock-alerts");
+      for (const id of restocked) {
+        await notifyStockAlertsForProduct(id);
+      }
+    }
+
+    return NextResponse.json({ ok: true, updated, total: rows.length, restockNotified: restocked.length });
   } catch (error) {
     const message = error instanceof Error ? error.message : "İçe aktarma başarısız.";
     return NextResponse.json({ error: message }, { status: 400 });

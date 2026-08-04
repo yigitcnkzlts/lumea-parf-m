@@ -1,0 +1,80 @@
+Bee Kozmetik — satış dışı eksikleri kapatma rehberi
+====================================================
+
+ÖZET (öncelik sırası)
+1. Gerçek ürün / mağaza fotoğrafları + logo dosyası
+2. Google / Facebook giriş (Supabase Providers)
+3. Mail gerçekten gitsin (Resend + Supabase Auth e-posta)
+4. Domain + Search Console + Analytics ID’leri
+5. GitHub/Vercel proje adı “lumea” kalabilir; sitede marka Bee
+
+------------------------------------------------------------
+1) FOTOĞRAF & LOGO
+------------------------------------------------------------
+Logo: sitede BeeLogo bileşeni (B + BEE KOZMETİK). SVG/PNG eklemek için
+  public/images/brand/logo.svg  → sonra bee-logo.tsx’e Image bağlanır.
+
+Ürün fotoğrafları:
+  - Admin → Ürün & stok → görsel URL veya sürükle-bırak upload
+  - veya public/images/products/ altına koyup URL olarak /images/products/...
+
+Hakkımızda:
+  public/images/about/store-1.jpg
+  public/images/about/packaging.jpg
+  public/images/about/tekirdag.jpg
+
+Instagram kutuları (API yoksa):
+  public/images/instagram/1.jpg … 6.jpg
+
+------------------------------------------------------------
+2) GOOGLE / FACEBOOK GİRİŞ
+------------------------------------------------------------
+Supabase Dashboard → Authentication → Providers
+  - Google: Client ID + Secret (Google Cloud Console OAuth)
+  - Facebook: App ID + Secret (Meta Developer)
+
+Auth → URL Configuration
+  Site URL = https://sizin-domain.com
+  Redirect URLs += https://sizin-domain.com/auth/callback
+                += http://localhost:3000/auth/callback
+
+Şifre ile giriş zaten çalışır; sosyal butonlar provider açılınca aktif olur.
+
+------------------------------------------------------------
+3) E-POSTA (newsletter + stok haber ver + magic link)
+------------------------------------------------------------
+A) Site mailleri (bülten hoş geldin, stok geldi):
+   Vercel / .env.local:
+     EMAIL_PROVIDER=resend
+     RESEND_API_KEY=re_...
+     EMAIL_FROM=Bee Kozmetik <onboarding@resend.dev>
+   (Kendi domain doğrulanınca EMAIL_FROM=Bee Kozmetik <info@sizin-domain.com>)
+
+   Stok: Admin’de stok 0 → >0 olunca stock_alerts kayıtlarına mail gider.
+
+B) Magic link / kayıt doğrulama:
+   Supabase Auth → Emails (veya Custom SMTP)
+   Bu, Resend’den ayrıdır; Supabase kendi mailini kullanır.
+
+------------------------------------------------------------
+4) DOMAIN + SEARCH CONSOLE + ANALYTICS
+------------------------------------------------------------
+- Domain’i Vercel’e bağla → NEXT_PUBLIC_SITE_URL=https://...
+- Search Console → HTML tag doğrulama:
+    NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=xxxx
+- GA4: NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXX
+- Meta Pixel: NEXT_PUBLIC_META_PIXEL_ID=123456
+
+------------------------------------------------------------
+5) LUMÉA ADI
+------------------------------------------------------------
+GitHub repo / Vercel proje adı “lumea-parf-m” yalnızca hosting etiketi.
+Müşteriye görünen her yer Bee / Bee Kozmetik olmalı (kontrol edildi).
+İsterseniz Vercel’de projeyi “bee-kozmetik” diye yeniden adlandırın.
+
+------------------------------------------------------------
+6) FAVORİ / KARŞILAŞTIRMA
+------------------------------------------------------------
+- Favori: cihazda localStorage + girişte hesaba birleştirilir
+- Son bakılanlar: local (hesaplar arası senkron yok — bilinçli)
+- Karşılaştır: max 3 ürün

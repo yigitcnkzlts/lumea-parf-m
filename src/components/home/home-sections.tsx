@@ -6,8 +6,9 @@ import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Camera, Headphones, MessageCircle, PackageCheck, RotateCcw, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Headphones, MessageCircle, PackageCheck, RotateCcw, ShieldCheck, Sparkles } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
+import { InstagramFeed } from "@/components/home/instagram-feed";
 import { brands } from "@/data/brands";
 import { useCatalogProducts } from "@/context/catalog-context";
 import { whatsappLink } from "@/lib/contact";
@@ -23,10 +24,6 @@ const families = [
   ["Çiçeksi", "Gül ve yaseminin zarif uyumu", "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=600&q=80"],
   ["Oryantal", "Gizemli ve duyusal dokunuş", "https://images.unsplash.com/photo-1518709594023-6eab9bab7b23?auto=format&fit=crop&w=600&q=80"],
   ["Meyveli", "Canlı, neşeli ve parlak", "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80"],
-];
-const instagram = [
-  "photo-1547887538-e3a2f32cb1cc", "photo-1610461888750-10bfc601b874", "photo-1594035910387-fea47794261f",
-  "photo-1523293182086-7651a899d37f", "photo-1619994403073-2cec844b8e63", "photo-1541643600914-78b084683601",
 ];
 
 export function BrandMarquee() {
@@ -127,7 +124,31 @@ export function TrustAndReviews() {
 }
 
 export function GuideAndInstagram() {
-  return <><section className="relative overflow-hidden bg-[#ded5c5] py-24"><Sparkles className="absolute -right-16 -top-16 h-72 w-72 text-white/20" strokeWidth={.5} /><div className="relative mx-auto max-w-4xl px-5 text-center"><p className="text-[10px] tracking-[.3em] text-[#795c3b]">KOKU REHBERİ</p><h2 className="mt-4 font-serif text-5xl md:text-7xl">Hangi Koku Size Uygun?</h2><p className="mx-auto mt-5 max-w-xl leading-7 text-neutral-600">Birkaç basit seçimle karakterinizi tamamlayan koku ailesini birlikte bulalım.</p><div className="mt-7 flex flex-wrap justify-center gap-2">{["Günlük kullanım", "Özel davet", "Ofis", "Yaz mevsimi", "Kış mevsimi", "Hediye seçimi"].map((x)=><span key={x} className="border border-black/15 bg-white/30 px-4 py-2 text-xs">{x}</span>)}</div><Link href="/koku-danismani" className="btn-dark mx-auto mt-9">KOKUNU BUL</Link></div></section><section className="py-20 text-center"><a href="https://instagram.com/beekozmatik" target="_blank" rel="noopener noreferrer" className="font-serif text-4xl transition hover:text-[#8a6438]">@beekozmatik</a><p className="mt-2 text-sm text-neutral-500">Koku dünyamıza katılın.</p><div className="mt-9 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">{instagram.map((id)=><Link href="https://instagram.com/beekozmatik" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="group relative aspect-square overflow-hidden" key={id}><Image src={`https://images.unsplash.com/${id}?auto=format&fit=crop&w=700&q=80`} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" sizes="17vw" /><div className="absolute inset-0 grid place-content-center bg-black/0 text-white opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100"><Camera /></div></Link>)}</div></section></>;
+  return (
+    <>
+      <section className="relative overflow-hidden bg-[#ded5c5] py-24">
+        <Sparkles className="absolute -right-16 -top-16 h-72 w-72 text-white/20" strokeWidth={0.5} />
+        <div className="relative mx-auto max-w-4xl px-5 text-center">
+          <p className="text-[10px] tracking-[.3em] text-[#795c3b]">KOKU REHBERİ</p>
+          <h2 className="mt-4 font-serif text-5xl md:text-7xl">Hangi Koku Size Uygun?</h2>
+          <p className="mx-auto mt-5 max-w-xl leading-7 text-neutral-600">
+            Birkaç basit seçimle karakterinizi tamamlayan koku ailesini birlikte bulalım.
+          </p>
+          <div className="mt-7 flex flex-wrap justify-center gap-2">
+            {["Günlük kullanım", "Özel davet", "Ofis", "Yaz mevsimi", "Kış mevsimi", "Hediye seçimi"].map((x) => (
+              <span key={x} className="border border-black/15 bg-white/30 px-4 py-2 text-xs">
+                {x}
+              </span>
+            ))}
+          </div>
+          <Link href="/koku-danismani" className="btn-dark mx-auto mt-9">
+            KOKUNU BUL
+          </Link>
+        </div>
+      </section>
+      <InstagramFeed />
+    </>
+  );
 }
 
 const emailSchema = z.string().email("Geçerli bir e-posta adresi girin.");
@@ -144,7 +165,8 @@ export function Newsletter() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Kayıt başarısız");
-      toast.success("Bee dünyasına hoş geldiniz!");
+      if (data.emailSent) toast.success("Bee dünyasına hoş geldiniz! Onay e-postası gönderildi.");
+      else toast.success("Bee dünyasına hoş geldiniz! (E-posta gönderimi için Resend ayarı gerekir)");
       reset();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Hata");

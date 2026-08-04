@@ -13,6 +13,7 @@ import {
   Store,
 } from "lucide-react";
 import { toast } from "sonner";
+import { BeeLogo } from "@/components/brand/bee-logo";
 
 const nav = [
   { href: "/admin", label: "Özet", icon: LayoutDashboard, exact: true },
@@ -134,8 +135,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
         <aside className="border-b border-black/10 bg-[#141312] text-white lg:w-64 lg:shrink-0 lg:border-b-0 lg:border-r lg:border-white/10">
           <div className="flex items-center justify-between px-5 py-5 lg:block">
             <div>
-              <p className="font-serif text-2xl tracking-[.12em]">BEE</p>
-              <p className="mt-1 text-[10px] tracking-[.2em] text-[#c9a775]">YÖNETİM PANELİ</p>
+              <BeeLogo href={null} invert compact className="[&_span]:!text-white" />
+              <p className="mt-2 text-[10px] tracking-[.2em] text-[#c9a775]">YÖNETİM PANELİ</p>
             </div>
             <Link
               href="/"

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Heart, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
+import { BeeLogo } from "@/components/brand/bee-logo";
 import { useAuth } from "@/context/auth-context";
 import { useShop } from "@/context/shop-context";
 
@@ -75,7 +76,7 @@ export function Header() {
       <header className={`sticky top-0 z-50 border-b transition-all duration-300 ${scrolled ? "border-black/10 bg-[#faf8f3]/95 shadow-sm backdrop-blur-xl" : "border-transparent bg-[#faf8f3]/90"}`}>
         <div className="mx-auto flex h-[76px] max-w-[1500px] items-center justify-between px-5 lg:px-8">
           <button aria-label="Menüyü aç" className="lg:hidden" onClick={() => setMobileOpen(true)}><Menu /></button>
-          <Link href="/" className="font-serif text-2xl tracking-[.08em] md:text-3xl">BEE<span className="ml-1 text-[9px] tracking-[.25em] text-[#9c7749]">PARFÜM</span></Link>
+          <BeeLogo className="scale-95 md:scale-100" />
           <nav aria-label="Ana menü" className="hidden items-center gap-5 xl:gap-7 lg:flex">
             {links.map(([label, href]) => <Link key={label} href={href} className="link-line whitespace-nowrap text-[11px] tracking-[.08em]">{label}</Link>)}
           </nav>

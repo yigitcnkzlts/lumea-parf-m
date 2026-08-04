@@ -55,19 +55,23 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || auth.loading) return;
     if (auth.user) {
-      const userFavorites = auth.getUserFavorites();
-      setFavorites(userFavorites);
+      setFavorites(auth.getUserFavorites());
+    } else {
+      try {
+        setFavorites(JSON.parse(localStorage.getItem("bee-favorites") ?? "[]") as number[]);
+      } catch {
+        setFavorites([]);
+      }
     }
-  }, [auth.user, hydrated]);
+  }, [auth.user?.id, auth.loading, hydrated]);
 
   useEffect(() => {
     if (!hydrated) return;
     localStorage.setItem("bee-cart", JSON.stringify(cart));
     localStorage.setItem("bee-favorites", JSON.stringify(favorites));
-    if (auth.user) auth.saveUserFavorites(favorites);
-  }, [cart, favorites, hydrated, auth.user]);
+  }, [cart, favorites, hydrated]);
 
   const addToCart = (product: Product, size = product.sizes[1], quantity = 1, options?: { openCart?: boolean }) => {
     setCart((current) => {
@@ -105,6 +109,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
         ? current.filter((id) => id !== productId)
         : [...current, productId];
       toast.success(current.includes(productId) ? "Favorilerden çıkarıldı" : "Favorilere eklendi");
+      if (auth.user) auth.saveUserFavorites(next);
       return next;
     });
 

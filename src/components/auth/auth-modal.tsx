@@ -271,7 +271,11 @@ export function AuthModal() {
           <form onSubmit={onSocial} className="mt-8 space-y-4" noValidate>
             <p className="text-sm leading-6 text-neutral-600">
               {social === "google" ? "Google" : "Facebook"} ile güvenli giriş. Kart bilgisi istenmez.
-              Bu yöntem için Supabase’de ilgili sağlayıcı açık olmalıdır.
+            </p>
+            <p className="border border-[#956f42]/25 bg-[#956f42]/08 px-3 py-2 text-xs leading-5 text-[#6d4f2d]">
+              Panelde kapalıysa hata alırsınız: Supabase → Authentication → Providers →{" "}
+              {social === "google" ? "Google" : "Facebook"} açın. Redirect URL:{" "}
+              <span className="break-all">{typeof window !== "undefined" ? `${window.location.origin}/auth/callback` : "/auth/callback"}</span>
             </p>
             {consentBlock}
             <button disabled={busy || !auth.configured} className="btn-dark w-full">
@@ -284,6 +288,9 @@ export function AuthModal() {
         {mode === "mail" && (
           <form onSubmit={onMailLogin} className="mt-8 space-y-4" noValidate>
             <p className="text-sm leading-6 text-neutral-600">Şifresiz giriş bağlantısı e-posta adresinize gönderilir.</p>
+            <p className="border border-black/10 bg-white/70 px-3 py-2 text-xs leading-5 text-neutral-600">
+              Mail gelmezse: Supabase Auth e-posta şablonu veya özel SMTP (Auth → Emails) ayarlı olmalıdır.
+            </p>
             <label className="block text-[10px] tracking-widest text-neutral-500">E-POSTA
               <input
                 autoComplete="email"
