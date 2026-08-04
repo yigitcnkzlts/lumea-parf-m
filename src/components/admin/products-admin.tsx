@@ -193,6 +193,33 @@ export function ProductsAdmin() {
     }
   };
 
+  const removeProduct = async (product: AdminProduct) => {
+    const ok = window.confirm(
+      `"${product.brand} ${product.name}" silinsin mi?\n\nSiparişte geçtiyse tamamen silinmez, sadece satıştan kalkar.`,
+    );
+    if (!ok) return;
+    setBusy(true);
+    try {
+      const res = await fetch("/api/admin/products", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Silinemedi");
+      toast.success(data.message || "Ürün silindi");
+      if (editingId === product.id) {
+        setShowForm(false);
+        setEditingId(null);
+      }
+      await load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Hata");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   if (error) {
     return (
       <div className="border border-black/10 bg-white/60 p-8">
@@ -466,9 +493,24 @@ export function ProductsAdmin() {
             </label>
           </div>
 
-          <button disabled={busy} className="btn-dark">
-            {busy ? "KAYDEDİLİYOR..." : editingId ? "GÜNCELLE" : "PARFÜMÜ EKLE"}
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button disabled={busy} className="btn-dark">
+              {busy ? "KAYDEDİLİYOR..." : editingId ? "GÜNCELLE" : "PARFÜMÜ EKLE"}
+            </button>
+            {editingId ? (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  const current = products.find((p) => p.id === editingId);
+                  if (current) void removeProduct(current);
+                }}
+                className="border border-red-800/40 px-5 py-3 text-[10px] tracking-[.14em] text-red-800 hover:border-red-800"
+              >
+                ÜRÜNÜ SİL
+              </button>
+            ) : null}
+          </div>
         </form>
       )}
 
@@ -522,9 +564,19 @@ export function ProductsAdmin() {
                   )}
                 </td>
                 <td className="px-4 py-4">
-                  <button type="button" onClick={() => openEdit(product)} className="border border-black/15 px-3 py-2 text-[10px] tracking-[.14em] hover:border-black">
-                    DÜZENLE
-                  </button>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={() => openEdit(product)} className="border border-black/15 px-3 py-2 text-[10px] tracking-[.14em] hover:border-black">
+                      DÜZENLE
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void removeProduct(product)}
+                      className="border border-red-800/30 px-3 py-2 text-[10px] tracking-[.14em] text-red-800 hover:border-red-800"
+                    >
+                      SİL
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

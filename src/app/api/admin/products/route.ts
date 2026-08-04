@@ -180,3 +180,57 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
+
+const deleteSchema = z.object({
+  productId: z.number().int().positive(),
+});
+
+/** Hard-delete if never ordered; otherwise soft-delete (is_active=false) to keep order history. */
+export async function DELETE(request: Request) {
+  try {
+    if (!isSupabaseServiceConfigured()) {
+      return NextResponse.json({ error: missingSupabaseMessage() }, { status: 503 });
+    }
+    const adminUser = await requireAdmin();
+    if (!adminUser) return NextResponse.json({ error: "Yetkisiz." }, { status: 403 });
+
+    const body = await request.json().catch(() => ({}));
+    const parsed = deleteSchema.safeParse(body);
+    if (!parsed.success) return NextResponse.json({ error: "Geçersiz ürün." }, { status: 400 });
+
+    const { productId } = parsed.data;
+    const admin = createAdminClient();
+
+    const { data: product } = await admin.from("products").select("id, brand, name").eq("id", productId).maybeSingle();
+    if (!product) return NextResponse.json({ error: "Ürün bulunamadı." }, { status: 404 });
+
+    const { count: orderCount } = await admin
+      .from("order_items")
+      .select("id", { count: "exact", head: true })
+      .eq("product_id", productId);
+
+    if ((orderCount ?? 0) > 0) {
+      const { error } = await admin.from("products").update({ is_active: false }).eq("id", productId);
+      if (error) throw new Error(error.message);
+      return NextResponse.json({
+        ok: true,
+        soft: true,
+        message: "Bu ürün siparişlerde geçtiği için tamamen silinmedi; satıştan kaldırıldı (pasif).",
+      });
+    }
+
+    await admin.from("stock_reservations").delete().eq("product_id", productId);
+    const { error } = await admin.from("products").delete().eq("id", productId);
+    if (error) throw new Error(error.message);
+
+    return NextResponse.json({
+      ok: true,
+      soft: false,
+      message: `${product.brand} ${product.name} silindi.`,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Silme başarısız.";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+}
+
