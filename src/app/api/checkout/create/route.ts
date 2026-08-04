@@ -26,6 +26,7 @@ const bodySchema = z.object({
   }),
   idempotencyKey: z.string().trim().max(80).optional(),
   preferredInstallment: z.number().int().min(1).max(12).optional(),
+  couponCode: z.string().trim().max(40).optional(),
 });
 
 export async function POST(request: Request) {
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
       clientIp,
       idempotencyKey: parsed.data.idempotencyKey,
       preferredInstallment: parsed.data.preferredInstallment,
+      couponCode: parsed.data.couponCode,
     });
 
     return NextResponse.json({
@@ -65,6 +67,8 @@ export async function POST(request: Request) {
       priced: {
         subtotal: result.priced.subtotal,
         shippingFee: result.priced.shippingFee,
+        discount: result.priced.discount,
+        couponCode: result.priced.couponCode,
         total: result.priced.total,
         lines: result.priced.lines,
       },

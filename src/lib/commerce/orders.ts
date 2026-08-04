@@ -39,6 +39,10 @@ export async function createAwaitingPaymentOrder(input: {
       subtotal: input.priced.subtotal,
       shipping_fee: input.priced.shippingFee,
       total: input.priced.total,
+      metadata: {
+        couponCode: input.priced.couponCode,
+        discount: input.priced.discount,
+      },
       customer_name: input.address.fullName,
       customer_email: input.address.email,
       customer_phone: input.address.phone,

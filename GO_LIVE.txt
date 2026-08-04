@@ -1,0 +1,38 @@
+Bee Kozmetik — satışa açılış kontrol listesi
+==========================================
+
+1) Vercel ortam değişkenleri (Production)
+   - NEXT_PUBLIC_SUPABASE_URL
+   - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (veya ANON_KEY)
+   - SUPABASE_SERVICE_ROLE_KEY
+   - NEXT_PUBLIC_SITE_URL = https://sizin-domain.com
+   - IYZICO_API_KEY / IYZICO_SECRET_KEY (canlı merchant)
+   - IYZICO_BASE_URL = https://api.iyzipay.com  (canlı; sandbox değil)
+   - IYZICO_CALLBACK_URL = https://sizin-domain.com/api/payments/iyzico/callback
+
+2) Supabase
+   - migrations/001 ve 002 çalıştırıldı mı?
+   - seed/products.sql yüklendi mi?
+   - Auth → URL Configuration: Site URL + Redirect URLs (callback)
+
+3) iyzico
+   - Sandbox ile test siparişi (ödeme başarılı / başarısız)
+   - Canlı merchant onayı + banka hesap bilgileri
+   - Kart alanları yalnızca iyzico Checkout Form içinde (Bee sitesinde kart no yok)
+
+4) Site kontrolü
+   - /api/health/config → supabase + iyzico configured
+   - Giriş / kayıt
+   - Sepet → ödeme → iyzico formu
+   - /hesabim/siparislerim
+   - /admin/siparisler ve /admin/stok
+
+5) Güvenlik
+   - Service role ve iyzico secret asla public env’de olmasın
+   - Chat/log’a sızan anahtarları rotate edin
+   - Sahte “ödeme başarılı” yok; yalnızca provider callback
+
+6) Operasyon
+   - WhatsApp: 0545 226 75 31
+   - E-posta/SMS provider (opsiyonel): EMAIL_PROVIDER / SMS_PROVIDER
+   - Bildirim kuyruğu: POST /api/admin/notifications/process

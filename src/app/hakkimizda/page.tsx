@@ -1,7 +1,27 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowDownRight, Gem, HeartHandshake, MapPin, Package, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { brands } from "@/data/brands";
+
+/** Gerçek marka / mağaza fotoğrafları gelince bu URL’leri değiştirin. */
+const aboutGallery = [
+  {
+    src: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1200&q=85",
+    alt: "Parfüm şişeleri — Bee seçkisi",
+    caption: "Seçkin koleksiyon",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?auto=format&fit=crop&w=1200&q=85",
+    alt: "Özenli paketleme atmosferi",
+    caption: "Özenli paketleme",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=1200&q=85",
+    alt: "Koku ve zarafet detayı",
+    caption: "Tekirdağ’dan yola çıkar",
+  },
+] as const;
 
 export const metadata: Metadata = {
   title: "Hakkımızda",
@@ -112,6 +132,30 @@ export default function AboutPage() {
               <p className="mt-4 text-sm leading-7 text-neutral-500">{text}</p>
             </article>
           ))}
+        </div>
+
+        <div className="mt-24">
+          <p className="text-[10px] tracking-[.28em] text-[#956f42]">ATMOSFER</p>
+          <h2 className="mt-3 font-serif text-4xl md:text-5xl">Bee dünyasından kareler</h2>
+          <p className="mt-4 max-w-xl text-sm leading-7 text-neutral-600">
+            Marka ve mağaza görselleriniz hazır olduğunda buraya yerleştirilir. Şimdilik koleksiyon atmosferini yansıtan yer tutucular.
+          </p>
+          <ul className="mt-10 grid gap-4 md:grid-cols-3">
+            {aboutGallery.map((item) => (
+              <li key={item.src} className="group">
+                <div className="relative aspect-[4/5] overflow-hidden bg-[#ebe5da]">
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    className="object-cover transition duration-700 group-hover:scale-[1.03]"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+                <p className="mt-3 text-[10px] tracking-[.2em] text-neutral-500">{item.caption}</p>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="mt-24 grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">

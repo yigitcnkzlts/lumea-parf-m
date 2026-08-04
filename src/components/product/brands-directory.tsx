@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Search } from "lucide-react";
 import { brands } from "@/data/brands";
-import { products } from "@/data/products";
+import { getBrandStory } from "@/data/brand-stories";
+import { useCatalogProducts } from "@/context/catalog-context";
 
 function brandLetter(brand: string) {
   return brand.charAt(0).normalize("NFD").replace(/\p{M}/gu, "").toUpperCase();
@@ -13,6 +14,7 @@ function brandLetter(brand: string) {
 const letters = Array.from(new Set(brands.map(brandLetter))).sort();
 
 export function BrandsDirectory() {
+  const products = useCatalogProducts();
   const [query, setQuery] = useState("");
   const [activeLetter, setActiveLetter] = useState<string | "ALL">("ALL");
 
@@ -31,6 +33,7 @@ export function BrandsDirectory() {
         <div>
           <p className="text-[10px] tracking-[.28em] text-[#956f42]">KOLEKSİYON</p>
           <h2 className="mt-3 font-serif text-4xl md:text-5xl">{brands.length} marka</h2>
+          <p className="mt-3 max-w-md text-sm text-neutral-600">Her markanın kısa hikâyesi ve Bee seçkisi.</p>
         </div>
         <label className="relative w-full max-w-sm">
           <span className="sr-only">Marka ara</span>
@@ -71,27 +74,41 @@ export function BrandsDirectory() {
       {filtered.length === 0 ? (
         <p className="py-20 text-center text-sm text-neutral-500">Eşleşen marka yok.</p>
       ) : (
-        <ul className="mt-10 grid gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <ul className="mt-10 grid gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((brand) => {
             const count = products.filter((product) => product.brand === brand).length;
+            const story = getBrandStory(brand);
             return (
               <li key={brand}>
                 <Link
                   href={`/urunler?brand=${encodeURIComponent(brand)}`}
-                  className="group flex h-full min-h-[8.5rem] flex-col justify-between bg-[#faf8f3] px-6 py-7 transition duration-400 hover:bg-[#141312] hover:text-white"
+                  className="group flex h-full min-h-[11rem] flex-col justify-between bg-[#faf8f3] px-6 py-7 transition duration-400 hover:bg-[#141312] hover:text-white"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-serif text-[1.35rem] leading-tight tracking-[.04em] md:text-2xl">
-                      {brand}
-                    </h3>
-                    <ArrowUpRight
-                      className="mt-1 shrink-0 text-[#9c7749] transition group-hover:text-[#d0ad7b]"
-                      size={16}
-                    />
+                  <div>
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="font-serif text-[1.35rem] leading-tight tracking-[.04em] md:text-2xl">
+                        {brand}
+                      </h3>
+                      <ArrowUpRight
+                        className="mt-1 shrink-0 text-[#9c7749] transition group-hover:text-[#d0ad7b]"
+                        size={16}
+                      />
+                    </div>
+                    <p className="mt-2 text-[10px] tracking-[.18em] text-neutral-500 transition group-hover:text-white/40">
+                      {story.origin}
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-neutral-600 transition group-hover:text-white/70">
+                      {story.vibe}
+                    </p>
                   </div>
-                  <p className="mt-8 text-[10px] tracking-[.2em] text-neutral-500 transition group-hover:text-white/40">
-                    {count} ÜRÜN
-                  </p>
+                  <div className="mt-6 flex items-end justify-between gap-3">
+                    <p className="text-[10px] tracking-[.16em] text-neutral-500 transition group-hover:text-white/40">
+                      {story.bestFor}
+                    </p>
+                    <p className="shrink-0 text-[10px] tracking-[.2em] text-neutral-500 transition group-hover:text-white/40">
+                      {count} ÜRÜN
+                    </p>
+                  </div>
                 </Link>
               </li>
             );

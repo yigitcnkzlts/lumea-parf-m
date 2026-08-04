@@ -4,11 +4,13 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CreditCard, Lock, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { FreeShippingBanner } from "@/components/shop/free-shipping-banner";
 import { TURKEY_CITIES } from "@/data/cities";
 import { formatPrice } from "@/data/products";
 import { useAuth } from "@/context/auth-context";
 import { useShop } from "@/context/shop-context";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from "@/lib/contact";
+import { applyCoupon } from "@/lib/commerce/coupons";
 import {
   DEFAULT_INSTALLMENT_PLANS,
   quoteInstallment,
@@ -27,6 +29,9 @@ export function CheckoutForm() {
   const [configMessage, setConfigMessage] = useState<string | null>(null);
   const [installmentCount, setInstallmentCount] = useState(1);
   const [quotes, setQuotes] = useState<InstallmentQuote[]>([]);
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const [couponError, setCouponError] = useState<string | null>(null);
 
   const [fullName, setFullName] = useState(auth.user?.name ?? "");
   const [phone, setPhone] = useState("");
@@ -41,7 +46,9 @@ export function CheckoutForm() {
     [shop.cart],
   );
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_FEE;
-  const cashTotal = subtotal + shipping;
+  const couponPreview = appliedCoupon ? applyCoupon(subtotal, appliedCoupon) : null;
+  const discount = couponPreview?.ok ? couponPreview.discount : 0;
+  const cashTotal = Math.max(0, subtotal - discount) + shipping;
 
   const selectedQuote = useMemo(() => {
     const fromApi = quotes.find((q) => q.count === installmentCount);
@@ -115,6 +122,7 @@ export function CheckoutForm() {
           })),
           address: { fullName, phone, email, city, district, addressLine, note },
           preferredInstallment: installmentCount,
+          couponCode: appliedCoupon || undefined,
           idempotencyKey: typeof crypto !== "undefined" ? crypto.randomUUID() : undefined,
         }),
       });
@@ -207,6 +215,44 @@ export function CheckoutForm() {
               <label className="block text-[10px] tracking-widest text-neutral-500">SİPARİŞ NOTU
                 <textarea rows={2} value={note} onChange={(e) => setNote(e.target.value)} className="mt-2 w-full border border-black/15 bg-white px-4 py-3 text-sm outline-none focus:border-black" />
               </label>
+
+              <div className="border border-black/10 bg-white p-4">
+                <p className="text-[10px] tracking-[.2em] text-[#956f42]">KUPON KODU</p>
+                <div className="mt-3 flex gap-2">
+                  <input
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value.toLocaleUpperCase("tr-TR"))}
+                    placeholder="Örn. BEE10"
+                    className="min-w-0 flex-1 border border-black/15 bg-white px-4 py-3 text-sm outline-none focus:border-black"
+                  />
+                  <button
+                    type="button"
+                    className="border border-black px-4 text-[10px] tracking-[.14em]"
+                    onClick={() => {
+                      const result = applyCoupon(subtotal, couponInput);
+                      if (!result.ok) {
+                        setAppliedCoupon("");
+                        setCouponError(result.error);
+                        return;
+                      }
+                      setAppliedCoupon(result.coupon.code);
+                      setCouponError(null);
+                      toast.success(`${result.coupon.label} uygulandı`);
+                    }}
+                  >
+                    UYGULA
+                  </button>
+                </div>
+                {couponError && <p className="mt-2 text-xs text-red-700">{couponError}</p>}
+                {appliedCoupon && !couponError && (
+                  <p className="mt-2 text-xs text-emerald-800">
+                    {appliedCoupon} aktif · −{formatPrice(discount)}
+                    <button type="button" className="ml-3 underline" onClick={() => { setAppliedCoupon(""); setCouponInput(""); }}>
+                      Kaldır
+                    </button>
+                  </p>
+                )}
+              </div>
 
               <div className="border border-black/10 bg-[#f7f4ed] p-5">
                 <div className="flex items-center gap-2">
@@ -328,6 +374,9 @@ export function CheckoutForm() {
         <aside className="h-fit border border-black/10 bg-[#141312] p-6 text-white md:p-8">
           <p className="text-[10px] tracking-[.28em] text-[#c9a775]">ÖZET</p>
           <h3 className="mt-2 font-serif text-3xl">Sipariş özeti</h3>
+          <div className="mt-4">
+            <FreeShippingBanner remaining={Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal)} compact />
+          </div>
           <ul className="mt-6 space-y-4 text-sm">
             {shop.cart.map((item) => (
               <li key={`${item.product.id}-${item.size}`} className="flex justify-between gap-4 border-b border-white/10 pb-3">
@@ -338,6 +387,9 @@ export function CheckoutForm() {
           </ul>
           <div className="mt-5 space-y-2 text-sm">
             <div className="flex justify-between"><span>Ara toplam</span><b>{formatPrice(subtotal)}</b></div>
+            {discount > 0 && (
+              <div className="flex justify-between text-[#c9a775]"><span>Kupon ({appliedCoupon})</span><b>−{formatPrice(discount)}</b></div>
+            )}
             <div className="flex justify-between text-white/70"><span>Kargo</span><b>{shipping === 0 ? "Ücretsiz" : formatPrice(shipping)}</b></div>
             <div className="flex justify-between text-white/70"><span>Peşin tutar</span><b>{formatPrice(cashTotal)}</b></div>
             {!selectedQuote.isInterestFree && (

@@ -6,23 +6,30 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Check, ChevronRight, Heart, Minus, PackageCheck, Plus, ShieldCheck, Star } from "lucide-react";
 import { formatPrice, products } from "@/data/products";
+import { averageRating, reviewsForProduct } from "@/data/reviews";
 import type { Product } from "@/types/product";
 import { useShop } from "@/context/shop-context";
+import { useCatalogProducts } from "@/context/catalog-context";
 import { ProductCard } from "./product-card";
 
 export function ProductDetail({ product }: { product: Product }) {
   const router = useRouter();
   const [image, setImage] = useState(product.images[0]);
-  const [size, setSize] = useState(product.sizes[1]);
+  const [size, setSize] = useState(product.sizes[1] ?? product.sizes[0]);
   const [quantity, setQuantity] = useState(1);
   const shop = useShop();
+  const catalog = useCatalogProducts();
   const favorite = shop.favorites.includes(product.id);
   const discount = Math.round((1 - product.salePrice / product.price) * 100);
-  const similar = products.filter((p) => p.id !== product.id && (p.scentFamily === product.scentFamily || p.category === product.category)).slice(0, 4);
+  const similar = catalog.filter((p) => p.id !== product.id && (p.scentFamily === product.scentFamily || p.category === product.category)).slice(0, 4);
+  const reviews = reviewsForProduct(product.id);
+  const avg = averageRating(product.id);
+  const displayRating = avg ?? product.rating;
+  const displayCount = reviews.length || product.reviewCount;
 
   const buyNow = () => {
     shop.addToCart(product, size, quantity, { openCart: false });
-    window.setTimeout(() => router.push("/siparis"), 50);
+    window.setTimeout(() => router.push("/odeme"), 50);
   };
 
   return (
@@ -38,7 +45,7 @@ export function ProductDetail({ product }: { product: Product }) {
             <p className="text-[10px] tracking-[.25em] text-[#927048]">{product.brand}</p>
             <h1 className="mt-3 font-serif text-4xl leading-tight md:text-6xl">{product.name}</h1>
             <p className="mt-2 text-sm text-neutral-500">{product.category} · Eau de Parfum</p>
-            <div className="mt-5 flex items-center gap-2"><span className="flex gap-0.5 text-[#ad824b]">{Array.from({length:5}).map((_,i)=><Star key={i} size={14} fill="currentColor" />)}</span><span className="text-xs">{product.rating} ({product.reviewCount} değerlendirme)</span></div>
+            <div className="mt-5 flex items-center gap-2"><span className="flex gap-0.5 text-[#ad824b]">{Array.from({length:5}).map((_,i)=><Star key={i} size={14} fill={i < Math.round(displayRating) ? "currentColor" : "none"} />)}</span><span className="text-xs">{displayRating.toFixed(1)} ({displayCount} değerlendirme)</span></div>
             <div className="mt-7 flex items-baseline gap-3"><b className="text-2xl">{formatPrice(product.salePrice)}</b><span className="text-sm text-neutral-400 line-through">{formatPrice(product.price)}</span></div>
             <div className="my-8 h-px bg-black/10" />
             <div className="flex justify-between text-xs"><b>BOYUT SEÇİN</b></div>
@@ -55,13 +62,38 @@ export function ProductDetail({ product }: { product: Product }) {
             ) : null}
             <div className="mt-5 flex items-center gap-2 text-xs text-emerald-800"><Check size={14} /> {product.stock ? `Stokta · ${product.stock} adet` : "Tükendi"}</div>
             <div className="mt-7 grid grid-cols-2 gap-3 border-y border-black/10 py-5 text-xs"><p className="flex items-center gap-2"><PackageCheck strokeWidth={1.3} /> Tahmini teslimat: 1–3 iş günü</p><p className="flex items-center gap-2"><ShieldCheck strokeWidth={1.3} /> Orijinal ürün garantisi</p></div>
-            <p className="mt-7 text-sm leading-7 text-neutral-600">{product.description}</p>
+            <div className="mt-8">
+              <p className="text-[10px] tracking-[.22em] text-[#927048]">ÜRÜN HAKKINDA</p>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-neutral-600">{product.description}</p>
+            </div>
           </section>
         </div>
       </div>
       <section className="mt-20 bg-[#ebe5da] py-20"><div className="mx-auto max-w-5xl px-5 text-center"><p className="text-[10px] tracking-[.3em] text-[#8d693e]">KOKU PİRAMİDİ</p><h2 className="mt-3 font-serif text-4xl md:text-5xl">Kokunun Katmanları</h2><div className="mt-12 grid gap-8 md:grid-cols-3">{[["Üst Notalar", product.topNotes], ["Orta Notalar", product.heartNotes], ["Alt Notalar", product.baseNotes]].map(([title, notes], i)=><div key={title as string} className="relative"><div className="mx-auto mb-5 grid h-16 w-16 place-content-center rounded-full border border-[#a98555] font-serif text-2xl">{i+1}</div><h3 className="font-serif text-2xl">{title as string}</h3><p className="mt-2 text-sm text-neutral-600">{(notes as string[]).join(", ")}</p></div>)}</div><div className="mt-12 grid gap-4 border-t border-black/10 pt-8 text-left md:grid-cols-2"><div><b className="text-xs tracking-widest">KOKU AİLESİ</b><p className="mt-2 text-sm">{product.scentFamily}</p></div><div><b className="text-xs tracking-widest">KULLANIM ÖNERİSİ</b><p className="mt-2 text-sm">Temiz cilde, nabız noktalarına 15–20 cm uzaktan uygulayın.</p></div></div></div></section>
+      {reviews.length > 0 && (
+        <section className="section-shell !pt-0">
+          <p className="text-center text-[10px] tracking-[.28em] text-[#956f42]">MÜŞTERİ YORUMLARI</p>
+          <h2 className="mt-3 text-center font-serif text-4xl md:text-5xl">Bee’den alanlar ne diyor?</h2>
+          <ul className="mx-auto mt-12 grid max-w-5xl gap-5 md:grid-cols-2">
+            {reviews.map((review) => (
+              <li key={review.id} className="border border-black/10 bg-white/50 p-6">
+                <div className="flex items-center gap-2 text-[#ad824b]">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} size={13} fill={i < review.rating ? "currentColor" : "none"} />
+                  ))}
+                </div>
+                <h3 className="mt-3 font-serif text-2xl">{review.title}</h3>
+                <p className="mt-2 text-sm leading-7 text-neutral-600">{review.body}</p>
+                <p className="mt-4 text-[10px] tracking-[.16em] text-neutral-500">
+                  {review.name} · {new Date(review.date).toLocaleDateString("tr-TR")}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <section className="section-shell"><p className="text-center text-[10px] tracking-[.28em] text-[#956f42]">SİZİN İÇİN SEÇTİK</p><h2 className="mt-3 text-center font-serif text-4xl md:text-5xl">Benzer Parfümler</h2><div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">{similar.map((item)=><ProductCard product={item} key={item.id} />)}</div></section>
-      <section className="mx-auto max-w-[1500px] px-5 pb-20 lg:px-8"><h2 className="font-serif text-3xl">Son Görüntülenenler</h2><div className="mt-8 grid max-w-3xl grid-cols-2 gap-4 md:grid-cols-3">{products.filter((p)=>p.id!==product.id).slice(-3).map((item)=><ProductCard product={item} compact key={item.id} />)}</div></section>
+      <section className="mx-auto max-w-[1500px] px-5 pb-20 lg:px-8"><h2 className="font-serif text-3xl">Son Görüntülenenler</h2><div className="mt-8 grid max-w-3xl grid-cols-2 gap-4 md:grid-cols-3">{catalog.filter((p)=>p.id!==product.id).slice(-3).map((item)=><ProductCard product={item} compact key={item.id} />)}</div></section>
     </main>
   );
 }

@@ -3,11 +3,12 @@
 import { useMemo, useState } from "react";
 import { Grid2X2, List, Search, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
-import { products } from "@/data/products";
+import { useCatalogProducts } from "@/context/catalog-context";
 
 type InitialFilters = { category?: string; brand?: string; family?: string };
 
 export function ProductsView({ initial }: { initial: InitialFilters }) {
+  const products = useCatalogProducts();
   const [query, setQuery] = useState("");
   const [brands, setBrands] = useState<string[]>(initial.brand ? [initial.brand] : []);
   const [categories, setCategories] = useState<string[]>(initial.category ? [initial.category] : []);
@@ -32,9 +33,9 @@ export function ProductsView({ initial }: { initial: InitialFilters }) {
       product.salePrice <= maxPrice && (!discounted || product.salePrice < product.price) && (!inStock || product.stock > 0),
     );
     return [...result].sort((a, b) => sort === "low" ? a.salePrice - b.salePrice : sort === "high" ? b.salePrice - a.salePrice : sort === "rating" ? b.rating - a.rating : Number(b.isBestSeller) - Number(a.isBestSeller));
-  }, [query, brands, categories, families, maxPrice, discounted, inStock, sort]);
+  }, [products, query, brands, categories, families, maxPrice, discounted, inStock, sort]);
 
-  const filters = <FilterPanel {...{ brands, categories, families, maxPrice, discounted, inStock, toggle, setBrands, setCategories, setFamilies, setMaxPrice, setDiscounted, setInStock, clear }} />;
+  const filters = <FilterPanel {...{ brands, categories, families, maxPrice, discounted, inStock, toggle, setBrands, setCategories, setFamilies, setMaxPrice, setDiscounted, setInStock, clear, catalogBrands: Array.from(new Set(products.map((p) => p.brand))).sort() }} />;
 
   return (
     <main className="mx-auto max-w-[1500px] px-5 py-12 lg:px-8 lg:py-16">
@@ -59,12 +60,13 @@ export function ProductsView({ initial }: { initial: InitialFilters }) {
 
 interface FilterProps extends InitialFilters {
   brands: string[]; categories: string[]; families: string[]; maxPrice: number; discounted: boolean; inStock: boolean;
+  catalogBrands: string[];
   toggle: (value: string, values: string[], setter: (next: string[]) => void) => void;
   setBrands: (v: string[]) => void; setCategories: (v: string[]) => void; setFamilies: (v: string[]) => void;
   setMaxPrice: (v: number) => void; setDiscounted: (v: boolean) => void; setInStock: (v: boolean) => void; clear: () => void;
 }
 function FilterPanel(props: FilterProps) {
-  const uniqueBrands = Array.from(new Set(products.map((p) => p.brand)));
+  const uniqueBrands = props.catalogBrands;
   const checks = (title: string, options: string[], values: string[], setter: (v: string[]) => void) => <fieldset className="border-b border-black/10 py-5"><legend className="mb-4 text-[10px] tracking-[.18em]">{title}</legend><div className="space-y-3">{options.map((option) => <label key={option} className="flex cursor-pointer items-center gap-3 text-xs text-neutral-600"><input type="checkbox" checked={values.includes(option)} onChange={() => props.toggle(option, values, setter)} className="accent-black" />{option}</label>)}</div></fieldset>;
   return <div><div className="flex items-center justify-between border-b border-black/10 pb-4"><b className="text-sm">Filtreler</b><button onClick={props.clear} className="text-[10px] underline">TEMİZLE</button></div>{checks("KATEGORİ", ["Kadın", "Erkek", "Unisex"], props.categories, props.setCategories)}{checks("MARKA", uniqueBrands, props.brands, props.setBrands)}{checks("KOKU AİLESİ", ["Odunsu", "Çiçeksi", "Oryantal", "Meyveli"], props.families, props.setFamilies)}<fieldset className="border-b border-black/10 py-5"><legend className="mb-4 text-[10px] tracking-[.18em]">FİYAT ARALIĞI</legend><input type="range" min="3500" max="9000" step="100" value={props.maxPrice} onChange={(e) => props.setMaxPrice(Number(e.target.value))} className="w-full accent-black" /><p className="mt-2 text-xs text-neutral-500">En fazla {props.maxPrice.toLocaleString("tr-TR")} TL</p></fieldset><div className="space-y-3 py-5"><label className="flex gap-3 text-xs"><input type="checkbox" checked={props.discounted} onChange={(e) => props.setDiscounted(e.target.checked)} /> İndirimli ürünler</label><label className="flex gap-3 text-xs"><input type="checkbox" checked={props.inStock} onChange={(e) => props.setInStock(e.target.checked)} /> Yalnızca stoktakiler</label></div></div>;
 }

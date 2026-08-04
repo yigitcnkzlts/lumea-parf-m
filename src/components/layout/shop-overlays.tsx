@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Heart, Minus, Plus, Search, ShoppingBag, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { formatPrice, products } from "@/data/products";
+import { formatPrice } from "@/data/products";
 import { useAuth } from "@/context/auth-context";
+import { useCatalogProducts } from "@/context/catalog-context";
 import { useShop } from "@/context/shop-context";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from "@/lib/contact";
 
@@ -23,6 +24,7 @@ export function ShopOverlays() {
   const shop = useShop();
   const auth = useAuth();
   const router = useRouter();
+  const products = useCatalogProducts();
   const [query, setQuery] = useState("");
   const [quickSize, setQuickSize] = useState(50);
   useEscape(() => shop.setCartOpen(false), shop.cartOpen);

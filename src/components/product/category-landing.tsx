@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { ArrowDown, Search, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
 import { brands } from "@/data/brands";
-import { products } from "@/data/products";
+import { useCatalogProducts } from "@/context/catalog-context";
 import type { Category } from "@/types/product";
 
 const scentOptions = ["Odunsu", "Çiçeksi", "Oryantal", "Meyveli"] as const;
@@ -45,6 +45,7 @@ const content: Record<
 };
 
 export function CategoryLanding({ category }: { category: Category }) {
+  const products = useCatalogProducts();
   const page = content[category];
   const isMen = category === "Erkek";
   const categoryProducts = products.filter((product) => product.category === category);

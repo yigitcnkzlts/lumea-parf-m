@@ -1,3 +1,4 @@
+import { applyCoupon } from "@/lib/commerce/coupons";
 import type { CheckoutCartLine, PricedCart, PricedLine } from "@/lib/commerce/types";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -11,8 +12,30 @@ function shippingFee() {
   return Number.isFinite(n) ? n : 99;
 }
 
+function withCoupon(base: Omit<PricedCart, "discount" | "couponCode" | "total">, couponCode?: string): PricedCart {
+  if (!couponCode?.trim()) {
+    return {
+      ...base,
+      discount: 0,
+      couponCode: null,
+      total: base.subtotal + base.shippingFee,
+    };
+  }
+  const result = applyCoupon(base.subtotal, couponCode);
+  if (!result.ok) throw new Error(result.error);
+  return {
+    ...base,
+    discount: result.discount,
+    couponCode: result.coupon.code,
+    total: result.totalAfter + base.shippingFee,
+  };
+}
+
 /** Server-side pricing from DB. Never trust client totals. */
-export async function priceCartFromDatabase(items: CheckoutCartLine[]): Promise<PricedCart> {
+export async function priceCartFromDatabase(
+  items: CheckoutCartLine[],
+  couponCode?: string,
+): Promise<PricedCart> {
   if (!items.length) {
     throw new Error("Sepet boş.");
   }
@@ -71,17 +94,22 @@ export async function priceCartFromDatabase(items: CheckoutCartLine[]): Promise<
   const subtotal = lines.reduce((sum, line) => sum + line.lineTotal, 0);
   const fee = subtotal >= freeShippingThreshold() ? 0 : shippingFee();
 
-  return {
-    lines,
-    subtotal,
-    shippingFee: fee,
-    total: subtotal + fee,
-    currency: "TRY",
-  };
+  return withCoupon(
+    {
+      lines,
+      subtotal,
+      shippingFee: fee,
+      currency: "TRY",
+    },
+    couponCode,
+  );
 }
 
 /** Fallback when DB products table is empty — prices still come from server catalog, not client. */
-export async function priceCartFromStaticCatalog(items: CheckoutCartLine[]): Promise<PricedCart> {
+export async function priceCartFromStaticCatalog(
+  items: CheckoutCartLine[],
+  couponCode?: string,
+): Promise<PricedCart> {
   const { products } = await import("@/data/products");
   const byId = new Map(products.map((p) => [p.id, p]));
   const lines: PricedLine[] = [];
@@ -109,5 +137,13 @@ export async function priceCartFromStaticCatalog(items: CheckoutCartLine[]): Pro
 
   const subtotal = lines.reduce((sum, line) => sum + line.lineTotal, 0);
   const fee = subtotal >= freeShippingThreshold() ? 0 : shippingFee();
-  return { lines, subtotal, shippingFee: fee, total: subtotal + fee, currency: "TRY" };
+  return withCoupon(
+    {
+      lines,
+      subtotal,
+      shippingFee: fee,
+      currency: "TRY",
+    },
+    couponCode,
+  );
 }

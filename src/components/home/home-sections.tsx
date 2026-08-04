@@ -2,14 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, Camera, Headphones, MessageCircle, PackageCheck, RotateCcw, ShieldCheck, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, Headphones, MessageCircle, PackageCheck, RotateCcw, ShieldCheck, Sparkles } from "lucide-react";
 import { ProductCard } from "@/components/product/product-card";
 import { brands } from "@/data/brands";
-import { products } from "@/data/products";
+import { useCatalogProducts } from "@/context/catalog-context";
 import { whatsappLink } from "@/lib/contact";
 
 const categoryImages = [
@@ -62,6 +62,7 @@ export function CategorySection() {
 }
 
 export function ProductSection({ type }: { type: "best" | "new" }) {
+  const products = useCatalogProducts();
   const rowRef = useRef<HTMLDivElement>(null);
   const list = products.filter((p) => type === "best" ? p.isBestSeller : p.isNew);
   const scroll = (direction: number) => rowRef.current?.scrollBy({ left: direction * rowRef.current.clientWidth * .75, behavior: "smooth" });
@@ -126,13 +127,7 @@ export function TrustAndReviews() {
 }
 
 export function GuideAndInstagram() {
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const close = (event: KeyboardEvent) => event.key === "Escape" && setOpen(false);
-    window.addEventListener("keydown", close);
-    return () => window.removeEventListener("keydown", close);
-  }, []);
-  return <><section className="relative overflow-hidden bg-[#ded5c5] py-24"><Sparkles className="absolute -right-16 -top-16 h-72 w-72 text-white/20" strokeWidth={.5} /><div className="relative mx-auto max-w-4xl px-5 text-center"><p className="text-[10px] tracking-[.3em] text-[#795c3b]">KOKU REHBERİ</p><h2 className="mt-4 font-serif text-5xl md:text-7xl">Hangi Koku Size Uygun?</h2><p className="mx-auto mt-5 max-w-xl leading-7 text-neutral-600">Birkaç basit seçimle karakterinizi tamamlayan koku ailesini birlikte bulalım.</p><div className="mt-7 flex flex-wrap justify-center gap-2">{["Günlük kullanım", "Özel davet", "Ofis", "Yaz mevsimi", "Kış mevsimi", "Hediye seçimi"].map((x)=><span key={x} className="rounded-full border border-black/15 bg-white/30 px-4 py-2 text-xs">{x}</span>)}</div><button onClick={() => setOpen(true)} className="btn-dark mx-auto mt-9">KOKUNU BUL</button></div></section><section className="py-20 text-center"><a href="https://instagram.com/beekozmatik" target="_blank" rel="noopener noreferrer" className="font-serif text-4xl transition hover:text-[#8a6438]">@beekozmatik</a><p className="mt-2 text-sm text-neutral-500">Koku dünyamıza katılın.</p><div className="mt-9 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">{instagram.map((id)=><Link href="https://instagram.com/beekozmatik" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="group relative aspect-square overflow-hidden" key={id}><Image src={`https://images.unsplash.com/${id}?auto=format&fit=crop&w=700&q=80`} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" sizes="17vw" /><div className="absolute inset-0 grid place-content-center bg-black/0 text-white opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100"><Camera /></div></Link>)}</div></section>{open && <div className="fixed inset-0 z-[100] grid place-items-center bg-black/50 p-5 backdrop-blur-sm" onMouseDown={() => setOpen(false)}><div role="dialog" aria-modal="true" className="relative w-full max-w-xl bg-[#faf8f3] p-8 text-center md:p-12" onMouseDown={(e)=>e.stopPropagation()}><button aria-label="Rehberi kapat" onClick={()=>setOpen(false)} className="absolute right-4 top-4"><X /></button><Sparkles className="mx-auto text-[#a17a49]" /><h3 className="mt-4 font-serif text-3xl">Koku Yolculuğunuz Başlıyor</h3><p className="mt-4 text-sm leading-6 text-neutral-600">Kişisel koku rehberi yakında burada olacak. Bu sırada koleksiyonlarımızı koku ailelerine göre keşfedebilirsiniz.</p><Link href="/urunler" onClick={()=>setOpen(false)} className="btn-dark mx-auto mt-7">KOKULARI KEŞFET</Link></div></div>}</>;
+  return <><section className="relative overflow-hidden bg-[#ded5c5] py-24"><Sparkles className="absolute -right-16 -top-16 h-72 w-72 text-white/20" strokeWidth={.5} /><div className="relative mx-auto max-w-4xl px-5 text-center"><p className="text-[10px] tracking-[.3em] text-[#795c3b]">KOKU REHBERİ</p><h2 className="mt-4 font-serif text-5xl md:text-7xl">Hangi Koku Size Uygun?</h2><p className="mx-auto mt-5 max-w-xl leading-7 text-neutral-600">Birkaç basit seçimle karakterinizi tamamlayan koku ailesini birlikte bulalım.</p><div className="mt-7 flex flex-wrap justify-center gap-2">{["Günlük kullanım", "Özel davet", "Ofis", "Yaz mevsimi", "Kış mevsimi", "Hediye seçimi"].map((x)=><span key={x} className="border border-black/15 bg-white/30 px-4 py-2 text-xs">{x}</span>)}</div><Link href="/koku-danismani" className="btn-dark mx-auto mt-9">KOKUNU BUL</Link></div></section><section className="py-20 text-center"><a href="https://instagram.com/beekozmatik" target="_blank" rel="noopener noreferrer" className="font-serif text-4xl transition hover:text-[#8a6438]">@beekozmatik</a><p className="mt-2 text-sm text-neutral-500">Koku dünyamıza katılın.</p><div className="mt-9 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">{instagram.map((id)=><Link href="https://instagram.com/beekozmatik" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="group relative aspect-square overflow-hidden" key={id}><Image src={`https://images.unsplash.com/${id}?auto=format&fit=crop&w=700&q=80`} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" sizes="17vw" /><div className="absolute inset-0 grid place-content-center bg-black/0 text-white opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100"><Camera /></div></Link>)}</div></section></>;
 }
 
 const emailSchema = z.string().email("Geçerli bir e-posta adresi girin.");

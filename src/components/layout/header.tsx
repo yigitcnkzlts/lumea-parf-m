@@ -7,10 +7,10 @@ import { useAuth } from "@/context/auth-context";
 import { useShop } from "@/context/shop-context";
 
 const notices = [
-  "1.500 TL üzeri ücretsiz kargo",
-  "WhatsApp destek hattı",
-  "Yurt içi hızlı teslimat",
-  "Orijinal ürün garantisi",
+  "1.500 TL üzeri ücretsiz kargo — Türkiye geneli",
+  "Orijinal ürün garantisi · Bee Kozmetik",
+  "WhatsApp destek: 0545 226 75 31",
+  "Tekirdağ’dan hızlı yurt içi teslimat",
 ];
 
 const links = [
@@ -19,6 +19,7 @@ const links = [
   ["Erkek Parfümleri", "/erkek-parfumleri"],
   ["Unisex", "/unisex"],
   ["Markalar", "/markalar"],
+  ["Koku Danışmanı", "/koku-danismani"],
   ["Kampanyalar", "/kampanyalar"],
   ["Hizmetler", "/hizmetler"],
   ["Hakkımızda", "/hakkimizda"],
@@ -52,12 +53,13 @@ export function Header() {
   const openAccount = () => {
     if (auth.user) {
       const choice = window.prompt(
-        `${auth.user.name}\n\n1 = Siparişlerim\n2 = Çıkış yap${auth.user.role === "admin" ? "\n3 = Admin siparişler" : ""}\n\nSeçiminiz:`,
+        `${auth.user.name}\n\n1 = Siparişlerim\n2 = Çıkış yap${auth.user.role === "admin" ? "\n3 = Admin siparişler\n4 = Admin stok" : ""}\n\nSeçiminiz:`,
         "1",
       );
       if (choice === "1") window.location.href = "/hesabim/siparislerim";
       else if (choice === "2") void auth.logout();
       else if (choice === "3" && auth.user.role === "admin") window.location.href = "/admin/siparisler";
+      else if (choice === "4" && auth.user.role === "admin") window.location.href = "/admin/stok";
       return;
     }
     auth.setAuthOpen(true);

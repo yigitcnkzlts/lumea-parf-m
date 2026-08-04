@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { FreeShippingBanner } from "@/components/shop/free-shipping-banner";
 import { formatPrice } from "@/data/products";
 import { useAuth } from "@/context/auth-context";
 import { useShop } from "@/context/shop-context";
@@ -16,6 +17,7 @@ export function CartPageClient() {
   const subtotal = shop.cart.reduce((sum, item) => sum + item.product.salePrice * item.quantity, 0);
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_FEE;
   const total = subtotal + shipping;
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
 
   const goCheckout = () => {
     if (!auth.requireAuth("Satın alma için giriş yapın veya kayıt olun.")) return;
@@ -35,6 +37,7 @@ export function CartPageClient() {
   return (
     <div className="grid gap-10 lg:grid-cols-[1.2fr_.8fr]">
       <div className="space-y-5">
+        <FreeShippingBanner remaining={remaining} />
         {shop.cart.map((item) => (
           <article key={`${item.product.id}-${item.size}`} className="flex gap-5 border border-black/10 bg-white/50 p-4 md:p-5">
             <div className="relative h-32 w-28 shrink-0 overflow-hidden bg-[#f1eee7]">

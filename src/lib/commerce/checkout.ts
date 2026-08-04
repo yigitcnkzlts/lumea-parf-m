@@ -13,13 +13,14 @@ export async function createCheckoutSession(input: {
   clientIp: string;
   idempotencyKey?: string;
   preferredInstallment?: number;
+  couponCode?: string;
 }) {
   if (!isSupabaseServiceConfigured()) {
     throw new Error(missingSupabaseMessage());
   }
 
   // Prices and stock always from DB — never trust client totals.
-  const priced = await priceCartFromDatabase(input.items);
+  const priced = await priceCartFromDatabase(input.items, input.couponCode);
   const plans = getInstallmentPlans();
   const preferred =
     plans.find((p) => p.count === input.preferredInstallment)?.count ?? plans[0]?.count ?? 1;
@@ -42,6 +43,8 @@ export async function createCheckoutSession(input: {
       metadata: {
         preferredInstallment: preferred,
         installmentPreview: installmentQuote,
+        couponCode: priced.couponCode,
+        discount: priced.discount,
       },
     })
     .eq("id", order.id);
