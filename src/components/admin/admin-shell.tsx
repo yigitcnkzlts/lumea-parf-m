@@ -11,6 +11,7 @@ import {
   Package,
   ShoppingBag,
   Store,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { BeeLogo } from "@/components/brand/bee-logo";
@@ -18,7 +19,8 @@ import { BeeLogo } from "@/components/brand/bee-logo";
 const nav = [
   { href: "/admin", label: "Özet", icon: LayoutDashboard, exact: true },
   { href: "/admin/siparisler", label: "Siparişler", icon: Package },
-  { href: "/admin/stok", label: "Ürün & stok", icon: Boxes },
+  { href: "/admin/urunler", label: "Ürünler", icon: Sparkles },
+  { href: "/admin/stok", label: "Stok", icon: Boxes },
   { href: "/admin/bildirimler", label: "Bildirimler", icon: Bell },
 ] as const;
 

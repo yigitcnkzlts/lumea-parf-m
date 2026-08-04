@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { ProductsAdmin } from "@/components/admin/products-admin";
+import { StockAdmin } from "@/components/admin/stock-admin";
 
 export const metadata: Metadata = {
-  title: "Ürün & stok",
+  title: "Stok",
 };
 
 export default function AdminStokPage() {
   return (
     <div>
-      <p className="text-[10px] tracking-[.28em] text-[#956f42]">ÜRÜN</p>
-      <h1 className="mt-3 font-serif text-4xl md:text-5xl">Ürün & stok</h1>
+      <p className="text-[10px] tracking-[.28em] text-[#956f42]">STOK</p>
+      <h1 className="mt-3 font-serif text-4xl md:text-5xl">Hızlı stok</h1>
       <p className="mt-3 text-sm text-neutral-600">
-        Yeni parfüm, sürükle-bırak görsel, açıklama, notalar ve CSV stok güncelleme.
+        Adet güncelleme ve CSV içe aktarma. Yeni parfüm eklemek için Ürünler menüsüne gidin.
       </p>
       <div className="mt-8">
-        <ProductsAdmin />
+        <StockAdmin />
       </div>
     </div>
   );
