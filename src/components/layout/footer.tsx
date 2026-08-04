@@ -3,7 +3,7 @@ import { Camera, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { whatsappLink } from "@/lib/contact";
 
 const groups: [string, [string, string][]][] = [
-  ["Kurumsal", [["Hakkımızda", "/hakkimizda"], ["İletişim", "/iletisim"], ["Hizmetler", "/hizmetler"], ["Koku Danışmanı", "/koku-danismani"]]],
+  ["Kurumsal", [["Hakkımızda", "/hakkimizda"], ["İletişim", "/iletisim"], ["Hizmetler", "/hizmetler"], ["Koku Danışmanı", "/koku-danismani"], ["Karşılaştır", "/karsilastir"]]],
   ["Hizmetler", [
     ["Genel Bakış", "/hizmetler#genel"],
     ["Kargo ve Teslimat", "/hizmetler#kargo"],

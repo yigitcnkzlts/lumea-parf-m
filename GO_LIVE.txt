@@ -32,7 +32,8 @@ Bee Kozmetik — satışa açılış kontrol listesi
    - Chat/log’a sızan anahtarları rotate edin
    - Sahte “ödeme başarılı” yok; yalnızca provider callback
 
-6) Operasyon
-   - WhatsApp: 0545 226 75 31
-   - E-posta/SMS provider (opsiyonel): EMAIL_PROVIDER / SMS_PROVIDER
-   - Bildirim kuyruğu: POST /api/admin/notifications/process
+6) Faz 3 (yorum / upload / alert)
+   - Supabase SQL Editor’de migrations/003_reviews_alerts_storage.sql çalıştır
+   - Storage bucket: product-images (migration oluşturur)
+   - Admin panel: /admin  → stok, sipariş, bildirimler
+   - Opsiyonel: NEXT_PUBLIC_GA_MEASUREMENT_ID, NEXT_PUBLIC_META_PIXEL_ID

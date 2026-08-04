@@ -32,6 +32,17 @@ export function CheckoutForm() {
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [couponError, setCouponError] = useState<string | null>(null);
+  const [savedAddresses, setSavedAddresses] = useState<
+    Array<{
+      id: string;
+      label: string;
+      full_name: string;
+      phone: string;
+      city: string;
+      district: string;
+      address_line: string;
+    }>
+  >([]);
 
   const [fullName, setFullName] = useState(auth.user?.name ?? "");
   const [phone, setPhone] = useState("");
@@ -56,6 +67,17 @@ export function CheckoutForm() {
     const plan = DEFAULT_INSTALLMENT_PLANS.find((p) => p.count === installmentCount) ?? DEFAULT_INSTALLMENT_PLANS[0];
     return quoteInstallment(cashTotal, plan);
   }, [quotes, installmentCount, cashTotal]);
+
+  useEffect(() => {
+    if (!auth.user) return;
+    void fetch("/api/account/addresses")
+      .then(async (res) => {
+        if (!res.ok) return;
+        const data = await res.json();
+        setSavedAddresses(data.addresses ?? []);
+      })
+      .catch(() => undefined);
+  }, [auth.user]);
 
   useEffect(() => {
     if (cashTotal <= 0) {
@@ -187,6 +209,37 @@ export function CheckoutForm() {
             <form onSubmit={onSubmitAddress} className="space-y-5 border border-black/10 bg-white/50 p-6 md:p-8">
               <p className="text-[10px] tracking-[.28em] text-[#956f42]">TESLİMAT</p>
               <h2 className="font-serif text-3xl">Teslimat bilgileri</h2>
+
+              {savedAddresses.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-[10px] tracking-widest text-neutral-500">KAYITLI ADRES</p>
+                  <div className="grid gap-2">
+                    {savedAddresses.map((address) => (
+                      <button
+                        key={address.id}
+                        type="button"
+                        className="border border-black/10 px-4 py-3 text-left text-sm hover:border-black"
+                        onClick={() => {
+                          setFullName(address.full_name);
+                          setPhone(address.phone);
+                          setCity(address.city);
+                          setDistrict(address.district);
+                          setAddressLine(address.address_line);
+                          toast.success(`${address.label} seçildi`);
+                        }}
+                      >
+                        <b>{address.label}</b> · {address.full_name}
+                        <span className="mt-1 block text-xs text-neutral-500">
+                          {address.district}/{address.city}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  <Link href="/hesabim/adreslerim" className="text-[10px] underline">
+                    Adres defterini yönet
+                  </Link>
+                </div>
+              )}
 
               <label className="block text-[10px] tracking-widest text-neutral-500">AD SOYAD
                 <input required value={fullName} onChange={(e) => setFullName(e.target.value)} className="mt-2 w-full border border-black/15 bg-white px-4 py-3 text-sm outline-none focus:border-black" />

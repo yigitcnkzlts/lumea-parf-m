@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ImageDropzone, ImageUrlList } from "@/components/admin/image-dropzone";
 import { formatPrice } from "@/data/products";
 import { splitList } from "@/lib/catalog/map";
 
@@ -205,12 +206,44 @@ export function ProductsAdmin() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-neutral-600">
-          Yeni parfüm ekleyin: görsel URL’leri, açıklama, notalar, fiyat ve stok.
+          Yeni parfüm ekleyin: sürükle-bırak görsel, açıklama, notalar, fiyat ve stok.
         </p>
-        <button type="button" onClick={openCreate} className="btn-dark !min-h-10">
-          + YENİ PARFÜM
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <label className="cursor-pointer border border-black/15 px-4 py-3 text-[10px] tracking-[.14em] hover:border-black">
+            CSV STOK İÇE AKTAR
+            <input
+              type="file"
+              accept=".csv,text/csv,text/plain"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                try {
+                  const text = await file.text();
+                  const res = await fetch("/api/admin/products/import", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/csv" },
+                    body: text,
+                  });
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error);
+                  toast.success(`${data.updated}/${data.total} stok güncellendi`);
+                  await load();
+                } catch (err) {
+                  toast.error(err instanceof Error ? err.message : "Import hatası");
+                }
+                e.target.value = "";
+              }}
+            />
+          </label>
+          <button type="button" onClick={openCreate} className="btn-dark !min-h-10">
+            + YENİ PARFÜM
+          </button>
+        </div>
       </div>
+      <p className="text-[11px] text-neutral-500">
+        CSV formatı: her satır <code>id,stock</code> (örn. <code>12,40</code>). İlk satır başlık olabilir.
+      </p>
 
       {showForm && (
         <form onSubmit={onSubmit} className="space-y-5 border border-black/10 bg-white/70 p-6 md:p-8">
@@ -347,7 +380,7 @@ export function ProductsAdmin() {
           </div>
 
           <label className="block text-[10px] tracking-widest text-neutral-500">
-            GÖRSEL URL’LERİ (her satıra bir adres)
+            GÖRSEL URL’LERİ (her satıra bir adres) veya aşağıdan yükle
             <textarea
               required
               rows={4}
@@ -356,21 +389,25 @@ export function ProductsAdmin() {
               className="mt-2 w-full border border-black/15 px-4 py-3 font-mono text-xs outline-none focus:border-black"
               placeholder={"https://...\n/images/urun.jpg"}
             />
-            <span className="mt-2 block text-[11px] normal-case tracking-normal text-neutral-500">
-              Dosya yükleme paneli değil: görseli Unsplash, kendi hosting’iniz veya{" "}
-              <code className="text-[10px]">/public/images</code> altına koyup yolunu yazın.
-              Örn. <code className="text-[10px]">/images/chanel-coco.jpg</code>
-            </span>
           </label>
 
-          {previewImages.length > 0 && (
-            <div className="flex flex-wrap gap-3">
-              {previewImages.map((src) => (
-                <div key={src} className="relative h-24 w-20 overflow-hidden border border-black/10 bg-[#eee8dc]">
-                  <Image src={src} alt="" fill className="object-cover" sizes="80px" unoptimized={src.startsWith("http")} />
-                </div>
-              ))}
-            </div>
+          <ImageDropzone
+            purpose="product"
+            onUploaded={(url) =>
+              setForm((f) => ({
+                ...f,
+                imagesText: f.imagesText.trim() ? `${f.imagesText.trim()}\n${url}` : url,
+              }))
+            }
+          />
+
+          <ImageUrlList
+            urls={previewImages}
+            onChange={(next) => setForm((f) => ({ ...f, imagesText: next.join("\n") }))}
+          />
+
+          {previewImages.length === 0 ? null : (
+            <p className="text-[11px] text-neutral-500">Önizleme yukarıda. Silmek için görsel altındaki SİL.</p>
           )}
 
           <div className="grid gap-4 md:grid-cols-2">

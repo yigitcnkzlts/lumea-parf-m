@@ -141,8 +141,19 @@ export function ShopOverlays() {
                     <p className="text-[10px] tracking-[.18em] text-neutral-500">{product.brand}</p>
                     <Link href={`/urunler/${product.slug}`} onClick={() => shop.setFavoritesOpen(false)} className="font-serif text-lg">{product.name}</Link>
                     <b className="mt-1 text-sm">{formatPrice(product.salePrice)}</b>
-                    <div className="mt-auto flex gap-2">
+                    <div className="mt-auto flex flex-wrap gap-2">
                       <button onClick={() => shop.addToCart(product)} className="bg-black px-3 py-2 text-[10px] tracking-wider text-white">SEPETE EKLE</button>
+                      <button
+                        onClick={() => {
+                          if (!auth.requireAuth("Satın alma için giriş yapın.")) return;
+                          shop.addToCart(product, product.sizes[1] ?? product.sizes[0], 1, { openCart: false });
+                          shop.setFavoritesOpen(false);
+                          router.push("/odeme");
+                        }}
+                        className="border border-black px-3 py-2 text-[10px] tracking-wider"
+                      >
+                        HEMEN AL
+                      </button>
                       <button onClick={() => shop.toggleFavorite(product.id)} className="border border-black/15 px-3 py-2 text-[10px] tracking-wider">KALDIR</button>
                     </div>
                   </div>

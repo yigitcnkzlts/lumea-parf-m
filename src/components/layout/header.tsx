@@ -53,13 +53,15 @@ export function Header() {
   const openAccount = () => {
     if (auth.user) {
       const choice = window.prompt(
-        `${auth.user.name}\n\n1 = Siparişlerim\n2 = Çıkış yap${auth.user.role === "admin" ? "\n3 = Admin siparişler\n4 = Admin stok" : ""}\n\nSeçiminiz:`,
+        `${auth.user.name}\n\n1 = Siparişlerim\n2 = Adreslerim\n3 = Çıkış yap${auth.user.role === "admin" ? "\n4 = Admin panel\n5 = Admin siparişler\n6 = Admin stok" : ""}\n\nSeçiminiz:`,
         "1",
       );
       if (choice === "1") window.location.href = "/hesabim/siparislerim";
-      else if (choice === "2") void auth.logout();
-      else if (choice === "3" && auth.user.role === "admin") window.location.href = "/admin/siparisler";
-      else if (choice === "4" && auth.user.role === "admin") window.location.href = "/admin/stok";
+      else if (choice === "2") window.location.href = "/hesabim/adreslerim";
+      else if (choice === "3") void auth.logout();
+      else if (choice === "4" && auth.user.role === "admin") window.location.href = "/admin";
+      else if (choice === "5" && auth.user.role === "admin") window.location.href = "/admin/siparisler";
+      else if (choice === "6" && auth.user.role === "admin") window.location.href = "/admin/stok";
       return;
     }
     auth.setAuthOpen(true);

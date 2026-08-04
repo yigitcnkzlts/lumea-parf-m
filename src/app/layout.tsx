@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import { AuthModal } from "@/components/auth/auth-modal";
+import { AnalyticsScripts } from "@/components/layout/analytics-scripts";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { ShopOverlays } from "@/components/layout/shop-overlays";
@@ -40,6 +41,7 @@ export default async function RootLayout({
         <AuthProvider>
           <CatalogProvider initialProducts={catalog}>
             <ShopProvider>
+              <AnalyticsScripts />
               <Header />
               {children}
               <Footer />

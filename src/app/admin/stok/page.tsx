@@ -14,12 +14,20 @@ export default function AdminStokPage() {
           <p className="text-[10px] tracking-[.28em] text-[#956f42]">ADMIN</p>
           <h1 className="mt-3 font-serif text-5xl">Ürün & stok</h1>
           <p className="mt-3 text-sm text-neutral-600">
-            Yeni parfüm ekleyin (görsel URL, açıklama, notalar, fiyat) veya mevcut ürünü düzenleyin.
+            Yeni parfüm ekleyin (sürükle-bırak görsel, açıklama, notalar, fiyat) veya CSV ile stok güncelleyin.
           </p>
         </div>
-        <Link href="/admin/siparisler" className="border border-black/15 px-4 py-3 text-[10px] tracking-[.16em] transition hover:border-black">
-          SİPARİŞLER
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin" className="border border-black/15 px-4 py-3 text-[10px] tracking-[.16em] transition hover:border-black">
+            ADMIN PANEL
+          </Link>
+          <Link href="/admin/siparisler" className="border border-black/15 px-4 py-3 text-[10px] tracking-[.16em] transition hover:border-black">
+            SİPARİŞLER
+          </Link>
+          <Link href="/admin/bildirimler" className="border border-black/15 px-4 py-3 text-[10px] tracking-[.16em] transition hover:border-black">
+            BİLDİRİMLER
+          </Link>
+        </div>
       </div>
       <div className="mt-10">
         <ProductsAdmin />

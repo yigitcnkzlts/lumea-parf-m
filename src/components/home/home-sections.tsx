@@ -133,7 +133,23 @@ export function GuideAndInstagram() {
 const emailSchema = z.string().email("Geçerli bir e-posta adresi girin.");
 export function Newsletter() {
   const { register, handleSubmit, reset, setError, formState: { errors } } = useForm<{ email: string }>();
-  const submit = ({ email }: { email: string }) => { const result = emailSchema.safeParse(email); if (!result.success) return setError("email", { message: result.error.issues[0].message }); toast.success("Bee dünyasına hoş geldiniz!"); reset(); };
+  const submit = async ({ email }: { email: string }) => {
+    const result = emailSchema.safeParse(email);
+    if (!result.success) return setError("email", { message: result.error.issues[0].message });
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Kayıt başarısız");
+      toast.success("Bee dünyasına hoş geldiniz!");
+      reset();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Hata");
+    }
+  };
   return <section className="border-t border-black/10 bg-[#eee8dc] py-20"><div className="mx-auto max-w-2xl px-5 text-center"><p className="text-[10px] tracking-[.3em] text-[#8d693e]">BEE PRIVÉ</p><h2 className="mt-4 font-serif text-4xl md:text-6xl">Bee Dünyasına Katılın</h2><p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-neutral-600">Yeni koleksiyonlardan, kampanyalardan ve özel fırsatlardan ilk siz haberdar olun.</p><form onSubmit={handleSubmit(submit)} className="mx-auto mt-8 flex max-w-xl border-b border-black"><input {...register("email")} aria-label="E-posta adresi" placeholder="E-posta adresiniz" className="min-w-0 flex-1 bg-transparent px-1 py-4 text-sm outline-none" /><button className="px-4 text-[10px] tracking-[.18em]">ABONE OL <ArrowRight className="ml-2 inline" size={14} /></button></form>{errors.email && <p className="mt-2 text-left text-xs text-red-700">{errors.email.message}</p>}</div></section>;
 }
 
