@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { FormEvent, useEffect, useState, type ReactNode } from "react";
 import {
   Bell,
   Boxes,
@@ -13,7 +13,6 @@ import {
   Store,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/context/auth-context";
 
 const nav = [
   { href: "/admin", label: "Özet", icon: LayoutDashboard, exact: true },
@@ -24,12 +23,57 @@ const nav = [
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const auth = useAuth();
   const [ready, setReady] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+  const [configured, setConfigured] = useState(true);
+  const [configMessage, setConfigMessage] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const refresh = () =>
+    fetch("/api/admin/gate")
+      .then(async (res) => {
+        const data = await res.json();
+        setConfigured(Boolean(data.configured));
+        setUnlocked(Boolean(data.unlocked));
+        setConfigMessage(data.message ?? null);
+      })
+      .catch(() => {
+        setConfigured(false);
+        setUnlocked(false);
+      })
+      .finally(() => setReady(true));
 
   useEffect(() => {
-    setReady(true);
+    void refresh();
   }, []);
+
+  const onLogin = async (event: FormEvent) => {
+    event.preventDefault();
+    setBusy(true);
+    try {
+      const res = await fetch("/api/admin/gate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Giriş başarısız");
+      setPassword("");
+      setUnlocked(true);
+      toast.success("Panele giriş yapıldı");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Hata");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onLogout = async () => {
+    await fetch("/api/admin/gate", { method: "DELETE" });
+    setUnlocked(false);
+    toast.message("Panel oturumu kapandı");
+  };
 
   if (!ready) {
     return (
@@ -39,43 +83,47 @@ export function AdminShell({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!auth.user) {
+  if (!configured || !unlocked) {
     return (
       <div className="grid min-h-screen place-items-center bg-[#0f0e0d] px-5 text-white">
-        <div className="max-w-md border border-white/10 bg-[#161513] p-8 text-center">
+        <form onSubmit={onLogin} className="w-full max-w-md border border-white/10 bg-[#161513] p-8">
           <p className="text-[10px] tracking-[.28em] text-[#c9a775]">BEE PANEL</p>
-          <h1 className="mt-4 font-serif text-4xl">Giriş gerekli</h1>
-          <p className="mt-4 text-sm text-white/55">Admin paneli için hesabına giriş yap.</p>
+          <h1 className="mt-4 font-serif text-4xl">Şifre ile giriş</h1>
+          <p className="mt-4 text-sm leading-6 text-white/55">
+            Yönetim paneli yalnızca panel şifresi ile açılır. Müşteri hesabı gerekmez.
+          </p>
+
+          {!configured && (
+            <p className="mt-4 border border-[#c9a775]/40 bg-[#c9a775]/10 p-3 text-xs text-[#e8d2ad]">
+              {configMessage || "ADMIN_PANEL_PASSWORD eksik."}
+            </p>
+          )}
+
+          <label className="mt-8 block text-[10px] tracking-[.2em] text-white/45">
+            PANEL ŞİFRESİ
+            <input
+              type="password"
+              autoFocus
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-2 w-full border border-white/15 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-[#c9a775]"
+              placeholder="••••••••"
+              autoComplete="current-password"
+            />
+          </label>
+
           <button
-            type="button"
-            className="mt-8 w-full bg-[#c9a775] py-3 text-xs tracking-[.16em] text-black"
-            onClick={() => auth.setAuthOpen(true)}
+            disabled={busy || !configured}
+            className="mt-6 w-full bg-[#c9a775] py-3 text-xs tracking-[.16em] text-black disabled:opacity-50"
           >
-            GİRİŞ YAP
+            {busy ? "KONTROL..." : "GİRİŞ YAP"}
           </button>
-          <Link href="/" className="mt-4 block text-xs text-white/45 underline">
+
+          <Link href="/" className="mt-5 block text-center text-xs text-white/40 underline">
             Mağazaya dön
           </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (auth.user.role !== "admin") {
-    return (
-      <div className="grid min-h-screen place-items-center bg-[#0f0e0d] px-5 text-white">
-        <div className="max-w-md border border-white/10 bg-[#161513] p-8 text-center">
-          <p className="text-[10px] tracking-[.28em] text-[#c9a775]">BEE PANEL</p>
-          <h1 className="mt-4 font-serif text-4xl">Yetki yok</h1>
-          <p className="mt-4 text-sm leading-6 text-white/55">
-            Bu hesap admin değil. Supabase’de{" "}
-            <code className="text-[#c9a775]">profiles.role = &apos;admin&apos;</code> yapıp tekrar giriş yap.
-          </p>
-          <p className="mt-3 text-xs text-white/35">{auth.user.email}</p>
-          <Link href="/" className="mt-8 inline-block border border-white/20 px-6 py-3 text-xs tracking-[.14em]">
-            MAĞAZAYA DÖN
-          </Link>
-        </div>
+        </form>
       </div>
     );
   }
@@ -120,15 +168,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="mt-auto hidden border-t border-white/10 px-5 py-5 lg:block">
-            <p className="truncate text-xs text-white/70">{auth.user.name}</p>
-            <p className="truncate text-[10px] text-white/35">{auth.user.email}</p>
+            <p className="text-xs text-white/70">Panel oturumu</p>
+            <p className="text-[10px] text-white/35">Şifre ile korumalı</p>
             <button
               type="button"
               className="mt-4 inline-flex items-center gap-2 text-[10px] tracking-[.14em] text-white/50 hover:text-white"
-              onClick={() => {
-                void auth.logout();
-                toast.message("Çıkış yapıldı");
-              }}
+              onClick={() => void onLogout()}
             >
               <LogOut size={14} /> ÇIKIŞ
             </button>
@@ -141,12 +186,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
               <ShoppingBag size={14} />
               <span>Bee Kozmetik operasyon</span>
             </div>
-            <div className="flex items-center gap-3 lg:hidden">
-              <span className="max-w-[10rem] truncate text-[10px] text-neutral-500">{auth.user.email}</span>
-              <button type="button" className="text-[10px] tracking-wider underline" onClick={() => void auth.logout()}>
-                Çıkış
-              </button>
-            </div>
+            <button type="button" className="text-[10px] tracking-wider underline lg:hidden" onClick={() => void onLogout()}>
+              Çıkış
+            </button>
           </header>
           <div className="px-5 py-8 lg:px-10 lg:py-10">{children}</div>
         </div>

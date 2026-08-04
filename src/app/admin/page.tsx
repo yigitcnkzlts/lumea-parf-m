@@ -33,7 +33,8 @@ export default function AdminHomePage() {
       <p className="text-[10px] tracking-[.28em] text-[#956f42]">ÖZET</p>
       <h1 className="mt-3 font-serif text-4xl md:text-5xl">Bee yönetim paneli</h1>
       <p className="mt-3 max-w-2xl text-sm text-neutral-600">
-        Bu alan mağazadan ayrıdır. Vercel’de: <code className="text-xs">https://SENIN-DOMAIN/admin</code>
+        Bu alan mağazadan ayrıdır ve yalnızca panel şifresi ile açılır.
+        Vercel: <code className="text-xs">https://SENIN-DOMAIN/admin</code>
       </p>
 
       <div className="mt-10 grid gap-4 md:grid-cols-3">

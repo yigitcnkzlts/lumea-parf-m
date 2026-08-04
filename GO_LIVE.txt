@@ -35,5 +35,6 @@ Bee Kozmetik — satışa açılış kontrol listesi
 6) Faz 3 (yorum / upload / alert)
    - Supabase SQL Editor’de migrations/003_reviews_alerts_storage.sql çalıştır
    - Storage bucket: product-images (migration oluşturur)
-   - Admin panel: /admin  → stok, sipariş, bildirimler
+   - Admin panel: /admin  → sadece ADMIN_PANEL_PASSWORD ile giriş
+   - Vercel’e de ADMIN_PANEL_PASSWORD ekle (Production)
    - Opsiyonel: NEXT_PUBLIC_GA_MEASUREMENT_ID, NEXT_PUBLIC_META_PIXEL_ID
