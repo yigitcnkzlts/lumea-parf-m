@@ -111,8 +111,8 @@ export function NotificationsAdmin() {
         </table>
       </div>
 
-      <Link href="/admin" className="text-xs underline">
-        ← Admin ana panel
+      <Link href="/admin/siparisler" className="text-xs underline">
+        ← Siparişler
       </Link>
     </div>
   );

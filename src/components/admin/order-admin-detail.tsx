@@ -68,7 +68,7 @@ export function OrderAdminDetail({ orderId }: { orderId: string }) {
   return (
     <div className="space-y-8">
       <div>
-        <Link href="/admin/siparisler" className="text-xs underline">← Admin siparişler</Link>
+        <Link href="/admin/siparisler" className="text-xs underline">← Siparişler</Link>
         <p className="mt-4 text-[10px] tracking-[.2em] text-[#956f42]">{String(order.order_number)}</p>
         <h1 className="mt-2 font-serif text-4xl">{ORDER_STATUS_LABELS[status] ?? status}</h1>
         <p className="mt-2 text-sm text-neutral-600">Ödeme: {String(order.payment_status)}</p>

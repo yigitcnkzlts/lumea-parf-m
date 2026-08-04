@@ -1,0 +1,29 @@
+BEE — senin yapman gerekenler (kısa)
+====================================
+
+1) .env.local
+   ZATEN YAZILI. Dokunmana gerek yok.
+   Supabase URL: https://lhsgqgklzryapcjvudmq.supabase.co
+   Site local: http://localhost:3000
+
+2) Supabase SQL
+   Dosya: supabase/SIMDI_CALISTIR.sql
+   Dashboard → SQL Editor → içeriği yapıştır → Run
+   (Faz 3 kısmını daha önce çalıştırdıysan tekrar da çalışabilir, sorun değil)
+
+3) Admin yapmak
+   Aynı SQL Editor’de (mailini yaz):
+
+   update public.profiles
+   set role = 'admin'
+   where email = 'SENIN_MAIL@ornek.com';
+
+   Sonra siteden çıkış / tekrar giriş.
+
+4) Panel
+   http://localhost:3000/admin
+   http://localhost:3000/admin/stok
+   http://localhost:3000/admin/siparisler
+
+5) Canlı satış (sonra)
+   Vercel env + iyzico canlı — GO_LIVE.txt
